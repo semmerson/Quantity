@@ -70,19 +70,6 @@ TEST_F(DimensionTest, Construction)
     EXPECT_THROW(Dimension::create("length"), invalid_argument);
 }
 
-// Tests delayed reveal
-/*
-TEST_F(DimensionTest, DelayedReveal)
-{
-    Dimension<int, std::chrono::milliseconds> dq{};
-    const int value = 1;
-    dq.push(value, 100);
-    EXPECT_FALSE(dq.empty());
-    EXPECT_FALSE(dq.ready());
-    EXPECT_EQ(value, dq.pop());
-}
-*/
-
 }  // namespace
 
 int main(int argc, char **argv) {
