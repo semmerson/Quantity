@@ -57,9 +57,6 @@ public:
      */
     virtual ~Calendar() noexcept;
 
-private:
-    friend class Temporal;
-
     /**
      * Returns the difference, in seconds, between two times.
      */

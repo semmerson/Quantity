@@ -29,7 +29,7 @@ namespace quantity {
  */
 class Gregorian final : public Calendar
 {
-private:
+public:
     long double difference(const Timestamp& lhs, const Timestamp& rhs) const override
     {
         return 0;
