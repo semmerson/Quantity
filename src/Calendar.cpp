@@ -29,6 +29,11 @@ namespace quantity {
  */
 class Gregorian final : public Calendar
 {
+private:
+    long double difference(const Timestamp& lhs, const Timestamp& rhs) const override
+    {
+        return 0;
+    }
 };
 
 Calendar::Pimpl Calendar::getGregorian()
