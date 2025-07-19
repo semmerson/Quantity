@@ -34,7 +34,15 @@ namespace quantity {
  */
 class Calendar {
 public:
-    using Pimpl = shared_ptr<Calendar>;
+    using Pimpl = shared_ptr<Calendar>; ///< Smart pointer to an implementation
+
+    /// Abstract timestamp class.
+    class Timestamp {
+    public:
+        virtual ~Timestamp() noexcept;
+
+        virtual long double subtract(const Timestamp& other) =0;
+    };
 
     /**
      * Returns the Gregorian calendar.
@@ -45,7 +53,12 @@ public:
     /**
      * Destroys.
      */
-    virtual ~Calendar() noexcept =0;
+    virtual ~Calendar() noexcept;
+
+    /**
+     * Returns the difference, in seconds, between two times.
+     */
+    virtual long double difference(const Timestamp& lhs, const Timestamp& rhs);
 };
 
 }

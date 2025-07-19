@@ -41,6 +41,9 @@ Calendar::Pimpl Calendar::getGregorian()
     return gregorian;
 }
 
+/**
+ * Destroys. Necessary because Calendar is an abstract interface.
+ */
 Calendar::~Calendar() {}
 
 }
