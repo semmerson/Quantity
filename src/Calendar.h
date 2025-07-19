@@ -30,18 +30,20 @@ using namespace std;
 namespace quantity {
 
 /**
- * Abstract calendar class.
+ * Abstract calendar interface.
  */
 class Calendar {
 public:
     using Pimpl = shared_ptr<Calendar>; ///< Smart pointer to an implementation
 
-    /// Abstract timestamp class.
-    class Timestamp {
-    public:
-        virtual ~Timestamp() noexcept;
-
-        virtual long double subtract(const Timestamp& other) =0;
+    /// A specific time in any calendar
+    struct Timestamp {
+        int    year;   ///< The year
+        int    month;  ///< The month (1 - 12)
+        int    day;    ///< The day of the month (1 - 31)
+        int    hour;   ///< The hour (0 - 23)
+        int    minute; ///< The minute (0 - 59)
+        double second; ///< The second (0 - 62)
     };
 
     /**
@@ -55,10 +57,13 @@ public:
      */
     virtual ~Calendar() noexcept;
 
+private:
+    friend class Temporal;
+
     /**
      * Returns the difference, in seconds, between two times.
      */
-    virtual long double difference(const Timestamp& lhs, const Timestamp& rhs);
+    virtual long double difference(const Timestamp& lhs, const Timestamp& rhs) const =0;
 };
 
 }
