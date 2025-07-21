@@ -1,0 +1,32 @@
+Base_Units:
+  - dimension: mass
+    symbol: kg
+
+  - dimension: length
+    symbol: m
+
+  - dimension: time
+    symbol: s
+
+  - dimension: temperature
+    symbol: °K
+
+Derived_Units:
+  - name: power
+    symbol: kg m^2 s^-3
+
+Common_Units:
+  - symbol: °C
+    definition: °K @ 273.15
+    
+  - symbol: °Ra
+    definition: (5/9) °K
+    
+  - symbol: °F
+    symbol: °Ra @ 459.67
+    
+  - symbol: Bz
+    definition: lg(ref: 1 µm^3)
+    
+  - name: seconds_since_the_epoch
+    definition: seconds since 1970-01-01T00:00:00Z
