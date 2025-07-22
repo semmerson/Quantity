@@ -18,8 +18,8 @@
 /+isRatioQuantity(): bool/
 /+isConvertible(other: Quantity): bool/
 /+add(rhs: Quantity): Quantity/
-/+subtract(rhs: Quantity): IntervalQuantity/
-/#subtractFrom(lhs: Quantity): IntervalQuantity/
+/+subtract(rhs: Quantity): Quantity/
+/#subtractFrom(lhs: Quantity): Quantity/
 /+multiply(factor: Quantity): Quantity/
 /+divide(denom: Quantity): Quantity/
 /+raise(power: int): Quantity/
