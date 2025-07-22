@@ -1,0 +1,5 @@
+set -e
+
+cp /mnt/hgfs/VM_Share/M-Layer.uxf /home/steve/Projects/quantity/src
+git add M-Layer.uxf
+git commit M-Layer.uxf
