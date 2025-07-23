@@ -17,15 +17,15 @@ Derived_Quantities:
     definition: kg m^2 s^-3
 
 Common_Quantities:
-  - name: degrees celsius
+  - name: degree celsius
     unit_symbol: °C
     definition: °K @ 273.15
     
-  - name: degrees rankine
+  - name: degree rankine
     unit_symbol: °Ra
     definition: (5/9) °K
     
-  - name: degrees fahrenheit
+  - name: degree fahrenheit
     unit_symbol: °F
     definition: °Ra @ 459.67
     
