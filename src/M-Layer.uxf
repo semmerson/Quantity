@@ -36,11 +36,12 @@
       <x>1170</x>
       <y>310</y>
       <w>250</w>
-      <h>130</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>/Unit/
 -
 /+isDimensionless(): bool/
+/+isOffset(): bool/
 /+isConvertible(other: Unit): bool/
 /+multiply(factor: Unit): Unit/
 /+divide(denom: Unit): Unit/
@@ -123,12 +124,12 @@ level</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1310</x>
-      <y>430</y>
+      <y>440</y>
       <w>30</w>
-      <h>150</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -261,12 +262,12 @@ Factor(factor: double)</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1170</x>
-      <y>430</y>
+      <y>440</y>
       <w>30</w>
-      <h>150</h>
+      <h>140</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
@@ -692,13 +693,13 @@ m2=1</panel_attributes>
     <id>Relation</id>
     <coordinates>
       <x>1400</x>
-      <y>430</y>
+      <y>440</y>
       <w>40</w>
-      <h>120</h>
+      <h>110</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
 m2=1</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0</additional_attributes>
   </element>
   <element>
     <id>UMLNote</id>
