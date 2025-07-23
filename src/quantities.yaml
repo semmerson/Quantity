@@ -1,31 +1,36 @@
-Base_Units:
-  - dimension: mass
-    symbol: kg
+Base_Quantities:
+  - name: mass
+    unit_symbol: kg
 
-  - dimension: length
-    symbol: m
+  - name: length
+    unit_symbol: m
 
-  - dimension: time
-    symbol: s
+  - name: time
+    unit_symbol: s
 
-  - dimension: temperature
-    symbol: °K
+  - name: temperature
+    unit_symbol: °K
 
-Derived_Units:
-  - name: power
-    symbol: kg m^2 s^-3
+Derived_Quantities:
+    name: power
+    unit_symbol: W
+    definition: kg m^2 s^-3
 
-Common_Units:
-  - symbol: °C
+Common_Quantities:
+  - name: degrees celsius
+    unit_symbol: °C
     definition: °K @ 273.15
     
-  - symbol: °Ra
+  - name: degrees rankine
+    unit_symbol: °Ra
     definition: (5/9) °K
     
-  - symbol: °F
-    symbol: °Ra @ 459.67
+  - name: degrees fahrenheit
+    unit_symbol: °F
+    definition: °Ra @ 459.67
     
-  - symbol: Bz
+  - name: precipitation reflectivity
+    unit_symbol: Bz
     definition: lg(ref: 1 µm^3)
     
   - name: seconds_since_the_epoch
