@@ -1,37 +1,73 @@
 Base_Quantities:
   - name: mass
-    unit_symbol: kg
+    unit:
+    	name: kilogram
+		symbol: kg
 
   - name: length
-    unit_symbol: m
+    unit:
+		name: meter
+		symbol: m
 
   - name: time
-    unit_symbol: s
+    unit:
+		name: second
+		symbol: s
 
   - name: temperature
-    unit_symbol: °K
+    unit:
+		name: degrees kelvin
+		symbol: °K
 
 Derived_Quantities:
     name: power
-    unit_symbol: W
+    unit:
+		name: watt
+		symbol: W
     definition: kg m^2 s^-3
+    
+    name: volume
+    definition: m^3
 
 Common_Quantities:
   - name: degrees celsius
+  	parent: temperature
     unit_symbol: °C
-    definition: °K @ 273.15
+    conversion:
+    	type: affine
+    	intercept: 273.15
     
   - name: degrees rankine
+    parent: temperature
     unit_symbol: °Ra
-    definition: (5/9) °K
+    conversion:
+        type: affine
+        slope: 5.0/9.0
     
   - name: degrees fahrenheit
+    parent: degrees rankine
     unit_symbol: °F
-    definition: °Ra @ 459.67
+    conversion:
+        type: affine
+        intercept: 459.67
     
-  - name: precipitation reflectivity
+  - name: logarithmic reflectivity
     unit_symbol: Bz
-    definition: lg(ref: 1 µm^3)
+    parent: volume
+    conversion:
+    	type: referenced exponentiation
+    	base: 10
+    	reference: 1e-6
     
   - name: seconds since the epoch
-    definition: seconds since 1970-01-01T00:00:00Z
+    parent: time
+    conversion:
+    	type: temporal
+    	calendar: gregorian
+    	intercept: 1970-01-01T00:00:00Z
+    
+  - name: days since the epoch
+    parent: seconds since the epoch
+    conversion:
+    	type: affine
+    	slope: 86400
