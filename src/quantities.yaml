@@ -24,29 +24,36 @@ Derived_Quantities:
     unit:
 		name: watt
 		symbol: W
-    definition: kg m^2 s^-3
+    dimensionality:
+    	- quantity: mass
+    	- quantity: length
+    	  power: 2
+    	- quantity: time
+    	  power: -3
     
     name: volume
-    definition: m^3
+    dimensionality:
+    	- quantity: length
+    	  power: 3
 
 Common_Quantities:
   - name: degrees celsius
-  	parent: temperature
     unit_symbol: °C
+  	parent: temperature
     conversion:
     	type: affine
     	intercept: 273.15
     
   - name: degrees rankine
-    parent: temperature
     unit_symbol: °Ra
+    parent: temperature
     conversion:
         type: affine
         slope: 5.0/9.0
     
   - name: degrees fahrenheit
-    parent: degrees rankine
     unit_symbol: °F
+    parent: degrees rankine
     conversion:
         type: affine
         intercept: 459.67
