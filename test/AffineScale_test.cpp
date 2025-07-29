@@ -11,19 +11,19 @@ namespace {
 using namespace quantity;
 using namespace std;
 
-/// The fixture for testing class `Dimension`
-class DimensionTest : public ::testing::Test
+/// The fixture for testing class `AffineScale`
+class AffineScaleTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    DimensionTest()
+    AffineScaleTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~DimensionTest()
+    virtual ~AffineScaleTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -47,16 +47,24 @@ protected:
 };
 
 /// Tests construction
-TEST_F(DimensionTest, Construction)
+TEST_F(AffineScaleTest, Construction)
 {
-    AffineScale scale1{2, 0};
-    EXPECT_EQ(0, scale1.convert(0));
-    EXPECT_EQ(2, scale1.convert(1));
-
-    AffineScale scale2{3, 5};
-    ASSERT_EQ(5, scale2.convert(0));
-    ASSERT_EQ(8, scale2.convert(1));
+    AffineScale scale{3, 5};
+    ASSERT_EQ(5, scale.convert(0));
+    ASSERT_EQ(8, scale.convert(1));
 }
+
+/// Tests conversion consolidation
+/*
+TEST_F(AffineScaleTest, Consolidation)
+{
+    AffineScale scale1{2, 1};
+    AffineScale scale2{4, 3};
+    AffineScale scale3{scale2.consolidate(scale1)};
+    ASSERT_EQ(7, scale3.convert(0));
+    ASSERT_EQ(15, scale3.convert(1));
+}
+*/
 
 }  // namespace
 

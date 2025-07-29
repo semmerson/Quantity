@@ -20,26 +20,54 @@
  * limitations under the License.
  */
 
-#ifndef SRC_SCALE_H_
-#define SRC_SCALE_H_
+#pragma once
 
+#include <memory>
 
 namespace quantity {
 
-class Scale
-{
+/// A class for numeric scales.
+class Scale {
 public:
-    /// Destroys.
-    virtual ~Scale() {};
+    /// The implementation
+    class Impl {
+    public:
+        virtual ~Impl();
+
+        /**
+         * Converts a numeric value.
+         * @param[in] value  The value to be converted
+         * @return           The converted value
+         */
+        virtual double convert(const double value) const = 0;
+    };
+
+    Scale() =default;
+
+    /**
+     * Constructs from a pointer to an implementation.
+     * @param[in] impl   Pointer to an implementation
+     */
+    Scale(Impl* impl);
 
     /**
      * Converts a value.
      * @param[in] value  The value to be converted.
      * @return           The converted value.
      */
-    virtual double convert(const double value) =0;
+    double convert(const double value) const;
+
+    /**
+     * Consolidates another scale with this one.
+     * @param[in] first  The first scale to apply
+     * @return           A scale whose conversions are equivalent to converting via the first scale
+     *                   and then by this one.
+     */
+    Scale consolidate(const Scale& first) const;
+
+protected:
+    /// Smart pointer to the implementation for automatic deletion
+    std::shared_ptr<Impl> pImpl;
 };
 
 }
-
-#endif /* SRC_SCALE_H_ */

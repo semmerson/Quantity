@@ -1,5 +1,5 @@
 /**
- * This file implements a class for affine conversions.
+ * This file implements a class for affine transformations.
  *
  *        File: AffineScale.h
  *  Created on: Jul 27, 2025
@@ -25,36 +25,46 @@
 namespace quantity {
 
 /**
- * Class for affine conversions.
+ * Implementation of an affine scale.
  */
-class AffineScale::Impl
-{
+class AffineScaleImpl : public Scale::Impl {
     const double slope;     ///< The slope
     const double intercept; ///< The intercept
 
 public:
-    Impl(
+    /**
+     * Constructs
+     * @param[in] slope             The slope
+     * @param[in] intercept         The intercept
+     */
+    AffineScaleImpl(
             const double slope,
             const double intercept)
         : slope{slope}
-        , intercept{intercept}
-    {}
+        , intercept{intercept} {}
 
-    double convert(const double value)
-    {
+    /**
+     * Converts a numeric value.
+     * @param[in] value  The value to be transformed
+     * @return           The transformed value
+     */
+    double convert(const double value) const {
         return slope*value + intercept;
     }
+
+    /**
+     * Consolidates another scale with this one.
+     * @param[in] first  The first scale to apply
+     * @return           A scale whose conversions are equivalent to converting via the first scale
+     *                   and then by this one.
+    Scale consolidate(const Scale& first) const {
+    }
+     */
 };
 
 AffineScale::AffineScale(
         const double slope,
         const double intercept)
-    : pImpl{new AffineScale::Impl(slope, intercept)}
-{}
-
-double AffineScale::convert(const double value)
-{
-    return pImpl->convert(value);
-}
+    : Scale(new AffineScaleImpl(slope, intercept)) {}
 
 }
