@@ -20,8 +20,7 @@
  * limitations under the License.
  */
 
-#ifndef MAIN_DIMENSION_H_
-#define MAIN_DIMENSION_H_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -65,5 +64,3 @@ public:
 };
 
 }
-
-#endif /* MAIN_DIMENSION_H_ */
