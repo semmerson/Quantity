@@ -43,10 +43,26 @@ public:
 
         /**
          * Multiplies by a numeric factor.
-         * @param[in] first  The numeric factor
+         * @param[in] factor The numeric factor
          * @return           A scale whose transformations are equal to this scale times a factor
          */
         virtual Impl* multiply(const double factor) const =0;
+
+        /**
+         * Divides by a numeric factor.
+         * @param[in] factor The numeric factor
+         * @return           A scale whose transformations are equal to this scale divided by a
+         *                   factor
+         */
+        virtual Impl* divide(const double factor) const =0;
+
+        /**
+         * Raises to a numeric power.
+         * @param[in] power     The numeric power
+         * @return              A scale whose transformations are equal to this scale raised to a
+         *                      power.
+         */
+        virtual Impl* pow(const int power) const =0;
     };
 
     Scale() =default;
@@ -70,6 +86,21 @@ public:
      * @return              A scale whose transformations are equal to this scale times a factor
      */
     Scale multiply(const double factor) const;
+
+    /**
+     * Divides by a numeric factor.
+     * @param[in] factor    The numeric factor
+     * @return              A scale whose transformations are equal to this scale divided by a
+     *                      factor
+     */
+    Scale divide(const double factor) const;
+
+    /**
+     * Raises to a power.
+     * @param[in] power     The numeric power
+     * @return              A scale whose transformations are equal to this scale raised to a power.
+     */
+    Scale pow(const int power) const;
 
 protected:
     /// Smart pointer to the implementation for automatic deletion

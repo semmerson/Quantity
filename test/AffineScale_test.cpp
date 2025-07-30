@@ -3,8 +3,9 @@
  */
 
 #include "AffineScale.h"
-
 #include "gtest/gtest.h"
+
+#include <stdexcept>
 
 namespace {
 
@@ -61,6 +62,25 @@ TEST_F(AffineScaleTest, Multiplication)
     auto scale2 = scale1.multiply(3);
     ASSERT_EQ(1, scale2.convert(0));
     ASSERT_EQ(7, scale2.convert(1));
+}
+
+/// Tests division
+TEST_F(AffineScaleTest, Division)
+{
+    AffineScale scale1{4, 1};
+    auto scale2 = scale1.divide(2);
+    ASSERT_EQ(1, scale2.convert(0));
+    ASSERT_EQ(3, scale2.convert(1));
+}
+
+/// Tests exponentiation
+TEST_F(AffineScaleTest, Exponentiation)
+{
+    ASSERT_THROW(AffineScale(2, 1).pow(2), std::domain_error);
+    AffineScale scale1{2, 0};
+    auto scale2 = scale1.pow(2);
+    ASSERT_EQ(0, scale2.convert(0));
+    ASSERT_EQ(4, scale2.convert(1));
 }
 
 }  // namespace

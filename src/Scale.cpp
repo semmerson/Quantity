@@ -38,4 +38,12 @@ Scale Scale::multiply(const double factor) const {
     return Scale(pImpl->multiply(factor));
 }
 
+Scale Scale::divide(const double factor) const {
+    return Scale(pImpl->divide(factor));
+}
+
+Scale Scale::pow(const int power) const {
+    return Scale(pImpl->pow(power));
+}
+
 }

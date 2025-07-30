@@ -22,6 +22,9 @@
 
 #include "AffineScale.h"
 
+#include <stdexcept>
+#include <cmath>
+
 namespace quantity {
 
 /**
@@ -48,7 +51,7 @@ public:
      * @param[in] value  The value to be transformed
      * @return           The transformed value
      */
-    double convert(const double value) const {
+    double convert(const double value) const override {
         return slope*value + intercept;
     }
 
@@ -59,8 +62,33 @@ public:
      *                      NB: The intercept will be unchanged (zero kilocelsius is still 273.15
      *                      kelvin).
      */
-    AffineScaleImpl* multiply(const double factor) const {
+    AffineScaleImpl* multiply(const double factor) const override {
         return new AffineScaleImpl(factor*slope, intercept);
+    }
+
+    /**
+     * Divides by a numeric factor.
+     * @param[in] factor    The numeric factor
+     * @return              A scale whose transformations are equal to this scale divided by a
+     *                      factor. NB: The intercept will be unchanged (zero decicelsius is still
+     *                      273.15 kelvin).
+     */
+    AffineScaleImpl* divide(const double factor) const override {
+        return new AffineScaleImpl(slope/factor, intercept);
+    }
+
+    /**
+     * Raises to a numeric power.
+     * @param[in] power         The numeric exponent
+     * @return                  A scale whose transformations are equal to this scale raised to a
+     *                          power
+     * @throw std::domain_error The intercept is not zero
+     */
+    AffineScaleImpl* pow(const int power) const override {
+        if (intercept != 0)
+            throw std::domain_error("Intercept is not zero");
+
+        return new AffineScaleImpl(std::pow(slope, power), 0);
     }
 };
 
