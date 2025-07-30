@@ -56,7 +56,8 @@ public:
      * Multiplies by a numeric factor.
      * @param[in] factor    The numeric factor
      * @return              A scale whose transformations are equal to this scale times a factor.
-     *                      NB: The intercept will be unchanged (consider deciCelsius).
+     *                      NB: The intercept will be unchanged (zero kilocelsius is still 273.15
+     *                      kelvin).
      */
     AffineScaleImpl* multiply(const double factor) const {
         return new AffineScaleImpl(factor*slope, intercept);
