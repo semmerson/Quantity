@@ -53,13 +53,14 @@ public:
     }
 
     /**
-     * Consolidates another scale with this one.
-     * @param[in] first  The first scale to apply
-     * @return           A scale whose conversions are equivalent to converting via the first scale
-     *                   and then by this one.
-    Scale consolidate(const Scale& first) const {
-    }
+     * Multiplies by a numeric factor.
+     * @param[in] factor    The numeric factor
+     * @return              A scale whose transformations are equal to this scale times a factor.
+     *                      NB: The intercept will be unchanged (consider deciCelsius).
      */
+    AffineScaleImpl* multiply(const double factor) const {
+        return new AffineScaleImpl(factor*slope, intercept);
+    }
 };
 
 AffineScale::AffineScale(
@@ -67,4 +68,4 @@ AffineScale::AffineScale(
         const double intercept)
     : Scale(new AffineScaleImpl(slope, intercept)) {}
 
-}
+} // namespace

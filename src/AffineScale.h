@@ -6,8 +6,6 @@
 
 #include "Scale.h"
 
-#include <memory>
-
 namespace quantity {
 
 /// Class for affine scales (i.e, y = ax + b).

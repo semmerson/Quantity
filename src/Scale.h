@@ -40,6 +40,13 @@ public:
          * @return           The converted value
          */
         virtual double convert(const double value) const = 0;
+
+        /**
+         * Multiplies by a numeric factor.
+         * @param[in] first  The numeric factor
+         * @return           A scale whose transformations are equal to this scale times a factor
+         */
+        virtual Impl* multiply(const double factor) const =0;
     };
 
     Scale() =default;
@@ -58,12 +65,11 @@ public:
     double convert(const double value) const;
 
     /**
-     * Consolidates another scale with this one.
-     * @param[in] first  The first scale to apply
-     * @return           A scale whose conversions are equivalent to converting via the first scale
-     *                   and then by this one.
+     * Multiplies by a numeric factor.
+     * @param[in] factor    The numeric factor
+     * @return              A scale whose transformations are equal to this scale times a factor
      */
-    Scale consolidate(const Scale& first) const;
+    Scale multiply(const double factor) const;
 
 protected:
     /// Smart pointer to the implementation for automatic deletion

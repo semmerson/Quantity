@@ -24,16 +24,6 @@
 
 namespace quantity {
 
-#if 0
-// Widget.cpp
-Widget::Widget(std::shared_ptr<Impl> impl)
-    : pImpl(std::move(impl)) {}
-
-void Widget::draw() {
-    pImpl->draw();
-}
-#endif
-
 Scale::Impl::~Impl() {}
 
 Scale::Scale(Impl* impl)
@@ -42,6 +32,10 @@ Scale::Scale(Impl* impl)
 
 double Scale::convert(const double value) const {
     return pImpl->convert(value);
+}
+
+Scale Scale::multiply(const double factor) const {
+    return Scale(pImpl->multiply(factor));
 }
 
 }
