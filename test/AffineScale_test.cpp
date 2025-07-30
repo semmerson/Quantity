@@ -54,17 +54,14 @@ TEST_F(AffineScaleTest, Construction)
     ASSERT_EQ(8, scale.convert(1));
 }
 
-/// Tests conversion consolidation
-/*
-TEST_F(AffineScaleTest, Consolidation)
+/// Tests multiplication
+TEST_F(AffineScaleTest, Multiplication)
 {
     AffineScale scale1{2, 1};
-    AffineScale scale2{4, 3};
-    AffineScale scale3{scale2.consolidate(scale1)};
-    ASSERT_EQ(7, scale3.convert(0));
-    ASSERT_EQ(15, scale3.convert(1));
+    auto scale2 = scale1.multiply(3);
+    ASSERT_EQ(1, scale2.convert(0));
+    ASSERT_EQ(7, scale2.convert(1));
 }
-*/
 
 }  // namespace
 
