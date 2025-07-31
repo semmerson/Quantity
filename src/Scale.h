@@ -35,11 +35,11 @@ public:
         virtual ~Impl();
 
         /**
-         * Converts a numeric value.
-         * @param[in] value  The value to be converted
-         * @return           The converted value
+         * Indicates if the origin of this scale is *not* zero.
+         * @retval false    The origin of this scale is zero
+         * @retval true     The origin of this scale is not zero
          */
-        virtual double convert(const double value) const = 0;
+        virtual bool isOffset() const =0;
 
         /**
          * Multiplies by a numeric factor.
@@ -63,6 +63,22 @@ public:
          *                      power.
          */
         virtual Impl* pow(const int power) const =0;
+
+        /**
+         * Takes a root.
+         * @param[in] root          The numeric root
+         * @return                  A scale whose transformations are equal to this scale taken to a
+         *                          root.
+         * @throw std::domain_error The scale can't have a root taken
+         */
+        virtual Impl* root(const int root) const =0;
+
+        /**
+         * Converts a numeric value.
+         * @param[in] value  The value to be converted
+         * @return           The converted value
+         */
+        virtual double convert(const double value) const = 0;
     };
 
     Scale() =default;
@@ -74,11 +90,11 @@ public:
     Scale(Impl* impl);
 
     /**
-     * Converts a value.
-     * @param[in] value  The value to be converted.
-     * @return           The converted value.
+     * Indicates if the origin of this scale is *not* zero.
+     * @retval false    The origin of this scale is zero
+     * @retval true     The origin of this scale is not zero
      */
-    double convert(const double value) const;
+    bool isOffset() const;
 
     /**
      * Multiplies by a numeric factor.
@@ -101,6 +117,22 @@ public:
      * @return              A scale whose transformations are equal to this scale raised to a power.
      */
     Scale pow(const int power) const;
+
+    /**
+     * Takes a root.
+     * @param[in] root          The numeric root
+     * @return                  A scale whose transformations are equal to this scale taken to a
+     *                          root.
+     * @throw std::domain_error The scale can't have a root taken
+     */
+    Scale root(const int root) const;
+
+    /**
+     * Converts a value.
+     * @param[in] value  The value to be converted.
+     * @return           The converted value.
+     */
+    double convert(const double value) const;
 
 protected:
     /// Smart pointer to the implementation for automatic deletion

@@ -30,6 +30,10 @@ Scale::Scale(Impl* impl)
     : pImpl(impl) {
 }
 
+bool Scale::isOffset() const {
+    return pImpl->isOffset();
+}
+
 double Scale::convert(const double value) const {
     return pImpl->convert(value);
 }
@@ -44,6 +48,10 @@ Scale Scale::divide(const double factor) const {
 
 Scale Scale::pow(const int power) const {
     return Scale(pImpl->pow(power));
+}
+
+Scale Scale::root(const int root) const {
+    return Scale(pImpl->root(root));
 }
 
 }

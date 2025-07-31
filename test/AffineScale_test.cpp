@@ -50,6 +50,16 @@ protected:
 /// Tests construction
 TEST_F(AffineScaleTest, Construction)
 {
+    AffineScale scale1{3, 0};
+    EXPECT_FALSE(scale1.isOffset());
+
+    AffineScale scale2{3, 5};
+    EXPECT_TRUE(scale2.isOffset());
+}
+
+/// Tests conversion
+TEST_F(AffineScaleTest, Conversion)
+{
     AffineScale scale{3, 5};
     ASSERT_EQ(5, scale.convert(0));
     ASSERT_EQ(8, scale.convert(1));
@@ -73,14 +83,26 @@ TEST_F(AffineScaleTest, Division)
     ASSERT_EQ(3, scale2.convert(1));
 }
 
-/// Tests exponentiation
-TEST_F(AffineScaleTest, Exponentiation)
+/// Tests raising to a power
+TEST_F(AffineScaleTest, Power)
 {
     ASSERT_THROW(AffineScale(2, 1).pow(2), std::domain_error);
     AffineScale scale1{2, 0};
     auto scale2 = scale1.pow(2);
     ASSERT_EQ(0, scale2.convert(0));
     ASSERT_EQ(4, scale2.convert(1));
+}
+
+/// Tests taking the root
+TEST_F(AffineScaleTest, Root)
+{
+    EXPECT_THROW(AffineScale(2, 0).root(0), std::invalid_argument);
+    EXPECT_THROW(AffineScale(2, 0).root(-1), std::invalid_argument);
+    AffineScale scale1{2, 0};
+    auto scale2 = scale1.pow(2);
+    auto scale3 = scale2.root(2);
+    EXPECT_EQ(0, scale3.convert(0));
+    EXPECT_EQ(2, scale3.convert(1));
 }
 
 }  // namespace

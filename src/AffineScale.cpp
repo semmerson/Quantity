@@ -47,12 +47,12 @@ public:
         , intercept{intercept} {}
 
     /**
-     * Converts a numeric value.
-     * @param[in] value  The value to be transformed
-     * @return           The transformed value
+     * Indicates if the origin of this scale is *not* zero.
+     * @retval false    The origin of this scale is zero
+     * @retval true     The origin of this scale is not zero
      */
-    double convert(const double value) const override {
-        return slope*value + intercept;
+    bool isOffset() const override {
+        return intercept != 0;
     }
 
     /**
@@ -89,6 +89,32 @@ public:
             throw std::domain_error("Intercept is not zero");
 
         return new AffineScaleImpl(std::pow(slope, power), 0);
+    }
+
+    /**
+     * Takes a root.
+     * @param[in] root              The numeric root
+     * @return                      A scale whose transformations are equal to this scale taken to a
+     *                              root
+     * @throw std::invalid_argument The numeric root is not positive
+     * @throw std::domain_error     The intercept is not zero
+     */
+    AffineScaleImpl* root(const int root) const override {
+        if (root <= 0)
+            throw std::invalid_argument("Numeric root is not positive");
+        if (intercept != 0)
+            throw std::domain_error("Intercept is not zero");
+
+        return new AffineScaleImpl(std::pow(slope, 1.0/root), 0);
+    }
+
+    /**
+     * Converts a numeric value.
+     * @param[in] value  The value to be transformed
+     * @return           The transformed value
+     */
+    double convert(const double value) const override {
+        return slope*value + intercept;
     }
 };
 
