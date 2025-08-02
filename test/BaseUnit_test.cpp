@@ -1,0 +1,71 @@
+/**
+ * This file tests class BaseUnit.
+ */
+
+#include "BaseUnit.h"
+
+#include "Dimension.h"
+
+#include <gtest/gtest.h>
+#include <stdexcept>
+
+namespace {
+
+using namespace quantity;
+
+/// The fixture for testing the class
+class BaseUnitTest : public ::testing::Test
+{
+protected:
+    Dimension length;
+
+    // You can remove any or all of the following functions if its body
+    // is empty.
+
+    BaseUnitTest()
+        : length("Length")
+    {
+        // You can do set-up work for each test here.
+    }
+
+    virtual ~BaseUnitTest()
+    {
+        // You can do clean-up work that doesn't throw exceptions here.
+    }
+
+    // If the constructor and destructor are not enough for setting up
+    // and cleaning up each test, you can define the following methods:
+
+    virtual void SetUp()
+    {
+        // Code here will be called immediately after the constructor (right
+        // before each test).
+    }
+
+    virtual void TearDown()
+    {
+        // Code here will be called immediately after each test (right
+        // before the destructor).
+    }
+
+    // Objects declared here can be used by all tests in the test case for Error.
+};
+
+// Tests construction
+TEST_F(BaseUnitTest, Construction)
+{
+    EXPECT_THROW(BaseUnit(length, "", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseUnit(length, "meter", ""), std::invalid_argument);
+
+    BaseUnit meter{length, "meter", "m"};
+
+    EXPECT_THROW(BaseUnit(length, "meter", "s"), std::invalid_argument);
+    EXPECT_THROW(BaseUnit(length, "bar", "m"), std::invalid_argument);
+}
+
+}  // namespace
+
+int main(int argc, char **argv) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}
