@@ -1,5 +1,5 @@
 /**
- * This file declares class `Dimension`.
+ * This file declares a class for a physical dimension.
  *
  *        File: Dimension.h
  *  Created on: Jul 14, 2025
@@ -30,37 +30,102 @@ using namespace std;
 namespace quantity {
 
 /**
- * Interface for a physical dimension (e.g., length, mass).
+ * Handle class for a physical dimension (e.g., length, mass).
  */
 class Dimension {
+private:
+    /// The implementation
+    class Impl;
+
+	/// Smart pointer to an implementation
+	shared_ptr<Impl> pImpl;
+
 public:
-	/// Smart pointer to an instance
-	using Pimpl = shared_ptr<Dimension>;
+	/**
+	 * Constructs
+	 * @param[in] impl  An implementation
+	 * @throw           std::invalid_argument if the name is empty or the name is
+	 *                  already in use
+	 */
+	Dimension(Impl* impl);
 
 	/**
-	 * Factory method for creating an instance
-	 *
+	 * Constructs
 	 * @param name  Name of the dimension (e.g., "length")
-	 * @return      Smart pointer to created instance
 	 * @throw       std::invalid_argument if the name is empty or the name is
 	 *              already in use
 	 */
-	static Pimpl create(const string&  name);
+	Dimension(const string&  name);
 
 	/**
-	 * Factory method for creating an instance
-	 *
+	 * Constructs
 	 * @param name  Name of the dimension (e.g., "length")
-	 * @return      Smart pointer to created instance
 	 * @throw       std::invalid_argument if the name is empty or the name is
 	 *              already in use
 	 */
-	static Pimpl create(string&& name);
+	Dimension(string&&  name);
 
 	/**
-	 * Necessary for separation of interface and implementation.
+	 * Returns the hash code of this instance.
+	 * @return  The hash code of this instance
 	 */
-	virtual ~Dimension() {};
+	size_t hash() const;
+
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const Dimension& other) const;
 };
 
-}
+} // namespace quantity
+
+namespace std {
+    using namespace quantity;
+
+    /// Function class for hashing a dimension.
+    template<>
+    struct hash<Dimension> {
+        /**
+         * Returns the hash code of a dimension.
+         * @param[in] dimension The dimension
+         * @return              The hash code of the dimension
+         */
+        size_t operator()(const Dimension& dimension) const {
+            return dimension.hash();
+        }
+    };
+
+    /// Function class for comparing dimensions.
+    template<>
+    struct less<Dimension> {
+        /**
+         * Indicates if this instance is less than another
+         * @param[in] lhs       The left-hand-side dimension
+         * @param[in] rhs       The right-hand-side dimension
+         * @retval    true      @a lhs is less than @a rhs
+         * @retval    false     @a lhs is not less than @a rhs
+         */
+        bool operator()(const Dimension& lhs, const Dimension& rhs) const {
+            return lhs.compare(rhs) < 0;
+        }
+    };
+
+    /// Function class for comparing dimensions for equality.
+    template<>
+    struct equal_to<Dimension> {
+        /**
+         * Indicates if this instance is considered equal to another
+         * @param[in] lhs       The left-hand-side dimension
+         * @param[in] rhs       The right-hand-side dimension
+         * @retval    true      @a lhs is equal to @a rhs
+         * @retval    false     @a lhs is not equal to @a rhs
+         */
+        bool operator()(const Dimension& lhs, const Dimension& rhs) const {
+            return lhs.compare(rhs) == 0;
+        }
+    };
+
+} // Namespace std

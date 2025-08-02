@@ -65,9 +65,9 @@ protected:
 // Tests construction
 TEST_F(DimensionTest, Construction)
 {
-    auto length{Dimension::create("length")};
-    EXPECT_THROW(Dimension::create(""), invalid_argument);
-    EXPECT_THROW(Dimension::create("length"), invalid_argument);
+    Dimension length{"length"};
+    EXPECT_THROW(Dimension(""), invalid_argument);
+    EXPECT_THROW(Dimension("length"), invalid_argument);
 }
 
 }  // namespace

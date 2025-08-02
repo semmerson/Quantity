@@ -22,6 +22,7 @@
 
 #include "Dimension.h"
 
+#include <functional>
 #include <stdexcept>
 #include <unordered_set>
 
@@ -32,7 +33,7 @@ namespace quantity {
 /**
  * Implementation of a physical dimension (e.g., length, mass).
  */
-class DimensionImpl final : public Dimension
+class Dimension::Impl final
 {
 private:
     /// Name of the dimension (e.g., "length")
@@ -61,7 +62,7 @@ public:
 	 * @throw       std::invalid_argument if the name is empty or the name is
 	 *              already in use
 	 */
-	DimensionImpl(const string& name)
+	Impl(const string& name)
 		: name(name)
 	{
 	    finishName();
@@ -73,23 +74,56 @@ public:
 	 * @throw       std::invalid_argument if the name is empty or the name is
 	 *              already in use
 	 */
-	DimensionImpl(string&& name)
+	Impl(string&& name)
 		: name(name)
 	{
 	    finishName();
 	}
+
+	/**
+	 * Returns the hash code of this instance.
+	 * @return  The hash code of this instance
+	 */
+    size_t hash() const {
+        static std::hash<std::string> myHash;
+        return myHash(name);
+    }
+
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const Impl& other) const {
+	    static std::less<string> myLess;
+	    return
+            myLess(name, other.name)
+            ? -1
+            : myLess(other.name, name)
+              ? 1
+              : 0;
+	}
 };
 
-Dimension::Pimpl Dimension::create(const string& name)
+std::unordered_set<string> Dimension::Impl::names;
+
+Dimension::Dimension(const string& name)
+	: pImpl(new Impl(name))
+{}
+
+Dimension::Dimension(string&& name)
+	: pImpl(new Impl(name))
+{}
+
+size_t Dimension::hash() const
 {
-	return Pimpl(new DimensionImpl(name));
+    return pImpl->hash();
 }
 
-Dimension::Pimpl Dimension::create(string&& name)
+int Dimension::compare(const Dimension& other) const
 {
-	return Pimpl(new DimensionImpl(name));
+    return pImpl->compare(*other.pImpl);
 }
 
-std::unordered_set<string> DimensionImpl::names{};
-
-}
+} // namespace quantity
