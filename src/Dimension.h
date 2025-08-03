@@ -82,6 +82,8 @@ public:
 
 } // namespace quantity
 
+#include <functional>
+
 namespace std {
     using namespace quantity;
 
@@ -90,11 +92,11 @@ namespace std {
     struct hash<Dimension> {
         /**
          * Returns the hash code of a dimension.
-         * @param[in] dimension The dimension
-         * @return              The hash code of the dimension
+         * @param[in] dim   The dimension
+         * @return          The hash code of the dimension
          */
-        size_t operator()(const Dimension& dimension) const {
-            return dimension.hash();
+        size_t operator()(const Dimension& dim) const {
+            return dim.hash();
         }
     };
 
@@ -102,7 +104,7 @@ namespace std {
     template<>
     struct less<Dimension> {
         /**
-         * Indicates if this instance is less than another
+         * Indicates if one instance is less than another
          * @param[in] lhs       The left-hand-side dimension
          * @param[in] rhs       The right-hand-side dimension
          * @retval    true      @a lhs is less than @a rhs
