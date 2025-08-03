@@ -27,7 +27,8 @@
 namespace quantity {
 
 /// A class for numeric scales.
-class Scale {
+class Scale
+{
 public:
     /// The implementation
     class Impl {
@@ -139,4 +140,4 @@ protected:
     std::shared_ptr<Impl> pImpl;
 };
 
-}
+} // namspace quantity
