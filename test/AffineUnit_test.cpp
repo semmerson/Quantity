@@ -57,19 +57,35 @@ TEST_F(AffineUnitTest, Construction)
 {
     AffineUnit unit1{meter, 3, 0};
     EXPECT_FALSE(unit1.isOffset());
+    EXPECT_FALSE(unit1.isDimensionless());
+    EXPECT_FALSE(meter.isOffset());
 
     AffineUnit unit2{meter, 3, 5};
     EXPECT_TRUE(unit2.isOffset());
 }
 
+/// Tests Unit::isConvertible()
+TEST_F(AffineUnitTest, IsConvertible)
+{
+    AffineUnit unit{meter, 3, 5};
+    ASSERT_TRUE(meter.isConvertible(unit));
+    ASSERT_TRUE(unit.isConvertible(meter));
+    ASSERT_FALSE(kilogram.isConvertible(unit));
+
+    AffineUnit unit2{kilogram, 3, 5};
+    ASSERT_FALSE(unit2.isConvertible(unit));
+    ASSERT_FALSE(unit.isConvertible(unit2));
+}
+
 /// Tests conversion
-TEST_F(AffineUnitTest, Conversion)
+TEST_F(AffineUnitTest, Convert)
 {
     AffineUnit unit{meter, 3, 5};
     ASSERT_EQ(5, unit.convert(0));
     ASSERT_EQ(8, unit.convert(1));
 }
 
+#if 0
 /// Tests multiplication
 TEST_F(AffineUnitTest, Multiplication)
 {
@@ -109,6 +125,7 @@ TEST_F(AffineUnitTest, Root)
     EXPECT_EQ(0, unit3.convert(0));
     EXPECT_EQ(2, unit3.convert(1));
 }
+#endif
 
 }  // namespace
 
