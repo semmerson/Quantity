@@ -1,8 +1,9 @@
 /**
- * This file declares a base unit of physical quantities.
+ * This file defines an affine unit of a physical quantity.  The scale-transform of an affine unit
+ * has the form "y=ax+b".
  *
- *        File: BaseUnit.h
- *  Created on: Jul 31, 2025
+ *        File: AffineUnit.cpp
+ *  Created on: Jul 27, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -20,31 +21,17 @@
  * limitations under the License.
  */
 
-#pragma once
+#include "AffineUnit.h"
 
-#include "Unit.h"
-
-#include "Dimension.h"
-
-#include <string>
+#include "AffineUnitImpl.h"
 
 namespace quantity {
 
-using namespace std;
+AffineUnit::AffineUnit(
+        const Unit&     core,
+        const double    slope,
+        const double    intercept)
+    : Unit(new AffineUnitImpl(*core.pImpl.get(), slope, intercept))
+{}
 
-/// Declaration of base units of physical quantities.
-class BaseUnit : public Unit
-{
-public:
-    BaseUnit() =default;
-
-    /**
-     * Constructs.
-     * @param[in] dim     Associated dimension
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
-     */
-    BaseUnit(const Dimension& dim, const std::string& name, const std::string& symbol);
-};
-
-} // Namespace
+} // namespace

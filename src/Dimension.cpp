@@ -81,6 +81,13 @@ public:
 	}
 
 	/**
+	 * Destroys.
+	 */
+	~Impl() noexcept {
+	    names.erase(name);
+	}
+
+	/**
 	 * Returns the hash code of this instance.
 	 * @return  The hash code of this instance
 	 */

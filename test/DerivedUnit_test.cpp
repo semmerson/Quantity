@@ -1,36 +1,29 @@
 /**
- * This file tests class BaseUnit.
+ * This file tests class DerivedUnit.
  */
 
 #include "BaseUnit.h"
+#include "DerivedUnit.h"
 
-#include "Dimension.h"
-
-#include <gtest/gtest.h>
-#include <stdexcept>
+#include "gtest/gtest.h"
 
 namespace {
 
 using namespace quantity;
 
 /// The fixture for testing the class
-class BaseUnitTest : public ::testing::Test
+class DimensionTest : public ::testing::Test
 {
 protected:
-    Dimension length;
-    Dimension mass;
-
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    BaseUnitTest()
-        : length("Length")
-        , mass("Mass")
+    DimensionTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~BaseUnitTest()
+    virtual ~DimensionTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -51,31 +44,15 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
+    BaseUnit kilogram{Dimension("Mass"), "kilogram", "kg"};
+    BaseUnit meter{Dimension("Length"), "meter", "m"};
+    BaseUnit second{Dimension("Time"), "second", "s"};
 };
 
 // Tests construction
-TEST_F(BaseUnitTest, Construction)
+TEST_F(DimensionTest, Construction)
 {
-    EXPECT_THROW(BaseUnit(length, "", "m"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit(length, "meter", ""), std::invalid_argument);
-
-    BaseUnit meter{length, "meter", "m"};
-    EXPECT_FALSE(meter.isDimensionless());
-    EXPECT_FALSE(meter.isOffset());
-
-    EXPECT_THROW(BaseUnit(length, "meter", "s"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit(length, "bar", "m"), std::invalid_argument);
-}
-
-// Tests convertibility
-TEST_F(BaseUnitTest, Convertibility)
-{
-    BaseUnit meter{length, "meter", "m"};
-    EXPECT_TRUE(meter.isConvertible(meter));
-
-    BaseUnit kilogram{mass, "kilogram", "kg"};
-    EXPECT_FALSE(meter.isConvertible(kilogram));
-    EXPECT_FALSE(kilogram.isConvertible(meter));
+    auto k_m = kilogram.multiply(meter);
 }
 
 }  // namespace

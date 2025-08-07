@@ -1,8 +1,8 @@
 /**
- * This file declares a base unit of physical quantities.
+ * This file declares a class for derived units (e.g., "kg·m·s-2").
  *
- *        File: BaseUnit.h
- *  Created on: Jul 31, 2025
+ *        File: DerivedUnit.h
+ *  Created on: Aug 4, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -24,27 +24,15 @@
 
 #include "Unit.h"
 
-#include "Dimension.h"
-
-#include <string>
-
 namespace quantity {
 
-using namespace std;
-
-/// Declaration of base units of physical quantities.
-class BaseUnit : public Unit
+/// A class for derived units (e.g., watt).
+class DerivedUnit : public Unit
 {
 public:
-    BaseUnit() =default;
-
-    /**
-     * Constructs.
-     * @param[in] dim     Associated dimension
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
-     */
-    BaseUnit(const Dimension& dim, const std::string& name, const std::string& symbol);
+    /// Constructs
+    DerivedUnit() =default;
 };
 
-} // Namespace
+
+} // namespace quantity

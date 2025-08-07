@@ -1,8 +1,8 @@
 /**
- * This file implements a class for base units of physical quantities.
+ * This file defines a class for a base unit of a physical quantity.
  *
- *        File: BaseUnit.h
- *  Created on: Aug 1, 2025
+ *        File: BaseUnit.cpp
+ *  Created on: Jul 27, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -22,65 +22,18 @@
 
 #include "BaseUnit.h"
 
-#include <unordered_set>
+#include "BaseUnitImpl.h"
 
-using namespace std;
+#include <stdexcept>
+#include <cmath>
 
 namespace quantity {
 
-/// Implementation of base units of physical quantities.
-class BaseUnit::Impl final
-{
-private:
-    const Dimension     dimension;  ///< Associated dimension
-    const std::string   name;       ///< Unit name
-    const std::string   symbol;     ///< Unit symbol
-    static unordered_set<Dimension> dimSet;     ///< Set of extant dimensions
-    static unordered_set<string>    nameSet;    ///< Set of extant base unit names
-    static unordered_set<string>    symSet;     ///< Set of extant base unit symbols
-
-public:
-    /**
-     * Constructs.
-     * @param[in] dimension Associated dimension
-     * @param[in] name      Unit name
-     * @param[in] symbol    Unit symbol
-     */
-    Impl(   const Dimension&    dimension,
-            const std::string&  name,
-            const std::string&  symbol)
-        : dimension(dimension)
-        , name(name)
-        , symbol(symbol)
-    {
-        if (name.size() == 0)
-            throw invalid_argument("Empty base unit name");
-        if (symbol.size() == 0)
-            throw invalid_argument("Empty base unit symbol");
-        if (    dimSet.count(dimension) ||
-                nameSet.count(name) ||
-                symSet.count(symbol))
-            throw invalid_argument("Duplicate base unit");
-
-        dimSet.insert(dimension);
-        nameSet.insert(name);
-        symSet.insert(symbol);
-    }
-};
-
-unordered_set<Dimension> BaseUnit::Impl::dimSet;     ///< Set of extant dimensions
-unordered_set<string>    BaseUnit::Impl::nameSet;    ///< Set of extant base unit names
-unordered_set<string>    BaseUnit::Impl::symSet;     ///< Set of extant base unit symbols
-
-BaseUnit::BaseUnit(Impl* impl)
-    : pImpl{impl}
-{}
-
 BaseUnit::BaseUnit(
-            const Dimension&    dimension,
-            const std::string&  name,
-            const std::string&  symbol)
-    : BaseUnit(new Impl(dimension, name, symbol))
+        const Dimension& dim,
+        const std::string& name,
+        const std::string& symbol)
+    : Unit(new BaseUnitImpl(dim, name, symbol))
 {}
 
-} // Namespace
+} // namespace

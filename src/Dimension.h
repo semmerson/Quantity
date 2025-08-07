@@ -100,7 +100,7 @@ namespace std {
         }
     };
 
-    /// Function class for comparing dimensions.
+    /// Function class for comparing dimensions. Used by std::set and std::map.
     template<>
     struct less<Dimension> {
         /**
@@ -115,7 +115,10 @@ namespace std {
         }
     };
 
-    /// Function class for comparing dimensions for equality.
+    /**
+     * Function class for comparing dimensions for equality. Used by @a std:unordered_set and
+     * @a <std::unordered_map>.
+     */
     template<>
     struct equal_to<Dimension> {
         /**
