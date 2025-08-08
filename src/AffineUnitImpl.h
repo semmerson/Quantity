@@ -28,7 +28,7 @@ namespace quantity {
 /// Declaration of the implementation of an affine unit of a physical quantity.
 class AffineUnitImpl : public UnitImpl
 {
-    const UnitImpl* core;      ///< The underlying unit
+    const UnitImpl* parent;    ///< The underlying unit from which this unit is derived
     const double    slope;     ///< The slope
     const double    intercept; ///< The intercept
 
@@ -37,12 +37,12 @@ public:
 
     /**
      * Constructs
-     * @param[in] core      The underlying unit
+     * @param[in] parent    The underlying unit from which this unit is derived
      * @param[in] slope     The slope
      * @param[in] intercept The intercept
      */
     AffineUnitImpl(
-            const UnitImpl&   core,
+            const UnitImpl&   parent,
             const double      slope,
             const double      intercept);
 

@@ -33,7 +33,7 @@ namespace quantity {
  * @retval    false They are not convertible
  */
 bool AffineUnitImpl::isConvertible(const BaseUnitImpl& other) const {
-    return core->isConvertible(other);
+    return parent->isConvertible(other);
 }
 
 /**
@@ -43,20 +43,20 @@ bool AffineUnitImpl::isConvertible(const BaseUnitImpl& other) const {
  * @retval    false They are not convertible
  */
 bool AffineUnitImpl::isConvertible(const AffineUnitImpl& other) const {
-    return core->isConvertible(*other.core);
+    return parent->isConvertible(*other.parent);
 }
 
 /**
  * Constructs
- * @param[in] core      The underlying unit
+ * @param[in] parent    The underlying unit from which this unit is derived
  * @param[in] slope     The slope
  * @param[in] intercept The intercept
  */
 AffineUnitImpl::AffineUnitImpl(
-        const UnitImpl&   core,
+        const UnitImpl&   parent,
         const double      slope,
         const double      intercept)
-    : core{&core}
+    : parent{&parent}
     , slope{slope}
     , intercept{intercept} {}
 
@@ -66,7 +66,7 @@ AffineUnitImpl::AffineUnitImpl(
  * retval false     This unit is not dimensionless
  */
 bool AffineUnitImpl::isDimensionless() const {
-    return core->isDimensionless();
+    return parent->isDimensionless();
 }
 
 /**
@@ -185,7 +185,7 @@ UnitImpl* AffineUnitImpl::divideInto(const BaseUnitImpl* other) const {
     if (intercept != 0)
         throw std::domain_error("The intercept is not zero");
 
-    return new AffineUnitImpl(other->divideBy(core), 1/slope, 0);
+    return new AffineUnitImpl(other->divideBy(parent), 1/slope, 0);
 }
 
 /**
@@ -199,7 +199,7 @@ UnitImpl* AffineUnitImpl::divideInto(const AffineUnitImpl* other) const {
     if (intercept != 0)
         throw std::domain_error("The intercept is not zero");
 
-    return new AffineUnitImpl(other->core->divideBy(core), other->slope/slope, 0);
+    return new AffineUnitImpl(other->parent->divideBy(parent), other->slope/slope, 0);
 }
 #endif
 

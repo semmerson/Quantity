@@ -1,4 +1,4 @@
-Base_Quantities:
+base_quantities:
   - name: mass
     unit:
     	name: kilogram
@@ -19,8 +19,8 @@ Base_Quantities:
 		name: degrees kelvin
 		symbol: °K
 
-Derived_Quantities:
-    name: power
+derived_quantities:
+  - name: power
     unit:
 		name: watt
 		symbol: W
@@ -31,38 +31,38 @@ Derived_Quantities:
     	- quantity: time
     	  power: -3
     
-    name: volume
+  - name: volume
     dimensionality:
     	- quantity: length
     	  power: 3
 
-Common_Quantities:
+common_quantities:
   - name: degrees celsius
-    unit_symbol: °C
+    symbol: °C
   	parent: temperature
     conversion:
     	type: affine
     	intercept: 273.15
     
   - name: degrees rankine
-    unit_symbol: °Ra
+    symbol: °Ra
     parent: temperature
     conversion:
         type: affine
         slope: 5.0/9.0
     
   - name: degrees fahrenheit
-    unit_symbol: °F
+    symbol: °F
     parent: degrees rankine
     conversion:
         type: affine
         intercept: 459.67
     
   - name: logarithmic reflectivity
-    unit_symbol: Bz
+    symbol: Bz
     parent: volume
     conversion:
-    	type: referenced exponentiation
+    	type: exponentiation
     	base: 10
     	reference: 1e-6
     

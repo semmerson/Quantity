@@ -30,8 +30,6 @@ using namespace std;
 
 namespace quantity {
 
-class AffineUnitImpl;
-
 /// Implementation of base units of physical quantities.
 /**
  * Constructs.
