@@ -74,49 +74,21 @@ public:
      */
     virtual bool isConvertible(const AffineUnitImpl& other) const =0;
 
-#if 0
     /**
-     * Multiplies by a base unit.
-     * @param[in] other  The base unit
-     * @return           A unit whose scale-transform is equal to this unit's multiplied by
-     *                   the base unit's
+     * Converts a numeric value.
+     * @param[in] value  The value to be converted
+     * @return           The converted value
      */
-    virtual UnitImpl* multiply(const BaseUnitImpl* other) const =0;
+    virtual double convert(const double value) const = 0;
 
-    /**
-     * Multiplies by an affine unit.
-     * @param[in] other  The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's multiplied by
-     *                   the affine unit's
-     */
-    virtual UnitImpl* multiply(const AffineUnitImpl* other) const =0;
-
-    /**
-     * Divides into a base unit.
-     * @param[in] unit   The base unit
-     * @return           A unit whose scale-transform is equal to this unit's divided into
-     *                   the base unit's
-     */
-    virtual UnitImpl* divideInto(const BaseUnitImpl* other) const =0;
-
-    /**
-     * Divides into an affine unit.
-     * @param[in] unit   The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's divided into
-     *                   the affine unit's
-     */
-    virtual UnitImpl* divideInto(const AffineUnitImpl* other) const =0;
-#endif
-
-#if 0
     /**
      * Multiplies by another unit.
      * @param[in] unit   The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the
-     *                   other unit's
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
     virtual UnitImpl* multiply(const UnitImpl* unit) const =0;
 
+#if 0
     /**
      * Divides by a numeric factor.
      * @param[in] factor The numeric factor
@@ -150,14 +122,39 @@ public:
      * @throw std::domain_error This unit can't have a root taken
      */
     virtual UnitImpl* root(const int root) const =0;
-#endif
 
     /**
-     * Converts a numeric value.
-     * @param[in] value  The value to be converted
-     * @return           The converted value
+     * Multiplies by a base unit.
+     * @param[in] other  The base unit
+     * @return           A unit whose scale-transform is equal to this unit's multiplied by
+     *                   the base unit's
      */
-    virtual double convert(const double value) const = 0;
+    virtual UnitImpl* multiply(const BaseUnitImpl* other) const =0;
+
+    /**
+     * Multiplies by an affine unit.
+     * @param[in] other  The affine unit
+     * @return           A unit whose scale-transform is equal to this unit's multiplied by
+     *                   the affine unit's
+     */
+    virtual UnitImpl* multiply(const AffineUnitImpl* other) const =0;
+
+    /**
+     * Divides into a base unit.
+     * @param[in] unit   The base unit
+     * @return           A unit whose scale-transform is equal to this unit's divided into
+     *                   the base unit's
+     */
+    virtual UnitImpl* divideInto(const BaseUnitImpl* other) const =0;
+
+    /**
+     * Divides into an affine unit.
+     * @param[in] unit   The affine unit
+     * @return           A unit whose scale-transform is equal to this unit's divided into
+     *                   the affine unit's
+     */
+    virtual UnitImpl* divideInto(const AffineUnitImpl* other) const =0;
+#endif
 };
 
 } // namespace quantity

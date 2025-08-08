@@ -78,6 +78,14 @@ TEST_F(BaseUnitTest, Convertibility)
     EXPECT_FALSE(kilogram.isConvertible(meter));
 }
 
+// Tests multiplication
+TEST_F(BaseUnitTest, Multiplication)
+{
+    BaseUnit meter{length, "meter", "m"};
+    BaseUnit kilogram{mass, "kilogram", "kg"};
+    EXPECT_THROW(meter.multiply(kilogram), std::logic_error);
+}
+
 }  // namespace
 
 int main(int argc, char **argv) {

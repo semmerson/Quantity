@@ -69,7 +69,13 @@ public:
      */
     bool isConvertible(const Unit& other) const;
 
-#if 0
+    /**
+     * Converts a numeric value.
+     * @param[in] value  The value to be converted
+     * @return           The converted value
+     */
+    double convert(const double value) const;
+
     /**
      * Multiplies by another unit.
      * @param[in] other  The other unit
@@ -78,6 +84,7 @@ public:
      */
     Unit multiply(const Unit& other) const;
 
+#if 0
     /**
      * Divides by a numeric factor.
      * @param[in] factor The numeric factor
@@ -112,13 +119,6 @@ public:
      */
     Unit root(const int root) const;
 #endif
-
-    /**
-     * Converts a numeric value.
-     * @param[in] value  The value to be converted
-     * @return           The converted value
-     */
-    double convert(const double value) const;
 };
 
 } // namespace quantity

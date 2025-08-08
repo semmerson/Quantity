@@ -90,6 +90,13 @@ public:
      * @return           The converted value
      */
     double convert(const double value) const override;
+
+    /**
+     * Multiplies by another unit.
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     */
+    UnitImpl* multiply(const UnitImpl* unit) const override;
 };
 
 } // Namespace

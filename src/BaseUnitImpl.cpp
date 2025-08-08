@@ -24,6 +24,8 @@
 
 #include "AffineUnitImpl.h"
 
+#include <stdexcept>
+
 using namespace std;
 
 namespace quantity {
@@ -73,7 +75,8 @@ BaseUnitImpl::~BaseUnitImpl() {
  * retval true      This unit is dimensionless
  * retval false     This unit is not dimensionless
  */
-bool BaseUnitImpl::isDimensionless() const {
+bool BaseUnitImpl::isDimensionless() const
+{
     return false;
 }
 
@@ -82,7 +85,8 @@ bool BaseUnitImpl::isDimensionless() const {
  * retval true      This unit's origin is *not* zero
  * retval false     This unit's origin is zero
  */
-bool BaseUnitImpl::isOffset() const {
+bool BaseUnitImpl::isOffset() const
+{
     return false;
 }
 
@@ -92,7 +96,8 @@ bool BaseUnitImpl::isOffset() const {
  * @retval    true  They are convertible
  * @retval    false They are not convertible
  */
-bool BaseUnitImpl::isConvertible(const UnitImpl& other) const {
+bool BaseUnitImpl::isConvertible(const UnitImpl& other) const
+{
     return other.isConvertible(*this);
 }
 
@@ -102,7 +107,8 @@ bool BaseUnitImpl::isConvertible(const UnitImpl& other) const {
  * @retval    true  They are convertible
  * @retval    false They are not convertible
  */
-bool BaseUnitImpl::isConvertible(const BaseUnitImpl& other) const {
+bool BaseUnitImpl::isConvertible(const BaseUnitImpl& other) const
+{
     return this == &other; // There can be only one!
 }
 
@@ -112,8 +118,28 @@ bool BaseUnitImpl::isConvertible(const BaseUnitImpl& other) const {
  * @retval    true  They are convertible
  * @retval    false They are not convertible
  */
-bool BaseUnitImpl::isConvertible(const AffineUnitImpl& other) const {
+bool BaseUnitImpl::isConvertible(const AffineUnitImpl& other) const
+{
     return other.isConvertible(*this);
+}
+
+/**
+ * Converts a numeric value.
+ * @param[in] value  The value to be converted
+ * @return           The converted value
+ */
+double BaseUnitImpl::convert(const double value) const {
+    return value;
+}
+
+/**
+ * Multiplies by another unit.
+ * @param[in] unit   The other unit
+ * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+ */
+UnitImpl* BaseUnitImpl::multiply(const UnitImpl* unit) const
+{
+    throw std::logic_error("Not implemented yet");
 }
 
 #if 0
@@ -137,15 +163,6 @@ UnitImpl* BaseUnitImpl::multiply(const AffineUnitImpl* other) const {
     throw std::logic_error("Not implemented yet");
 }
 #endif
-
-/**
- * Converts a numeric value.
- * @param[in] value  The value to be converted
- * @return           The converted value
- */
-double BaseUnitImpl::convert(const double value) const {
-    return value;
-}
 
 unordered_set<Dimension> BaseUnitImpl::dimSet;     ///< Set of extant dimensions
 unordered_set<string>    BaseUnitImpl::nameSet;    ///< Set of extant base unit names

@@ -88,6 +88,25 @@ bool AffineUnitImpl::isConvertible(const UnitImpl& other) const {
     return other.isConvertible(*this);
 }
 
+/**
+ * Converts a numeric value.
+ * @param[in] value  The value to be transformed
+ * @return           The transformed value
+ */
+double AffineUnitImpl::convert(const double value) const {
+    return slope*value + intercept;
+}
+
+/**
+ * Multiplies by another unit.
+ * @param[in] unit   The other unit
+ * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+ */
+UnitImpl* AffineUnitImpl::multiply(const UnitImpl* unit) const
+{
+    throw std::logic_error("Not implemented yet");
+}
+
 #if 0
 /**
  * Multiplies by another unit.
@@ -183,14 +202,5 @@ UnitImpl* AffineUnitImpl::divideInto(const AffineUnitImpl* other) const {
     return new AffineUnitImpl(other->core->divideBy(core), other->slope/slope, 0);
 }
 #endif
-
-/**
- * Converts a numeric value.
- * @param[in] value  The value to be transformed
- * @return           The transformed value
- */
-double AffineUnitImpl::convert(const double value) const {
-    return slope*value + intercept;
-}
 
 } // namespace
