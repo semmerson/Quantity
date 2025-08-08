@@ -116,18 +116,6 @@ bool BaseUnitImpl::isConvertible(const AffineUnitImpl& other) const {
     return other.isConvertible(*this);
 }
 
-/**
- * Multiplies by a numeric factor.
- * @param[in] factor The numeric factor
- * @return           A unit whose scale-transform is equal to this unit's times a
- *                   factor
- */
-UnitImpl* BaseUnitImpl::multiply(const double factor) const {
-    if (factor == 1)
-        return const_cast<BaseUnitImpl*>(this);
-    return new AffineUnitImpl(*this, factor, 0);
-}
-
 #if 0
 /**
  * Multiplies by a base unit.

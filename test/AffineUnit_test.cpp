@@ -86,14 +86,6 @@ TEST_F(AffineUnitTest, Convert)
 }
 
 #if 0
-/// Tests multiplication
-TEST_F(AffineUnitTest, Multiplication)
-{
-    AffineUnit unit1{meter, 2, 1};
-    auto unit2 = unit1.multiply(3);
-    ASSERT_EQ(1, unit2.convert(0));
-    ASSERT_EQ(7, unit2.convert(1));
-}
 
 /// Tests division
 TEST_F(AffineUnitTest, Division)

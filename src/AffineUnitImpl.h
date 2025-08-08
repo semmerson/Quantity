@@ -85,14 +85,6 @@ public:
     bool isConvertible(const AffineUnitImpl& other) const override;
 
     /**
-     * Multiplies by a numeric factor.
-     * @param[in] factor The numeric factor
-     * @return           A unit whose scale-transform is equal to this unit's times a
-     *                   factor
-     */
-    UnitImpl* multiply(const double factor) const override;
-
-    /**
      * Converts a numeric value.
      * @param[in] value  The value to be converted
      * @return           The converted value

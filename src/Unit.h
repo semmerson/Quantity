@@ -69,14 +69,6 @@ public:
      */
     bool isConvertible(const Unit& other) const;
 
-    /**
-     * Multiplies by a numeric factor.
-     * @param[in] factor The numeric factor
-     * @return           A unit whose scale-transform is equal to this unit's times a
-     *                   factor
-     */
-    Unit multiply(const double factor) const;
-
 #if 0
     /**
      * Multiplies by another unit.

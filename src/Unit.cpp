@@ -43,11 +43,6 @@ bool Unit::isConvertible(const Unit& other) const
     return pImpl->isConvertible(*other.pImpl.get());
 }
 
-Unit Unit::multiply(const double factor) const
-{
-    return Unit{pImpl->multiply(factor)};
-}
-
 #if 0
 Unit Unit::multiply(const Unit& unit) const
 {

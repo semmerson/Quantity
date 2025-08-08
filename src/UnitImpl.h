@@ -74,14 +74,6 @@ public:
      */
     virtual bool isConvertible(const AffineUnitImpl& other) const =0;
 
-    /**
-     * Multiplies by a numeric factor.
-     * @param[in] factor The numeric factor
-     * @return           A unit whose scale-transform is equal to this unit's times a
-     *                   factor
-     */
-    virtual UnitImpl* multiply(const double factor) const =0;
-
 #if 0
     /**
      * Multiplies by a base unit.
