@@ -30,42 +30,44 @@ using namespace std;
 
 namespace quantity {
 
-/// Implementation of base units of physical quantities.
 /**
  * Constructs.
- * @param[in] dim       Associated dimension
  * @param[in] name      Unit name
  * @param[in] symbol    Unit symbol
  */
 BaseUnitImpl::BaseUnitImpl(
-        const Dimension&    dim,
         const std::string&  name,
         const std::string&  symbol)
-    : dimension(dim)
-    , name(name)
+    : name(name)
     , symbol(symbol)
 {
     if (name.size() == 0)
         throw invalid_argument("Empty base unit name");
     if (symbol.size() == 0)
         throw invalid_argument("Empty base unit symbol");
-    if (    dimSet.count(dim) ||
-            nameSet.count(name) ||
-            symSet.count(symbol))
-        throw invalid_argument("Duplicate base unit");
 
-    dimSet.insert(dim);
-    nameSet.insert(name);
-    symSet.insert(symbol);
+    if (!nameSet.insert(name).second)
+        throw invalid_argument("Base unit \"" + name + "\" already exists");
+    if (!symSet.insert(symbol).second)
+        throw invalid_argument("Base unit \"" + symbol + "\" already exists");
 }
 
 /**
  * Destroys.
  */
-BaseUnitImpl::~BaseUnitImpl() {
-    dimSet.erase(dimension);
+BaseUnitImpl::~BaseUnitImpl()
+{
     nameSet.erase(name);
     symSet.erase(symbol);
+}
+
+/**
+ * Returns a string representation
+ * @retval A string representation
+ */
+std::string BaseUnitImpl::to_string() const
+{
+    return name;
 }
 
 /**
@@ -162,7 +164,6 @@ UnitImpl* BaseUnitImpl::multiply(const AffineUnitImpl* other) const {
 }
 #endif
 
-unordered_set<Dimension> BaseUnitImpl::dimSet;     ///< Set of extant dimensions
 unordered_set<string>    BaseUnitImpl::nameSet;    ///< Set of extant base unit names
 unordered_set<string>    BaseUnitImpl::symSet;     ///< Set of extant base unit symbols
 

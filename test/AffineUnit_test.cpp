@@ -4,6 +4,7 @@
 
 #include "AffineUnit.h"
 #include "BaseUnit.h"
+#include "Dimension.h"
 #include "gtest/gtest.h"
 
 #include <stdexcept>
@@ -46,10 +47,10 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Dimension length{"Length"};
-    Dimension mass{"Mass"};
-    BaseUnit meter{length, "meter", "m"};
-    BaseUnit kilogram{mass, "kilogram", "kg"};
+    Dimension length{"Length", "L"};
+    Dimension mass{"Mass", "M"};
+    BaseUnit meter{"meter", "m"};
+    BaseUnit kilogram{"kilogram", "kg"};
 };
 
 /// Tests construction

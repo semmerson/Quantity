@@ -28,6 +28,22 @@ Unit::Unit(UnitImpl* impl)
     : pImpl(impl)
 {}
 
+Unit& Unit::operator=(const Unit& rhs)
+{
+    pImpl = rhs.pImpl;
+    return *this;
+}
+
+Unit::operator bool() const noexcept
+{
+    return static_cast<bool>(pImpl);
+}
+
+std::string Unit::to_string() const
+{
+    return pImpl->to_string();
+}
+
 bool Unit::isDimensionless() const
 {
     return pImpl->isDimensionless();

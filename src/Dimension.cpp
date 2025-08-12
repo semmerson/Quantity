@@ -1,5 +1,5 @@
 /**
- * This file implements class `Dimension`.
+ * This file implements a physical dimension (e.g., Length, Mass).
  *
  *        File: Dimension.cpp
  *  Created on: Jul 14, 2025
@@ -22,6 +22,8 @@
 
 #include "Dimension.h"
 
+#include "BaseUnit.h"
+
 #include <functional>
 #include <stdexcept>
 #include <unordered_set>
@@ -36,55 +38,53 @@ namespace quantity {
 class Dimension::Impl final
 {
 private:
-    /// Name of the dimension (e.g., "length")
-	const string name;
+	const string                    name;     ///< Name of the dimension (e.g., "Length")
+	const string                    symbol;   ///< Symbol of the dimension (e.g., "L")
 
-	/// Set of names of created dimensions
-	static std::unordered_set<string> names;
-
-	/**
-	 * Finishes handling the name.
-	 * @throw       std::invalid_argument if the name is empty or the name is
-	 *              already in use
-	 */
-	void finishName()
-	{
-	    if (name.length() == 0)
-	        throw invalid_argument("Dimension name is empty");
-	    if (!names.insert(name).second)
-	        throw invalid_argument("Dimension name is already in use");
-	}
+	static unordered_set<string>    names;    ///< Set of names of created dimensions
+	static unordered_set<string>    symbols;  ///< Set of symbols of created dimensions
 
 public:
 	/**
-	 * Constructs from a name.
-	 * @param name  The name for the dimension
-	 * @throw       std::invalid_argument if the name is empty or the name is
-	 *              already in use
+	 * Constructs from a name and a symbol.
+	 * @param[in] name                  The name for the dimension (e.g., "Mass")
+	 * @param[in] symbol                The associated symbol (e.g., "M")
+	 * @throw     std::invalid_argument An ID is empty or an ID is already in use
 	 */
-	Impl(const string& name)
+	Impl(   const string& name,
+	        const string& symbol)
 		: name(name)
+	    , symbol(symbol)
 	{
-	    finishName();
+	    if (name.length() == 0)
+	        throw invalid_argument("Dimension name is empty");
+	    if (symbol.length() == 0)
+	        throw invalid_argument("Dimension symbol is empty");
+
+	    if (!names.insert(name).second)
+	        throw invalid_argument("Dimension name \"" + name + "\" is already in use");
+	    if (!symbols.insert(symbol).second)
+	        throw invalid_argument("Dimension symbol \"" + symbol + "\" is already in use");
 	}
 
 	/**
-	 * Constructs from a name.
-	 * @param name  The name for the dimension
-	 * @throw       std::invalid_argument if the name is empty or the name is
-	 *              already in use
+	 * Copy constructs.
+	 * @param[in] impl  Implementation to copy
 	 */
-	Impl(string&& name)
-		: name(name)
-	{
-	    finishName();
-	}
+	Impl(const Impl& impl) =delete; // There can be only one!
+
+	/**
+	 * Copy assigns.
+	 * @param[in] rhs   Implementation to copy
+	 */
+	Impl& operator=(const Impl& rhs) =delete; // There can be only one!
 
 	/**
 	 * Destroys.
 	 */
 	~Impl() noexcept {
 	    names.erase(name);
+	    symbols.erase(symbol);
 	}
 
 	/**
@@ -111,17 +111,38 @@ public:
               ? 1
               : 0;
 	}
+
+    /**
+     * Returns a string representation
+     * @retval A string representation
+     */
+	string to_string() const {
+	    return name;
+	}
+
+	/// Clears the database.
+	static void clear() {
+	    names.clear();
+	    symbols.clear();
+	}
 };
 
 std::unordered_set<string> Dimension::Impl::names;
+std::unordered_set<string> Dimension::Impl::symbols;
 
-Dimension::Dimension(const string& name)
-	: pImpl(new Impl(name))
+Dimension::Dimension(Impl* impl)
+    : pImpl(impl)
 {}
 
-Dimension::Dimension(string&& name)
-	: pImpl(new Impl(name))
+Dimension::Dimension(const string& name,
+                     const string& symbol)
+	: Dimension(new Impl(name, symbol))
 {}
+
+void Dimension::clear()
+{
+    Impl::clear();
+}
 
 size_t Dimension::hash() const
 {
@@ -131,6 +152,11 @@ size_t Dimension::hash() const
 int Dimension::compare(const Dimension& other) const
 {
     return pImpl->compare(*other.pImpl);
+}
+
+string Dimension::to_string() const
+{
+    return pImpl->to_string();
 }
 
 } // namespace quantity

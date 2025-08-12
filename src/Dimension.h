@@ -1,5 +1,5 @@
 /**
- * This file declares a class for a physical dimension.
+ * This file declares a physical dimension (e.g., length, mass).
  *
  *        File: Dimension.h
  *  Created on: Jul 14, 2025
@@ -22,6 +22,9 @@
 
 #pragma once
 
+#include "BaseUnit.h"
+
+#include <cstddef>
 #include <memory>
 #include <string>
 
@@ -30,7 +33,7 @@ using namespace std;
 namespace quantity {
 
 /**
- * Handle class for a physical dimension (e.g., length, mass).
+ * A physical dimension (e.g., length, mass).
  */
 class Dimension {
 private:
@@ -40,30 +43,24 @@ private:
 	/// Smart pointer to an implementation
 	shared_ptr<Impl> pImpl;
 
-public:
 	/**
 	 * Constructs
 	 * @param[in] impl  An implementation
-	 * @throw           std::invalid_argument if the name is empty or the name is
-	 *                  already in use
 	 */
 	Dimension(Impl* impl);
 
-	/**
-	 * Constructs
-	 * @param name  Name of the dimension (e.g., "length")
-	 * @throw       std::invalid_argument if the name is empty or the name is
-	 *              already in use
-	 */
-	Dimension(const string&  name);
+public:
+	/// Default constructs.
+	Dimension() =default;
 
 	/**
 	 * Constructs
-	 * @param name  Name of the dimension (e.g., "length")
-	 * @throw       std::invalid_argument if the name is empty or the name is
-	 *              already in use
+	 * @param[in] name                  The name for the dimension (e.g., "Mass")
+	 * @param[in] symbol                The associated symbol (e.g., "M")
+	 * @throw     std::invalid_argument The name is empty or the name is already in use
 	 */
-	Dimension(string&&  name);
+	Dimension(  const string&   name,
+	            const string&   symbol);
 
 	/**
 	 * Returns the hash code of this instance.
@@ -78,6 +75,14 @@ public:
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
 	int compare(const Dimension& other) const;
+
+	/// Returns a string representation.
+	string to_string() const;
+
+	/**
+	 * Clears the dimension database.
+	 */
+	static void clear();
 };
 
 } // namespace quantity

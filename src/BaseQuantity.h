@@ -1,8 +1,8 @@
 /**
- * This file declares a base unit of physical quantities.
+ * This file declares a base physical quantity (e.g., length, mass).
  *
- *        File: BaseUnit.h
- *  Created on: Jul 31, 2025
+ *        File: BaseQuantity.h
+ *  Created on: Aug 12, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -22,29 +22,38 @@
 
 #pragma once
 
-#include "Unit.h"
+#include "BaseUnit.h"
+#include "Dimension.h"
 
+#include <memory>
 #include <string>
-
-using namespace std;
 
 namespace quantity {
 
-class Dimension;
-
-/// Declaration of base units of physical quantities.
-class BaseUnit : public Unit
+/// A base physical quantity (e.g., length, mass).
+class BaseQuantity final
 {
-public:
-    BaseUnit() =default;
+private:
+    /// The implementation
+    class Impl;
 
+	/// Smart pointer to an implementation
+	std::shared_ptr<Impl> pImpl;
+
+	/**
+	 * Constructs
+	 * @param[in] impl  An implementation
+	 */
+	BaseQuantity(Impl* impl);
+
+public:
     /**
      * Constructs.
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
+     * @param[in] dim   Associated dimension (e.g., length)
+     * @param[in] unit  Associated base unit (e.g., meter)
      */
-    BaseUnit(const std::string&  name,
-             const std::string&  symbol);
+    BaseQuantity(const Dimension& dim,
+                 const BaseUnit&  unit);
 };
 
-} // Namespace
+} // namespace quantity

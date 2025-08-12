@@ -24,8 +24,8 @@ protected:
     // is empty.
 
     BaseUnitTest()
-        : length("Length")
-        , mass("Mass")
+        : length(Dimension("Length", "L"))
+        , mass(Dimension("Mass", "M"))
     {
         // You can do set-up work for each test here.
     }
@@ -33,6 +33,7 @@ protected:
     virtual ~BaseUnitTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
+        Dimension::clear();
     }
 
     // If the constructor and destructor are not enough for setting up
@@ -56,24 +57,24 @@ protected:
 // Tests construction
 TEST_F(BaseUnitTest, Construction)
 {
-    EXPECT_THROW(BaseUnit(length, "", "m"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit(length, "meter", ""), std::invalid_argument);
+    EXPECT_THROW(BaseUnit("", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseUnit("meter", ""), std::invalid_argument);
 
-    BaseUnit meter{length, "meter", "m"};
+    BaseUnit meter{"meter", "m"};
     EXPECT_FALSE(meter.isDimensionless());
     EXPECT_FALSE(meter.isOffset());
 
-    EXPECT_THROW(BaseUnit(length, "meter", "s"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit(length, "bar", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseUnit("meter", "s"), std::invalid_argument);
+    EXPECT_THROW(BaseUnit("bar", "m"), std::invalid_argument);
 }
 
 // Tests convertibility
 TEST_F(BaseUnitTest, Convertibility)
 {
-    BaseUnit meter{length, "meter", "m"};
+    BaseUnit meter{"meter", "m"};
     EXPECT_TRUE(meter.isConvertible(meter));
 
-    BaseUnit kilogram{mass, "kilogram", "kg"};
+    BaseUnit kilogram{"kilogram", "kg"};
     EXPECT_FALSE(meter.isConvertible(kilogram));
     EXPECT_FALSE(kilogram.isConvertible(meter));
 }
@@ -81,8 +82,8 @@ TEST_F(BaseUnitTest, Convertibility)
 // Tests multiplication
 TEST_F(BaseUnitTest, Multiplication)
 {
-    BaseUnit meter{length, "meter", "m"};
-    BaseUnit kilogram{mass, "kilogram", "kg"};
+    BaseUnit meter{"meter", "m"};
+    BaseUnit kilogram{"kilogram", "kg"};
     EXPECT_THROW(meter.multiply(kilogram), std::logic_error);
 }
 

@@ -37,11 +37,9 @@ using namespace std;
 class BaseUnitImpl final : public UnitImpl
 {
 private:
-    const Dimension dimension;  ///< Associated dimension
     const string    name;       ///< Base unit name
     const string    symbol;     ///< Base unit symbol
 
-    static unordered_set<Dimension> dimSet;     ///< Set of extant dimensions
     static unordered_set<string>    nameSet;    ///< Set of extant base unit names
     static unordered_set<string>    symSet;     ///< Set of extant base unit symbols
 
@@ -50,16 +48,20 @@ public:
 
     /**
      * Constructs.
-     * @param[in] dim     Associated dimension
      * @param[in] name    Unit name
      * @param[in] symbol  Unit symbol
      */
-    BaseUnitImpl(const Dimension&   dim,
-                 const std::string& name,
+    BaseUnitImpl(const std::string& name,
                  const std::string& symbol);
 
     /// Destroys.
     ~BaseUnitImpl() noexcept;
+
+    /**
+     * Returns a string representation
+     * @retval A string representation
+     */
+    std::string to_string() const override;
 
     /**
      * Indicates if this unit is dimensionless.

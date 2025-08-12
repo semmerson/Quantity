@@ -24,16 +24,14 @@
 
 #include "BaseUnitImpl.h"
 
-#include <stdexcept>
-#include <cmath>
-
 namespace quantity {
 
+class Dimension;
+
 BaseUnit::BaseUnit(
-        const Dimension& dim,
-        const std::string& name,
-        const std::string& symbol)
-    : Unit(new BaseUnitImpl(dim, name, symbol))
+        const std::string&  name,
+        const std::string&  symbol)
+    : Unit(new BaseUnitImpl(name, symbol))
 {}
 
 } // namespace

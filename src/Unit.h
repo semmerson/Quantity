@@ -23,6 +23,7 @@
 #include "UnitImpl.h"
 
 #include <memory>
+#include <string>
 
 namespace quantity {
 
@@ -46,6 +47,26 @@ public:
      * @param[in] impl  Pointer to an implementation
      */
     Unit(UnitImpl* impl);
+
+    /**
+     * Copy assigns.
+     * @param[in] rhs  The value to be assigned to this instance
+     * @retval         This instance with the assigned value
+     */
+    Unit& operator=(const Unit& rhs);
+
+    /**
+     * Indicates if this instance is valid (i.e., wasn't default constructed).
+     * @retval true     This instance is valid
+     * @retval false    This instance is not valid
+     */
+    operator bool() const noexcept;
+
+    /**
+     * Returns a string representation
+     * @retval A string representation
+     */
+    std::string to_string() const;
 
     /**
      * Indicates if this unit is dimensionless.

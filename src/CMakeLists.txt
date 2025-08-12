@@ -6,4 +6,5 @@ add_library(libquant OBJECT
 	BaseUnit.cpp		BaseUnit.h
 	BaseUnitImpl.cpp	BaseUnitImpl.h
 	AffineUnit.cpp  	AffineUnit.h
-	AffineUnitImpl.cpp  AffineUnitImpl.h)
+	AffineUnitImpl.cpp  AffineUnitImpl.h
+	BaseQuantity.cpp    BaseQuantity.h)

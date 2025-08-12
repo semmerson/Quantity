@@ -24,7 +24,18 @@
 
 #include "BaseUnitImpl.h"
 
+#include <string>
+
 namespace quantity {
+
+/**
+ * Returns a string representation
+ * @retval A string representation
+ */
+std::string AffineUnitImpl::to_string() const
+{
+    return std::to_string(slope) + "(" + parent->to_string() + ")" + std::to_string(intercept);
+}
 
 /**
  * Indicates if numeric values in this unit are convertible with a base unit.

@@ -1,23 +1,45 @@
 base_quantities:
-  - name: mass
-    unit:
-    	name: kilogram
-		symbol: kg
-
-  - name: length
-    unit:
-		name: meter
-		symbol: m
-
   - name: time
+    symbol: T
     unit:
 		name: second
 		symbol: s
 
+  - name: length
+    symbol: L
+    unit:
+		name: meter
+		symbol: m
+
+  - name: mass
+    symbol: M
+    unit:
+    	name: kilogram
+		symbol: kg
+
+  - name: electric current
+    symbol: I
+    unit:
+		name: ampere
+		symbol: A
+
   - name: temperature
+    symbol: Θ
     unit:
 		name: degrees kelvin
 		symbol: °K
+
+  - name: amount of substance
+    symbol: N
+    unit:
+		name: mole
+		symbol: mol
+
+  - name: luminous intensity
+    symbol: J
+    unit:
+		name: candela
+		symbol: cd
 
 derived_quantities:
   - name: power

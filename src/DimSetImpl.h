@@ -1,8 +1,8 @@
 /**
- * This file declares a base unit of physical quantities.
+ * This file defines an implementation of a set of dimensions for a physical quantity.
  *
- *        File: BaseUnit.h
- *  Created on: Jul 31, 2025
+ *        File: DimSetImpl.h
+ *  Created on: Aug 8, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -22,29 +22,14 @@
 
 #pragma once
 
-#include "Unit.h"
-
-#include <string>
-
-using namespace std;
-
 namespace quantity {
 
-class Dimension;
-
-/// Declaration of base units of physical quantities.
-class BaseUnit : public Unit
+class DimSetImpl final
 {
-public:
-    BaseUnit() =default;
+private:
 
-    /**
-     * Constructs.
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
-     */
-    BaseUnit(const std::string&  name,
-             const std::string&  symbol);
+public:
+
 };
 
-} // Namespace
+} // namespace quantity

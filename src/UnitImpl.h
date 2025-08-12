@@ -21,6 +21,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 namespace quantity {
 
@@ -35,6 +36,12 @@ public:
 
     /// Destroys
     virtual ~UnitImpl() =default;
+
+    /**
+     * Returns a string representation.
+     * @retval A string representation
+     */
+    virtual std::string to_string() const =0;
 
     /**
      * Indicates if this unit is dimensionless.

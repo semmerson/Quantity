@@ -47,6 +47,12 @@ public:
             const double      intercept);
 
     /**
+     * Returns a string representation
+     * @retval A string representation
+     */
+    std::string to_string() const override;
+
+    /**
      * Indicates if this unit is dimensionless.
      * retval true      This unit is dimensionless
      * retval false     This unit is not dimensionless
