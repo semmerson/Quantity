@@ -28,13 +28,66 @@
 
 namespace quantity {
 
+size_t AffineUnitImpl::hash() const
+{
+    static auto doubleHash = std::hash<double>();
+    return core->hash() ^ doubleHash(slope) ^ doubleHash(intercept);
+}
+
+/**
+ * Compares this instance with another unit implementation.
+ * @param[in] other The other implementation
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int AffineUnitImpl::compare(const UnitImpl& other) const
+{
+    return -other.compare(*this);
+}
+
+/**
+ * Compares this instance with a base unit.
+ * @param[in] other The base unit instance
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int AffineUnitImpl::compare(const BaseUnitImpl& other) const
+{
+    return -other.compare(*this);   // Defer to base unit
+}
+
+/**
+ * Compares this instance with an affine unit.
+ * @param[in] other The affine unit instance
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int AffineUnitImpl::compare(const AffineUnitImpl& other) const
+{
+    int cmp = core->compare(*other.core);
+    if (cmp != 0)
+        return cmp;
+    cmp = slope < other.slope
+            ? -1
+            : slope > other.slope
+              ? 1
+              : 0;
+    if (cmp != 0)
+        return cmp;
+    return intercept < other.intercept
+            ? -1
+            : intercept > other.intercept
+              ? 1
+              : 0;
+}
+
 /**
  * Returns a string representation
  * @retval A string representation
  */
 std::string AffineUnitImpl::to_string() const
 {
-    return std::to_string(slope) + "(" + parent->to_string() + ")" + std::to_string(intercept);
+    return std::to_string(slope) + "(" + core->to_string() + ")" + std::to_string(intercept);
 }
 
 /**
@@ -44,7 +97,7 @@ std::string AffineUnitImpl::to_string() const
  * @retval    false They are not convertible
  */
 bool AffineUnitImpl::isConvertible(const BaseUnitImpl& other) const {
-    return parent->isConvertible(other);
+    return core->isConvertible(other);
 }
 
 /**
@@ -54,20 +107,20 @@ bool AffineUnitImpl::isConvertible(const BaseUnitImpl& other) const {
  * @retval    false They are not convertible
  */
 bool AffineUnitImpl::isConvertible(const AffineUnitImpl& other) const {
-    return parent->isConvertible(*other.parent);
+    return core->isConvertible(*other.core);
 }
 
 /**
  * Constructs
- * @param[in] parent    The underlying unit from which this unit is derived
+ * @param[in] core      The underlying unit from which this unit is derived
  * @param[in] slope     The slope
  * @param[in] intercept The intercept
  */
 AffineUnitImpl::AffineUnitImpl(
-        const UnitImpl&   parent,
+        const UnitImpl&   core,
         const double      slope,
         const double      intercept)
-    : parent{&parent}
+    : core{&core}
     , slope{slope}
     , intercept{intercept} {}
 
@@ -77,7 +130,7 @@ AffineUnitImpl::AffineUnitImpl(
  * retval false     This unit is not dimensionless
  */
 bool AffineUnitImpl::isDimensionless() const {
-    return parent->isDimensionless();
+    return core->isDimensionless();
 }
 
 /**
@@ -196,7 +249,7 @@ UnitImpl* AffineUnitImpl::divideInto(const BaseUnitImpl* other) const {
     if (intercept != 0)
         throw std::domain_error("The intercept is not zero");
 
-    return new AffineUnitImpl(other->divideBy(parent), 1/slope, 0);
+    return new AffineUnitImpl(other->divideBy(core), 1/slope, 0);
 }
 
 /**
@@ -210,7 +263,7 @@ UnitImpl* AffineUnitImpl::divideInto(const AffineUnitImpl* other) const {
     if (intercept != 0)
         throw std::domain_error("The intercept is not zero");
 
-    return new AffineUnitImpl(other->parent->divideBy(parent), other->slope/slope, 0);
+    return new AffineUnitImpl(other->core->divideBy(core), other->slope/slope, 0);
 }
 #endif
 
