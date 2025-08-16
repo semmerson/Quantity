@@ -31,7 +31,7 @@ AffineUnit::AffineUnit(
         const Unit&     core,
         const double    slope,
         const double    intercept)
-    : Unit(new AffineUnitImpl(*core.pImpl.get(), slope, intercept))
+    : Unit(new AffineUnitImpl(*core.pImpl, slope, intercept))
 {}
 
 } // namespace
