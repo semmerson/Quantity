@@ -22,6 +22,7 @@
 
 #include "UnitImpl.h"
 
+#include <cstddef>
 #include <memory>
 #include <string>
 
@@ -61,6 +62,20 @@ public:
      * @retval false    This instance is not valid
      */
     operator bool() const noexcept;
+
+	/**
+	 * Returns the hash code of this instance.
+	 * @return  The hash code of this instance
+	 */
+	size_t hash() const;
+
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const Unit& other) const;
 
     /**
      * Returns a string representation

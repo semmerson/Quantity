@@ -28,7 +28,7 @@ namespace quantity {
 class BaseUnitImpl;     // Forward declaration
 class AffineUnitImpl;   // Forward declaration
 
-/// Declaration of the implementation of a unit of a physical quantities.
+/// Declaration of the implementation of a unit of a physical quantity.
 class UnitImpl
 {
 public:
@@ -36,6 +36,36 @@ public:
 
     /// Destroys
     virtual ~UnitImpl() =default;
+
+	/**
+	 * Returns the hash code of this instance.
+	 * @return The hash code of this instance
+	 */
+	virtual size_t hash() const =0;
+
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	virtual int compare(const UnitImpl& other) const =0;
+
+	/**
+	 * Compares this instance with a base unit.
+	 * @param[in] other The base unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	virtual int compare(const BaseUnitImpl& other) const =0;
+
+	/**
+	 * Compares this instance with an affine unit.
+	 * @param[in] other The affine unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	virtual int compare(const AffineUnitImpl& other) const =0;
 
     /**
      * Returns a string representation.

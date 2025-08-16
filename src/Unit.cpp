@@ -39,6 +39,16 @@ Unit::operator bool() const noexcept
     return static_cast<bool>(pImpl);
 }
 
+size_t Unit::hash() const
+{
+    return pImpl->hash();
+}
+
+int Unit::compare(const Unit& other) const
+{
+    return pImpl->compare(*other.pImpl);
+}
+
 std::string Unit::to_string() const
 {
     return pImpl->to_string();
