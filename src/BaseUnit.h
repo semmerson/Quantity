@@ -24,6 +24,7 @@
 
 #include "Unit.h"
 
+#include <cstddef>
 #include <string>
 
 using namespace std;
