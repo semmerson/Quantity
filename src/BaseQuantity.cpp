@@ -22,14 +22,32 @@
 
 #include "BaseQuantity.h"
 
+#include "Dimension.h"
+#include "DimensionHash.h"
+#include "DimensionEqual.h"
+#include "UnitHash.h"
+#include "UnitEqual.h"
+
+#include <cstddef>
+#include <functional>
+#include <memory>
+#include <stdexcept>
+#include <unordered_map>
+#include <utility>
+
+using namespace std;
+
 namespace quantity {
 
 /// Implementation of a base physical quantity (e.g., length, mass).
-class BaseQuantity::Impl
+class BaseQuantityImpl final : public BaseQuantity
 {
 private:
-    const Dimension dim;
-    const BaseUnit  unit;
+    const Dimension dim;    ///< Associated physical dimension
+    const BaseUnit  unit;   ///< Associated base unit
+
+    static unordered_map<Dimension, Pimpl>                      dimMap;  ///< Dimension-to-impl map
+    static unordered_map<BaseUnit,  Pimpl, UnitHash, UnitEqual> unitMap; ///< Unit-to-impl map
 
 public:
     /**
@@ -37,20 +55,83 @@ public:
      * @param[in] dim   Associated dimension (e.g., length)
      * @param[in] unit  Associated base unit (e.g., meter)
      */
-    Impl(const Dimension& dim,
-         const BaseUnit&  unit)
+    BaseQuantityImpl(const Dimension& dim,
+                     const BaseUnit&  unit)
         : dim(dim)
         , unit(unit)
     {}
+
+    /**
+     * Returns an instance. Creates the instance if it doesn't already exist.
+     * @param[in] dim               Associated dimension (e.g., length)
+     * @param[in] unit              Associated base unit (e.g., meter)
+     * @return                      The base quantity
+     * @throw std::invalid_argument The dimension or unit is already associated with a different
+     *                              base quantity
+     */
+    static Pimpl get(const Dimension& dim,
+                     const BaseUnit&  unit)
+    {
+        Pimpl pImpl;
+
+        // Ensure that a redefinition isn't being attempted
+        if (dimMap.count(dim)) {
+            pImpl = dimMap[dim];
+            auto baseUnit = pImpl->baseUnit();
+            if (baseUnit.compare(unit))
+                throw invalid_argument("Dimension \"" + dim.to_string() +
+                        "\" is already associated with base unit \"" + baseUnit.to_string() + "\"");
+        }
+        if (unitMap.count(unit)) {
+            pImpl = unitMap[unit];
+            auto dimension = pImpl->dimension();
+            if (dimension.compare(dim))
+                throw invalid_argument("Base unit \"" + unit.to_string() +
+                        "\" is already associated with dimension \"" + dimension.to_string() +
+                        "\"");
+        }
+
+        // Create a base quantity if one doesn't already exist
+        if (!pImpl) {
+            pImpl = make_shared<BaseQuantityImpl>(dim, unit);
+            dimMap[dim] = pImpl;
+            unitMap[unit] = pImpl;
+        }
+
+        return pImpl;
+    }
+
+    /**
+     * Returns the associated physical dimension.
+     * @return The associated physical dimension
+     */
+    const Dimension& dimension() const noexcept override
+    {
+        return dim;
+    }
+
+    /**
+     * Returns the associated base unit.
+     * @return The associated base unit
+     */
+    const BaseUnit& baseUnit() const noexcept override
+    {
+        return unit;
+    }
 };
 
-BaseQuantity::BaseQuantity(Impl* impl)
-    : pImpl(impl)
-{}
+/// Dimension-to-impl map
+unordered_map<Dimension, BaseQuantity::Pimpl>                      BaseQuantityImpl::dimMap(7);
+/// Unit-to-impl map
+unordered_map<BaseUnit,  BaseQuantity::Pimpl, UnitHash, UnitEqual> BaseQuantityImpl::unitMap(7);
 
-BaseQuantity::BaseQuantity(const Dimension& dim,
-                           const BaseUnit&  unit)
-    : BaseQuantity(new BaseQuantity::Impl(dim, unit))
+BaseQuantity::Pimpl BaseQuantity::get(const Dimension& dim,
+                                      const BaseUnit&  unit)
+{
+    return BaseQuantityImpl::get(dim, unit);
+}
+
+BaseQuantity::~BaseQuantity(void) noexcept
 {}
 
 } // Namespace

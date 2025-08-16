@@ -31,29 +31,36 @@
 namespace quantity {
 
 /// A base physical quantity (e.g., length, mass).
-class BaseQuantity final
+class BaseQuantity
 {
-private:
-    /// The implementation
-    class Impl;
-
-	/// Smart pointer to an implementation
-	std::shared_ptr<Impl> pImpl;
-
-	/**
-	 * Constructs
-	 * @param[in] impl  An implementation
-	 */
-	BaseQuantity(Impl* impl);
-
 public:
+	using Pimpl = shared_ptr<BaseQuantity>;    ///< Smart pointer to an implementation
+
+	/// Default constructs.
+	BaseQuantity() =default;
+
+	/// Destroys.
+	virtual ~BaseQuantity() noexcept =0;
+
     /**
-     * Constructs.
+     * Returns an instance. Creates the instance if it doesn't already exist.
      * @param[in] dim   Associated dimension (e.g., length)
      * @param[in] unit  Associated base unit (e.g., meter)
      */
-    BaseQuantity(const Dimension& dim,
-                 const BaseUnit&  unit);
+    static Pimpl get(const Dimension& dim,
+                     const BaseUnit&  unit);
+
+    /**
+     * Returns the associated physical dimension.
+     * @return The associated physical dimension
+     */
+    virtual const Dimension& dimension() const noexcept =0;
+
+    /**
+     * Returns the associated base unit.
+     * @return The associated base unit
+     */
+    virtual const BaseUnit& baseUnit() const noexcept =0;
 };
 
 } // namespace quantity

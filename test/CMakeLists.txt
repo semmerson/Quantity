@@ -13,3 +13,7 @@ add_test(BaseUnit_test BaseUnit_test)
 add_executable(AffineUnit_test AffineUnit_test.cpp)
 target_link_libraries(AffineUnit_test libquant ${GTEST_LIBRARY})
 add_test(AffineUnit_test AffineUnit_test)
+
+add_executable(BaseQuantity_test BaseQuantity_test.cpp)
+target_link_libraries(BaseQuantity_test libquant ${GTEST_LIBRARY})
+add_test(BaseQuantity_test BaseQuantity_test)
