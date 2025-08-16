@@ -1,6 +1,8 @@
 add_library(libquant OBJECT
 	Dimension.cpp   	Dimension.h
+						DimensionEqual.h
 						DimensionHash.h
+						DimensionLess.h
 	Calendar.cpp    	Calendar.h
 	Unit.cpp        	Unit.h
 	                    UnitImpl.h
