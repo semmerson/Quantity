@@ -58,6 +58,36 @@ public:
     ~BaseUnitImpl() noexcept;
 
     /**
+     * Returns the hash code of this instance.
+     * @return The hash code of this instance
+     */
+    size_t hash() const override;
+
+    /**
+     * Compares this instance with another unit implementation.
+     * @param[in] other The other implementation
+     * @return          A value less than, equal to, or greater than zero as this instance is
+     *                  considered less than, equal to, or greater than the other, respectively.
+     */
+    int compare(const UnitImpl& other) const override;
+
+	/**
+	 * Compares this instance with a base unit.
+	 * @param[in] other The base unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const BaseUnitImpl& other) const override;
+
+	/**
+	 * Compares this instance with an affine unit.
+	 * @param[in] other The affine unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const AffineUnitImpl& other) const override;
+
+    /**
      * Returns a string representation
      * @retval A string representation
      */

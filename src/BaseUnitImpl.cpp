@@ -61,6 +61,45 @@ BaseUnitImpl::~BaseUnitImpl()
     symSet.erase(symbol);
 }
 
+size_t BaseUnitImpl::hash() const
+{
+    static auto myHash = std::hash<string>();
+    return myHash(name);
+}
+
+/**
+ * Compares this instance with another unit implementation.
+ * @param[in] other The other implementation
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int BaseUnitImpl::compare(const UnitImpl& other) const
+{
+    return -other.compare(*this);
+}
+
+/**
+ * Compares this instance with a base unit.
+ * @param[in] other The base unit instance
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int BaseUnitImpl::compare(const BaseUnitImpl& other) const
+{
+    return name.compare(other.name);
+}
+
+/**
+ * Compares this instance with an affine unit.
+ * @param[in] other The affine unit instance
+ * @return          A value less than, equal to, or greater than zero as this instance is
+ *                  considered less than, equal to, or greater than the other, respectively.
+ */
+int BaseUnitImpl::compare(const AffineUnitImpl& other) const
+{
+    return -1;  // Base units always come before affine units
+}
+
 /**
  * Returns a string representation
  * @retval A string representation
