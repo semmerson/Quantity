@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include "DimSetImpl.h"
-
+#include <DimensionalityImpl.h>
 #include <memory>
 
 using namespace std;
