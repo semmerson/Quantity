@@ -10,7 +10,4 @@ add_library(libquant OBJECT
 	BaseUnitImpl.cpp	BaseUnitImpl.h
 	AffineUnit.cpp  	AffineUnit.h
 	AffineUnitImpl.cpp  AffineUnitImpl.h
-						UnitEqual.h
-						UnitHash.h
-						UnitLess.h
 	BaseQuantity.cpp    BaseQuantity.h)

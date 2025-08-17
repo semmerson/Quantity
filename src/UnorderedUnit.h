@@ -1,8 +1,8 @@
 /**
- * This file defines a function class for determining if two units are equal.
+ * This file supports using units in unordered sets and maps.
  *
- *        File: UnitEqual.h
- *  Created on: Aug 13, 2025
+ *        File: UnorderedUnit.h
+ *  Created on: Aug 17, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -24,12 +24,12 @@
 
 #include "Unit.h"
 
-#include <functional>
-#include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace quantity {
 
-/// Equality functor
+/// Unit equality functor
 struct UnitEqual {
     template<class T, class U>
     typename std::enable_if<std::is_base_of<Unit, T>::value &&
@@ -46,4 +46,24 @@ struct UnitEqual {
     }
 };
 
-} // namespace
+/// Unit hash functor
+struct UnitHash {
+    template<class T>
+    typename std::enable_if<std::is_base_of<Unit, T>::value, std::size_t>::type
+    /**
+     * Returns the hash code.
+     * @param[in] unit  The unit
+     * @return          The hash code of the unit
+     */
+    operator()(T const& unit) const noexcept {
+        return unit.hash(); // calls T::hash(), virtual or not
+    }
+};
+
+template<typename V>
+using UnorderedUnitMap = std::unordered_map<Unit, V, UnitHash, UnitEqual>;
+
+template<typename V>
+using UnorderedUnitSet = std::unordered_set<Unit, V, UnitHash, UnitEqual>;
+
+} // namespace quantity

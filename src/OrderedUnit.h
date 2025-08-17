@@ -1,8 +1,8 @@
 /**
- * This file defines a functional class for hashing a unit.
+ * This file supports using units in ordered sets and maps.
  *
- *        File: UnitHash.h
- *  Created on: Aug 13, 2025
+ *        File: OrderedUnit.h
+ *  Created on: Aug 17, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -24,23 +24,29 @@
 
 #include "Unit.h"
 
-#include <functional>
-#include <type_traits>
+#include <map>
+#include <set>
 
 namespace quantity {
 
-/// Hash functor
-struct UnitHash {
-    template<class T>
-    typename std::enable_if<std::is_base_of<Unit, T>::value, std::size_t>::type
+/// Unit less-than functor
+struct UnitLess {
     /**
-     * Returns the hash code.
-     * @param[in] unit  The unit
-     * @return          The hash code of the unit
+     * Indicates if one instance is less than another
+     * @param[in] lhs       The left-hand-side unit
+     * @param[in] rhs       The right-hand-side unit
+     * @retval    true      @a lhs is less than @a rhs
+     * @retval    false     @a lhs is not less than @a rhs
      */
-    operator()(T const& unit) const noexcept {
-        return unit.hash(); // calls T::hash(), virtual or not
+    bool operator()(const Unit& lhs, const Unit& rhs) const {
+        return lhs.compare(rhs) < 0;
     }
 };
 
-} // namespace
+template<typename V>
+using UnitSet = std::set<Unit, V, UnitLess>;
+
+template<typename V>
+using UnitMap = std::map<Unit, V, UnitLess>;
+
+} // namespace quantity
