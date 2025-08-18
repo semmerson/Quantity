@@ -43,8 +43,7 @@ struct UnitLess {
     }
 };
 
-template<typename V>
-using UnitSet = std::set<Unit, V, UnitLess>;
+using UnitSet = std::set<Unit, UnitLess>;
 
 template<typename V>
 using UnitMap = std::map<Unit, V, UnitLess>;
