@@ -21,6 +21,7 @@
  */
 
 #include "DimFactor.h"
+#include "DimFactorImpl.h"
 
 #include <stdexcept>
 
@@ -39,6 +40,16 @@ DimFactor::DimFactor(
     : DimFactor(new DimFactorImpl(dim, numer, denom))
 {}
 
+int DimFactor::getNumer() const
+{
+    return pImpl->getNumer();
+}
+
+int DimFactor::getDenom() const
+{
+    return pImpl->getDenom();
+}
+
 string DimFactor::to_string() const
 {
     return pImpl->to_string();
@@ -49,9 +60,10 @@ int DimFactor::compare(const DimFactor& other) const
     return pImpl->compare(*other.pImpl);
 }
 
-DimFactor DimFactor::multiply(const DimFactor& other) const
+DimFactor DimFactor::pow(const int numer,
+                         const int denom) const
 {
-    return DimFactor(pImpl->multiply(*other.pImpl));
+    return DimFactor(pImpl->pow(numer, denom));
 }
 
 } // namespace quantity

@@ -24,6 +24,7 @@
 #include "DimFactor.h"
 #include "Dimensionality.h"
 #include "DimensionalityImpl.h"
+
 #include <memory>
 
 namespace quantity {

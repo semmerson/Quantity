@@ -29,30 +29,38 @@ using namespace std;
 
 namespace quantity {
 
-int DimFactorImpl::gcd(int a, int b)
+int DimFactorImpl::gcd(int n1, int n2)
 {
-    a = abs(a);
-    b = abs(b);
+    auto a = abs(n1);
+    auto b = abs(n2);
     if (b > a) {
         auto c = a;
         a = b;
         b = c;
     }
 
-    if (b == 0)
-        throw domain_error("The smaller absolute value is zero");
-
     int gcd;
 
-    do {
-        gcd = b;
-        auto rem = a - (a/b)*b;
-        a = b;
-        b = rem;
-    } while (b != 0);
+    if (b == 0) {
+        gcd = n1 ? n1 : n2;
+    }
+    else {
+        do {
+            gcd = b;
+            auto rem = a - (a/b)*b;
+            a = b;
+            b = rem;
+        } while (b != 0);
+    }
 
     return gcd;
 }
+
+DimFactorImpl::DimFactorImpl()
+    : dim{}
+    , numer(0)
+    , denom(0)
+{}
 
 DimFactorImpl::DimFactorImpl(
         const Dimension& dim,
@@ -75,9 +83,39 @@ DimFactorImpl::DimFactorImpl(
     denom /= div;
 }
 
+/**
+ * Returns the numerator of the exponent.
+ * @return The numerator of the exponent
+ */
+int DimFactorImpl::getNumer() const
+{
+    return numer;
+}
+
+/**
+ * Returns the denominator of the exponent.
+ * @return The denominator of the exponent
+ */
+int DimFactorImpl::getDenom() const
+{
+    return denom;
+}
+
 string DimFactorImpl::to_string() const
 {
-    return dim.to_string() + "^(" + std::to_string(numer) + "/" + std::to_string(denom) + ")";
+    string rep = "";
+    if (denom != 0) {
+        rep = dim.to_string();
+        if (denom != 1 || numer != 1) {
+            rep += "^";
+            if (denom > 1)
+                rep += "(";
+            rep += std::to_string(numer);
+            if (denom > 1)
+                rep += "/" + std::to_string(denom) + ")";
+        }
+    }
+    return rep;
 }
 
 int DimFactorImpl::compare(const DimFactorImpl& other) const
@@ -85,14 +123,15 @@ int DimFactorImpl::compare(const DimFactorImpl& other) const
     return dim.compare(other.dim);
 }
 
-DimFactorImpl* DimFactorImpl::multiply(const DimFactorImpl& other) const
+DimFactorImpl* DimFactorImpl::pow(const int n,
+                                  const int d) const
 {
-    if (dim.compare(other.dim))
-        throw logic_error("Dimensions differ: \"" + dim.to_string() + "\" != \"" +
-                other.dim.to_string() + "\"");
-    auto newNumer = numer*other.denom + other.numer*denom;
-    auto newDenom = denom*other.denom;
-    const auto div = gcd(newNumer, newDenom);
+    if (d == 0)
+        throw domain_error("Denominator of exponent is zero");
+
+    auto newNumer = numer*n;
+    auto newDenom = denom*d;
+    int  div = gcd(newNumer, newDenom);
     return new DimFactorImpl(dim, newNumer/div, newDenom/div);
 }
 

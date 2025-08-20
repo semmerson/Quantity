@@ -146,16 +146,22 @@ void Dimension::clear()
 
 size_t Dimension::hash() const
 {
+    if (!pImpl)
+        throw logic_error("Dimension not initialized");
     return pImpl->hash();
 }
 
 int Dimension::compare(const Dimension& other) const
 {
+    if (!pImpl)
+        throw logic_error("Dimension not initialized");
     return pImpl->compare(*other.pImpl);
 }
 
 string Dimension::to_string() const
 {
+    if (!pImpl)
+        throw logic_error("Dimension not initialized");
     return pImpl->to_string();
 }
 

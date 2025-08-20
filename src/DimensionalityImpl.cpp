@@ -74,7 +74,7 @@ DimensionalityImpl* DimensionalityImpl::multiply(const DimensionalityImpl& other
             newImpl->factors.insert(*iter);
         }
         else {
-            newImpl->factors.insert(iter->multiply(factor));
+            newImpl->factors.insert(iter->pow(factor.getNumer(), factor.getDenom()));
         }
     }
 

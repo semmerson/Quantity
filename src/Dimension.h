@@ -64,19 +64,25 @@ public:
 
 	/**
 	 * Returns the hash code of this instance.
-	 * @return  The hash code of this instance
+	 * @return                  The hash code of this instance
+	 * @throw std:: logic_error This instance has not been initialized
 	 */
 	size_t hash() const;
 
 	/**
 	 * Compares this instance with another.
-	 * @param[in] other The other instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
+	 * @param[in] other         The other instance
+	 * @return                  A value less than, equal to, or greater than zero as this instance
+	 *                          is considered less than, equal to, or greater than the other,
+	 *                          respectively.
+	 * @throw std:: logic_error This instance has not been initialized
 	 */
 	int compare(const Dimension& other) const;
 
-	/// Returns a string representation.
+	/**
+	 * Returns a string representation.
+	 * @throw std:: logic_error This instance has not been initialized
+	 */
 	string to_string() const;
 
 	/**

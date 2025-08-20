@@ -24,24 +24,26 @@
 #pragma once
 
 #include "Dimension.h"
-#include "DimensionalityImpl.h"
 
 #include <memory>
 
+using namespace std;
+
 namespace quantity {
 
-using namespace std;
+class DimensionalityImpl;
 
 /// The dimensionality of a physical quantity.
 class Dimensionality
 {
-public:
+private:
     /// Type of PIMPL smart pointer
     using Pimpl = shared_ptr<DimensionalityImpl>;
 
     /// Smart pointer to the implementation for automatic deletion
     Pimpl pImpl;
 
+public:
     /**
      * Constructs from a pointer to an implementation.
      * @param[in] impl  Pointer to an implementation.

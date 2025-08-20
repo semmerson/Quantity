@@ -1,8 +1,8 @@
 /**
- * This file tests class Dimensionality.
+ * This file tests class DimFactor.
  */
 
-#include "Dimensionality.h"
+#include "DimFactor.h"
 
 #include "gtest/gtest.h"
 
@@ -11,18 +11,18 @@ namespace {
 using namespace quantity;
 
 /// The fixture for testing the class
-class DimensionalityTest : public ::testing::Test
+class DimFactorTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    DimensionalityTest()
+    DimFactorTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~DimensionalityTest()
+    virtual ~DimFactorTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -44,35 +44,25 @@ protected:
 
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
-    Dimension time{"Time", "T"};
 };
 
 // Tests construction
-TEST_F(DimensionalityTest, Construction)
+TEST_F(DimFactorTest, Construction)
 {
-    EXPECT_EQ("", Dimensionality().to_string());
-
-    EXPECT_EQ("Length", Dimensionality(length).to_string());
-
-    EXPECT_EQ("Length^2", Dimensionality(length, 2).to_string());
-
-    EXPECT_EQ("Length^-1", Dimensionality(length, -1).to_string());
-
-    EXPECT_EQ("Length^(-2/3)", Dimensionality(length, -2, 3).to_string());
+    EXPECT_EQ("Length", DimFactor(length).to_string());
+    EXPECT_EQ("Length^2", DimFactor(length, 2).to_string());
+    EXPECT_EQ("Length^-1", DimFactor(length, -1).to_string());
+    EXPECT_EQ("Length^(-2/3)", DimFactor(length, -2, 3).to_string());
 }
 
-// Tests multiplication
-TEST_F(DimensionalityTest, Multiplication)
+// Tests exponentiation
+TEST_F(DimFactorTest, Exponentiation)
 {
-    EXPECT_EQ("", Dimensionality().to_string());
-
-    EXPECT_EQ("Length", Dimensionality(length).to_string());
-
-    EXPECT_EQ("Length^2", Dimensionality(length, 2).to_string());
-
-    EXPECT_EQ("Length^-1", Dimensionality(length, -1).to_string());
-
-    EXPECT_EQ("Length^(-2/3)", Dimensionality(length, -2, 3).to_string());
+    EXPECT_THROW(DimFactor(length).pow(1, 0).to_string(), std::domain_error);
+    EXPECT_EQ("Length^2", DimFactor(length).pow(2).to_string());
+    EXPECT_EQ("Length^-1", DimFactor(length).pow(-1).to_string());
+    EXPECT_EQ("Length^(-2/3)", DimFactor(length).pow(2, -3).to_string());
+    EXPECT_EQ("Length^0", DimFactor(length).pow(0, -3).to_string());
 }
 
 }  // namespace

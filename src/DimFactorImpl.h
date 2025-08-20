@@ -1,5 +1,5 @@
 /**
- * This file declares an implementation of a single dimensional factor (e.g., "length^2").
+ * This file defines an implementation of a single dimensional factor (e.g., "length^2").
  *
  *        File: DimFactor.h
  *  Created on: Aug 8, 2025
@@ -46,7 +46,7 @@ private:
 
 public:
     /// Default constructs.
-    DimFactorImpl() =default;
+    DimFactorImpl();
 
     /**
      * Constructs from a dimension and a rational exponent.
@@ -57,6 +57,18 @@ public:
     DimFactorImpl(const Dimension& dim,
                   int              numer = 1,
                   int              denom = 1);
+
+    /**
+     * Returns the numerator of the exponent.
+     * @return The numerator of the exponent
+     */
+    int getNumer() const;
+
+    /**
+     * Returns the denominator of the exponent.
+     * @return The denominator of the exponent
+     */
+    int getDenom() const;
 
     /**
      * Returns a string representation.
@@ -73,12 +85,14 @@ public:
     int compare(const DimFactorImpl& other) const;
 
     /**
-     * Multiplies by a dimensional factor
-     * @param[in] other         A dimensional factor
-     * @return                  The product of this instance and the other instance
-     * @throw std::logic_error  The physical dimensions differ
+     * Raises a dimensional factor to a rational exponent.
+     * @param[in] numer         The numerator of the exponent
+     * @param[in] denom         The denominator of the exponent
+     * @return                  The result of raising this instance to the given power
+     * @throw std::domain_error The denominator of the exponent is zero
      */
-    DimFactorImpl* multiply(const DimFactorImpl& other) const;
+    DimFactorImpl* pow(const int numer,
+                       const int denom) const;
 };
 
 } // namespace quantity
