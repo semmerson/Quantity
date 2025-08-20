@@ -35,7 +35,7 @@ namespace quantity {
 /**
  * A physical dimension (e.g., length, mass).
  */
-class Dimension {
+class Dimension final {
 private:
     /// The implementation
     class Impl;

@@ -1,5 +1,6 @@
 /**
- * This file declares a set of dimensions for a physical quantity.
+ * This file supports the dimensionality of a physical quantity. For example, the dimensionality of
+ * power is mass times length squared divided by time cubed (i.e., M·L^2·T^-3).
  *
  *        File: Dimensionality.h
  *  Created on: Aug 8, 2025
@@ -22,31 +23,56 @@
 
 #pragma once
 
-#include <DimensionalityImpl.h>
-#include <memory>
+#include "Dimension.h"
+#include "DimensionalityImpl.h"
 
-using namespace std;
+#include <memory>
 
 namespace quantity {
 
-/// A set of dimensions (alias base quantities) for a physical quantity.
-class DimSet
+using namespace std;
+
+/// The dimensionality of a physical quantity.
+class Dimensionality
 {
-private:
+public:
     /// Type of PIMPL smart pointer
-    using Pimpl = shared_ptr<DimSetImpl>;
+    using Pimpl = shared_ptr<DimensionalityImpl>;
 
     /// Smart pointer to the implementation for automatic deletion
     Pimpl pImpl;
 
-public:
-    DimSet() =default;
-
     /**
      * Constructs from a pointer to an implementation.
-     * @param[in] impl  Pointer to an implementation
+     * @param[in] impl  Pointer to an implementation.
      */
-    DimSet(DimSetImpl* impl);
+    Dimensionality(DimensionalityImpl* impl);
+
+    /// Default constructs.
+    Dimensionality();
+
+    /**
+     * Constructs from a dimension and a rational exponent.
+     * @param[in] dim   The associated dimension
+     * @param[in] numer The numberator of the exponent
+     * @param[in] denom The denominator of the exponent
+     */
+    Dimensionality(const Dimension dim,
+                   const int       numer = 1,
+                   const int       denom = 1);
+
+    /**
+     * Returns a string representation.
+     * @return A string representation
+     */
+    string to_string() const;
+
+    /**
+     * Multiplies by another instance
+     * @param[in] other Another instance
+     * @return          The product of this instance and the other instance
+     */
+    Dimensionality multiply(const Dimensionality& other) const;
 };
 
 } // namespace quantity

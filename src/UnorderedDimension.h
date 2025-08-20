@@ -31,9 +31,6 @@ namespace quantity {
 
 /// Dimension equality functor
 struct DimensionEqual {
-    template<class T, class U>
-    typename std::enable_if<std::is_base_of<Dimension, T>::value &&
-                            std::is_base_of<Dimension, U>::value, bool>::type
     /**
      * Indicates if two instances are equal.
      * @param[in] lhs   The first instance
@@ -41,8 +38,9 @@ struct DimensionEqual {
      * @retval    true  The instances are equal
      * @retval    false The instances are not equal
      */
-    operator()(T const& lhs, U const& rhs) const noexcept {
-        return lhs.compare(rhs) == 0; // calls most-derived compare()
+    bool operator()(Dimension const& lhs,
+                    Dimension const& rhs) const noexcept {
+        return lhs.compare(rhs) == 0;
     }
 };
 
@@ -54,12 +52,14 @@ struct DimensionHash {
      * @return          The hash code of the dimension
      */
     size_t operator()(const Dimension& dim) const noexcept {
-        return dim.hash(); // calls T::hash(), virtual or not
+        return dim.hash();
     }
 };
 
+/// An unordered set of dimensions.
 using UnorderedDimensionSet = std::unordered_set<Dimension, DimensionHash, DimensionEqual>;
 
+/// An unordered map with dimension as key.
 template<typename V>
 using UnorderedDimensionMap = std::unordered_map<Dimension, V, DimensionHash, DimensionEqual>;
 

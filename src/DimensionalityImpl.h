@@ -1,7 +1,7 @@
 /**
- * This file defines an implementation of a set of dimensions for a physical quantity.
+ * This file declares an implementation of a set of dimensions for a physical quantity.
  *
- *        File: DimSetImpl.h
+ *        File: DimensionalityImpl.h
  *  Created on: Aug 8, 2025
  *      Author: Steven R. Emmerson
  *
@@ -22,14 +22,41 @@
 
 #pragma once
 
+#include "DimFactor.h"
+#include "OrderedDimFactor.h"
+
 namespace quantity {
 
-class DimSetImpl final
+/// Implementation of dimensionality for a physical quantity.
+class DimensionalityImpl final
 {
 private:
+    DimFactorSet factors;
 
 public:
+    /// Default constructs.
+    DimensionalityImpl() =default;
 
+    /**
+     * Constructs from a dimension and a rational exponent.
+     * @param[in] dim   The associated dimension
+     * @param[in] numer The numberator of the exponent
+     * @param[in] denom The denominator of the exponent
+     */
+    DimensionalityImpl(const Dimension dim, const int numer, const int denom);
+
+    /**
+     * Returns a string representation.
+     * @return A string representation
+     */
+    string to_string() const;
+
+    /**
+     * Multiplies by another instance
+     * @param[in] other Another instance
+     * @return          The product of this instance and the other instance
+     */
+    DimensionalityImpl* multiply(const DimensionalityImpl& other) const;
 };
 
 } // namespace quantity

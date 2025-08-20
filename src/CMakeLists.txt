@@ -1,13 +1,20 @@
 add_library(libquant OBJECT
-	Dimension.cpp   	Dimension.h
-						DimensionEqual.h
-						DimensionHash.h
-						DimensionLess.h
-	Calendar.cpp    	Calendar.h
-	Unit.cpp        	Unit.h
-	                    UnitImpl.h
-	BaseUnit.cpp		BaseUnit.h
-	BaseUnitImpl.cpp	BaseUnitImpl.h
-	AffineUnit.cpp  	AffineUnit.h
-	AffineUnitImpl.cpp  AffineUnitImpl.h
-	BaseQuantity.cpp    BaseQuantity.h)
+    Dimension.cpp           Dimension.h
+                            OrderedDimension.h
+                            UnorderedDimension.h
+    Calendar.cpp            Calendar.h
+    Unit.cpp                Unit.h
+                            UnitImpl.h
+                            OrderedUnit.h
+                            UnorderedUnit.h
+    BaseUnit.cpp            BaseUnit.h
+    BaseUnitImpl.cpp        BaseUnitImpl.h
+    AffineUnit.cpp          AffineUnit.h
+    AffineUnitImpl.cpp      AffineUnitImpl.h
+    BaseQuantity.cpp        BaseQuantity.h
+    Dimensionality.cpp      Dimensionality.h
+    DimensionalityImpl.cpp  DimensionalityImpl.h
+                            OrderedDimFactor.h
+    DimFactor.cpp           DimFactor.h
+    DimFactorImpl.cpp       DimFactorImpl.h
+    )

@@ -33,8 +33,8 @@ namespace quantity {
 struct DimensionLess {
     /**
      * Indicates if one instance is less than another
-     * @param[in] lhs       The left-hand-side unit
-     * @param[in] rhs       The right-hand-side unit
+     * @param[in] lhs       The left-hand-side dimension
+     * @param[in] rhs       The right-hand-side dimension
      * @retval    true      @a lhs is less than @a rhs
      * @retval    false     @a lhs is not less than @a rhs
      */
@@ -43,8 +43,10 @@ struct DimensionLess {
     }
 };
 
+/// An ordered set of dimensions.
 using DimensionSet = std::set<Dimension, DimensionLess>;
 
+/// An ordered map with dimension as key.
 template<typename V>
 using DimensionMap = std::map<Dimension, V, DimensionLess>;
 

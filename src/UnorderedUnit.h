@@ -60,10 +60,11 @@ struct UnitHash {
     }
 };
 
+/// An unordered set of units.
+using UnorderedUnitSet = std::unordered_set<Unit, UnitHash, UnitEqual>;
+
+/// An unordered map with unit as key
 template<typename V>
 using UnorderedUnitMap = std::unordered_map<Unit, V, UnitHash, UnitEqual>;
-
-template<typename V>
-using UnorderedUnitSet = std::unordered_set<Unit, V, UnitHash, UnitEqual>;
 
 } // namespace quantity

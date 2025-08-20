@@ -1,7 +1,7 @@
 /**
- * This file supports using units in ordered sets and maps.
+ * This file supports using dimension factors in ordered sets and maps.
  *
- *        File: OrderedUnit.h
+ *        File: OrderedDimFactor.h
  *  Created on: Aug 17, 2025
  *      Author: Steven R. Emmerson
  *
@@ -22,32 +22,32 @@
 
 #pragma once
 
-#include "Unit.h"
+#include "DimFactor.h"
 
 #include <map>
 #include <set>
 
 namespace quantity {
 
-/// Unit less-than functor
-struct UnitLess {
+/// DimFactor less-than functor
+struct DimFactorLess {
     /**
      * Indicates if one instance is less than another
-     * @param[in] lhs       The left-hand-side unit
-     * @param[in] rhs       The right-hand-side unit
+     * @param[in] lhs       The left-hand-side dimension
+     * @param[in] rhs       The right-hand-side dimension
      * @retval    true      @a lhs is less than @a rhs
      * @retval    false     @a lhs is not less than @a rhs
      */
-    bool operator()(const Unit& lhs, const Unit& rhs) const {
+    bool operator()(const DimFactor& lhs, const DimFactor& rhs) const {
         return lhs.compare(rhs) < 0;
     }
 };
 
-/// An ordered set of units.
-using UnitSet = std::set<Unit, UnitLess>;
+/// An ordered set of dimensions.
+using DimFactorSet = std::set<DimFactor, DimFactorLess>;
 
-/// An ordered map with with unit as key.
+/// An ordered map with dimension as key.
 template<typename V>
-using UnitMap = std::map<Unit, V, UnitLess>;
+using DimFactorMap = std::map<DimFactor, V, DimFactorLess>;
 
 } // namespace quantity

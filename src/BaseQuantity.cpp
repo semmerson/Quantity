@@ -23,8 +23,7 @@
 #include "BaseQuantity.h"
 
 #include "Dimension.h"
-#include "DimensionHash.h"
-#include "DimensionEqual.h"
+#include "UnorderedDimension.h"
 #include "UnorderedUnit.h"
 
 #include <cstddef>
@@ -45,8 +44,8 @@ private:
     const Dimension dim;    ///< Associated physical dimension
     const BaseUnit  unit;   ///< Associated base unit
 
-    static unordered_map<Dimension, Pimpl>  dimMap;  ///< Dimension-to-impl map
-    static UnorderedUnitMap<Pimpl>          unitMap; ///< Unit-to-impl map
+    static UnorderedDimensionMap<Pimpl>  dimMap;  ///< Dimension-to-impl map
+    static UnorderedUnitMap<Pimpl>       unitMap; ///< Unit-to-impl map
 
 public:
     /**
@@ -120,9 +119,10 @@ public:
 };
 
 /// Dimension-to-impl map
-unordered_map<Dimension, BaseQuantity::Pimpl>   BaseQuantityImpl::dimMap(7);
+UnorderedDimensionMap<BaseQuantity::Pimpl>   BaseQuantityImpl::dimMap(7);
+
 /// Unit-to-impl map
-UnorderedUnitMap<BaseQuantity::Pimpl>           BaseQuantityImpl::unitMap(7);
+UnorderedUnitMap<BaseQuantity::Pimpl>        BaseQuantityImpl::unitMap(7);
 
 BaseQuantity::Pimpl BaseQuantity::get(const Dimension& dim,
                                       const BaseUnit&  unit)
