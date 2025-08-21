@@ -8,7 +8,6 @@ add_library(libquant OBJECT
                             OrderedUnit.h
                             UnorderedUnit.h
     BaseUnit.cpp            BaseUnit.h
-    BaseUnitImpl.cpp        BaseUnitImpl.h
     AffineUnit.cpp          AffineUnit.h
     AffineUnitImpl.cpp      AffineUnitImpl.h
     BaseQuantity.cpp        BaseQuantity.h

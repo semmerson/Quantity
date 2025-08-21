@@ -167,7 +167,8 @@ bool BaseUnitImpl::isConvertible(const AffineUnitImpl& other) const
  * @param[in] value  The value to be converted
  * @return           The converted value
  */
-double BaseUnitImpl::convert(const double value) const {
+double BaseUnitImpl::convert(const double value) const
+{
     return value;
 }
 

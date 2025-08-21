@@ -24,7 +24,6 @@
 
 #include "Unit.h"
 
-#include <cstddef>
 #include <string>
 
 using namespace std;
@@ -44,8 +43,8 @@ public:
      * @param[in] name    Unit name
      * @param[in] symbol  Unit symbol
      */
-    BaseUnit(const std::string&  name,
-             const std::string&  symbol);
+    BaseUnit(const string&  name,
+             const string&  symbol);
 };
 
 } // Namespace

@@ -24,14 +24,10 @@
 
 #include "BaseUnit.h"
 
-#include "Dimension.h"
-
 #include <string>
 #include <unordered_set>
 
 namespace quantity {
-
-using namespace std;
 
 /// Definition of the implementation of base units of physical quantities.
 class BaseUnitImpl final : public UnitImpl
