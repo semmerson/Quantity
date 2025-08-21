@@ -43,15 +43,13 @@ private:
     /// Smart pointer to an implementation.
     Pimpl pImpl;
 
-public:
-    /// Default constructs.
-    DimFactor() =default;
-
     /**
      * Constructs from a pointer to an implementation.
      * @param[in] impl  Pointer to an implementation
      */
     DimFactor(DimFactorImpl* impl);
+
+public:
 
     /**
      * Constructs from a dimension and a rational exponent.
@@ -95,7 +93,7 @@ public:
      * @param[in] denom         The denominator of the exponent
      * @return                  The result of raising this instance to the given power
      */
-    DimFactor pow(const int numer = 1,
+    DimFactor pow(const int numer,
                   const int denom = 1) const;
 
     /**
