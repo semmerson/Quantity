@@ -21,15 +21,94 @@
  * limitations under the License.
  */
 
-#include "DimFactor.h"
 #include "Dimensionality.h"
-#include "DimensionalityImpl.h"
+#include "DimFactor.h"
+#include "OrderedDimFactor.h"
 
 #include <memory>
 
+using namespace std;
+
 namespace quantity {
 
-using namespace std;
+/// Implementation of dimensionality for a physical quantity.
+class DimensionalityImpl final
+{
+private:
+    DimFactorSet factors;
+
+public:
+    /// Default constructs.
+    DimensionalityImpl() =default;
+
+    /**
+     * Constructs from a dimension and a rational exponent.
+     * @param[in] dim   The associated dimension
+     * @param[in] numer The numerator of the exponent
+     * @param[in] denom The denominator of the exponent
+     */
+    DimensionalityImpl(const Dimension dim, const int numer, const int denom)
+    {
+        factors.insert(DimFactor(dim, numer, denom));
+    }
+
+    /**
+     * Returns a string representation.
+     * @return A string representation
+     */
+    string to_string() const
+    {
+        string rep{};
+        bool   haveFactor = false;
+
+        for (auto iter = factors.begin(); iter != factors.end(); ++iter) {
+            if (haveFactor) {
+                rep += "·";
+            }
+            else {
+                haveFactor = true;
+            }
+            rep += iter->to_string();
+        }
+
+        return rep;
+    }
+
+    /**
+     * Multiplies by another instance
+     * @param[in] other Another instance
+     * @return          The product of this instance and the other instance
+     */
+    DimensionalityImpl* multiply(const DimensionalityImpl& other) const
+    {
+        const DimFactorSet* smaller;
+        const DimFactorSet* larger;
+        if (factors.size() <= other.factors.size()) {
+            smaller = &factors;
+            larger = &other.factors;
+        }
+        else {
+            larger = &factors;
+            smaller = &other.factors;
+        }
+
+        auto newImpl = new DimensionalityImpl;
+        newImpl->factors = *larger;
+
+        for (const auto factor : *smaller) {
+            auto iter = newImpl->factors.find(factor);
+            if (iter == newImpl->factors.end()) {
+                newImpl->factors.insert(*iter);
+            }
+            else {
+                newImpl->factors.erase(iter);
+                newImpl->factors.insert(iter->multiply(factor));
+            }
+        }
+
+        return newImpl;
+    }
+};
 
 Dimensionality::Dimensionality(DimensionalityImpl* impl)
     : pImpl{impl}

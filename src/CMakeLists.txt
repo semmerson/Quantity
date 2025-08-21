@@ -13,7 +13,6 @@ add_library(libquant OBJECT
     AffineUnitImpl.cpp      AffineUnitImpl.h
     BaseQuantity.cpp        BaseQuantity.h
     Dimensionality.cpp      Dimensionality.h
-    DimensionalityImpl.cpp  DimensionalityImpl.h
                             OrderedDimFactor.h
     DimFactor.cpp           DimFactor.h
     )
