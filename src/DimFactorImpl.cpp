@@ -135,4 +135,18 @@ DimFactorImpl* DimFactorImpl::pow(const int n,
     return new DimFactorImpl(dim, newNumer/div, newDenom/div);
 }
 
+/**
+ * Multiplies by another instance
+ * @param[in] other         Another instance
+ * @return                  The product of this instance and the other instance
+ * @throw std::domain_error The dimensions don't match
+ */
+DimFactorImpl* DimFactorImpl::multiply(const DimFactorImpl& other) const
+{
+    auto newNumer = numer*other.denom + other.numer*denom;
+    auto newDenom = denom*other.denom;
+    int  div = gcd(newNumer, newDenom);
+    return new DimFactorImpl(dim, newNumer/div, newDenom/div);
+}
+
 } // namespace quantity

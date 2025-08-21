@@ -65,16 +65,16 @@ DimensionalityImpl* DimensionalityImpl::multiply(const DimensionalityImpl& other
     }
 
     auto newImpl = new DimensionalityImpl;
-    auto iter = larger->begin();
-    newImpl->factors.insert(iter, larger->end());
+    newImpl->factors = *larger;
 
     for (const auto factor : *smaller) {
-        iter = larger->find(factor);
-        if (iter == larger->end()) {
+        auto iter = newImpl->factors.find(factor);
+        if (iter == newImpl->factors.end()) {
             newImpl->factors.insert(*iter);
         }
         else {
-            newImpl->factors.insert(iter->pow(factor.getNumer(), factor.getDenom()));
+            newImpl->factors.erase(iter);
+            newImpl->factors.insert(iter->multiply(factor));
         }
     }
 

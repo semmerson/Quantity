@@ -66,4 +66,9 @@ DimFactor DimFactor::pow(const int numer,
     return DimFactor(pImpl->pow(numer, denom));
 }
 
+DimFactor DimFactor::multiply(const DimFactor& other) const
+{
+    return DimFactor(pImpl->multiply(*other.pImpl));
+}
+
 } // namespace quantity

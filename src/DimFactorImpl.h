@@ -93,6 +93,14 @@ public:
      */
     DimFactorImpl* pow(const int numer,
                        const int denom) const;
+
+    /**
+     * Multiplies by another instance
+     * @param[in] other         Another instance
+     * @return                  The product of this instance and the other instance
+     * @throw std::domain_error The dimensions don't match
+     */
+    DimFactorImpl* multiply(const DimFactorImpl& other) const;
 };
 
 } // namespace quantity
