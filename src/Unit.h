@@ -1,5 +1,5 @@
 /**
- * This file declares a class for units of physical quantities.
+ * This file declares support for units of physical quantities.
  *
  *        File: Unit.h
  *  Created on: Jul 31, 2025
@@ -20,15 +20,17 @@
 
 #pragma once
 
-#include "UnitImpl.h"
-
 #include <cstddef>
 #include <memory>
 #include <string>
 
+using namespace std;
+
 namespace quantity {
 
-/// Class for units of physical quantities.
+class UnitImpl;
+
+/// Declaration of a unit of a physical quantity.
 class Unit
 {
 public:
@@ -115,8 +117,7 @@ public:
     /**
      * Multiplies by another unit.
      * @param[in] other  The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the
-     *                   other unit's
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
     Unit multiply(const Unit& other) const;
 
@@ -155,6 +156,39 @@ public:
      */
     Unit root(const int root) const;
 #endif
+};
+
+/// Declaration of a base unit of a physical quantity.
+class BaseUnit : public Unit
+{
+public:
+    /// Default constructs
+    BaseUnit() =default;
+
+    /**
+     * Constructs.
+     * @param[in] name    Unit name
+     * @param[in] symbol  Unit symbol
+     */
+    BaseUnit(const string&  name,
+             const string&  symbol);
+};
+
+/// Declaration of an affine unit of a physical quantity.
+class AffineUnit : public Unit
+{
+public:
+    /**
+     * Constructs.
+     * @param[in] core                  The underlying unit
+     * @param[in] slope                 The slope for converting values to the @ core unit
+     * @param[in] intercept             The intercept for converting values to the @ core unit
+     * @throw     std::invalid_argument The slope is zero
+     */
+    AffineUnit(
+            const Unit&     core,
+            const double    slope,
+            const double    intercept);
 };
 
 } // namespace quantity

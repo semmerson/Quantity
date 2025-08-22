@@ -2,8 +2,7 @@
  * This file tests class AffineUnit.
  */
 
-#include "AffineUnit.h"
-#include "BaseUnit.h"
+#include "Unit.h"
 #include "Dimension.h"
 #include "gtest/gtest.h"
 

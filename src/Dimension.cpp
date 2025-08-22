@@ -22,8 +22,6 @@
 
 #include "Dimension.h"
 
-#include "BaseUnit.h"
-
 #include <functional>
 #include <stdexcept>
 #include <unordered_set>
