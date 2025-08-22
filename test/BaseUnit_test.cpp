@@ -2,7 +2,7 @@
  * This file tests class BaseUnit.
  */
 
-#include "BaseUnit.h"
+#include "Unit.h"
 
 #include "Dimension.h"
 

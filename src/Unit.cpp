@@ -1,5 +1,5 @@
 /**
- * This file implements a class for units of physical quantities.
+ * This file implements support for units of physical quantities.
  *
  *        File: Unit.cpp
  *  Created on: Aug 3, 2025
@@ -21,6 +21,7 @@
  */
 
 #include "Unit.h"
+#include "UnitImpl.h"
 
 namespace quantity {
 
@@ -66,12 +67,12 @@ bool Unit::isOffset() const
 
 bool Unit::isConvertible(const Unit& other) const
 {
-    return pImpl->isConvertible(*other.pImpl.get());
+    return pImpl->isConvertible(*other.pImpl);
 }
 
 Unit Unit::multiply(const Unit& unit) const
 {
-    return Unit(pImpl->multiply(unit.pImpl.get()));
+    return Unit(pImpl->multiply(*unit.pImpl));
 }
 
 #if 0
@@ -100,5 +101,18 @@ double Unit::convert(const double value) const
 {
     return pImpl->convert(value);
 }
+
+BaseUnit::BaseUnit(
+        const string&  name,
+        const string&  symbol)
+    : Unit(new BaseUnitImpl(name, symbol))
+{}
+
+AffineUnit::AffineUnit(
+        const Unit&     core,
+        const double    slope,
+        const double    intercept)
+    : Unit(new AffineUnitImpl(*core.pImpl, slope, intercept))
+{}
 
 } // Namespace
