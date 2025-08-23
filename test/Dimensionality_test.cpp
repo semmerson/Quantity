@@ -44,6 +44,7 @@ protected:
 
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
+    Dimension mass{"Mass", "M"};
     Dimension time{"Time", "T"};
 };
 
@@ -61,11 +62,9 @@ TEST_F(DimensionalityTest, Construction)
 TEST_F(DimensionalityTest, Multiplication)
 {
     EXPECT_EQ("Length^2", Dimensionality(length).multiply(Dimensionality(length)).to_string());
-#if 0
-    EXPECT_EQ("Length^2", Dimensionality(length, 2).to_string());
-    EXPECT_EQ("Length^-1", Dimensionality(length, -1).to_string());
-    EXPECT_EQ("Length^(-2/3)", Dimensionality(length, -2, 3).to_string());
-#endif
+    EXPECT_EQ("Length^2·Mass", Dimensionality(length, 2).multiply(Dimensionality(mass)).to_string());
+    EXPECT_EQ("Length^2·Mass·Time^-3", Dimensionality(length, 2)
+            .multiply(Dimensionality(mass)).multiply(Dimensionality(time, -3)).to_string());
 }
 
 }  // namespace
