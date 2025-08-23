@@ -98,7 +98,7 @@ public:
         for (const auto factor : *smaller) {
             auto iter = newImpl->factors.find(factor);
             if (iter == newImpl->factors.end()) {
-                newImpl->factors.insert(*iter);
+                newImpl->factors.insert(factor);
             }
             else {
                 newImpl->factors.erase(iter);
