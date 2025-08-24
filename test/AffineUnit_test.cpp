@@ -55,13 +55,11 @@ protected:
 /// Tests construction
 TEST_F(AffineUnitTest, Construction)
 {
-    AffineUnit unit1{meter, 3, 0};
-    EXPECT_FALSE(unit1.isOffset());
-    EXPECT_FALSE(unit1.isDimensionless());
-    EXPECT_FALSE(meter.isOffset());
+    EXPECT_THROW(AffineUnit(meter, 0, 1), std::logic_error);
 
-    AffineUnit unit2{meter, 3, 5};
-    EXPECT_TRUE(unit2.isOffset());
+    AffineUnit unit1{meter, 3, 1};
+    EXPECT_TRUE(unit1.isOffset());
+    EXPECT_FALSE(unit1.isDimensionless());
 }
 
 /// Tests Unit::isConvertible()
