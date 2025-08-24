@@ -18,6 +18,10 @@ add_executable(BaseQuantity_test BaseQuantity_test.cpp)
 target_link_libraries(BaseQuantity_test libquant ${GTEST_LIBRARY})
 add_test(BaseQuantity_test BaseQuantity_test)
 
+add_executable(Exponent_test Exponent_test.cpp)
+target_link_libraries(Exponent_test libquant ${GTEST_LIBRARY})
+add_test(Exponent_test Exponent_test)
+
 add_executable(DimFactor_test DimFactor_test.cpp)
 target_link_libraries(DimFactor_test libquant ${GTEST_LIBRARY})
 add_test(DimFactor_test DimFactor_test)

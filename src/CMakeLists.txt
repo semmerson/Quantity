@@ -11,4 +11,5 @@ add_library(libquant OBJECT
     Dimensionality.cpp      Dimensionality.h
     DimFactor.cpp           DimFactor.h
                             OrderedDimFactor.h
+    Exponent.cpp            Exponent.h
     )
