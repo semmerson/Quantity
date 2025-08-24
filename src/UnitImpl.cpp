@@ -121,26 +121,13 @@ UnitImpl* BaseUnitImpl::multiply(const UnitImpl& unit) const
 }
 
 #if 0
-/**
- * Multiplies by a base unit.
- * @param[in] other  The base unit
- * @return           A unit whose scale-transform is equal to this unit's multiplied by
- *                   the base unit's
- */
-UnitImpl* BaseUnitImpl::multiply(const BaseUnitImpl* other) const {
-    throw std::logic_error("Not implemented yet");
+UnitImpl* BaseUnitImpl::multiplyBy(const BaseUnitImpl& unit) const
+{
 }
 
-/**
- * Multiplies by an affine unit.
- * @param[in] other  The affine unit
- * @return           A unit whose scale-transform is equal to this unit's multiplied by
- *                   the affine unit's
- */
-UnitImpl* BaseUnitImpl::multiply(const AffineUnitImpl* other) const {
-    throw std::logic_error("Not implemented yet");
+UnitImpl* BaseUnitImpl::multiplyBy(const AffineUnitImpl& unit) const
+{
 }
-};
 #endif
 
 unordered_set<string>    BaseUnitImpl::nameSet(7);    ///< Set of extant base unit names
@@ -236,7 +223,22 @@ double AffineUnitImpl::convert(const double value) const
 
 UnitImpl* AffineUnitImpl::multiply(const UnitImpl& other) const
 {
-    throw std::logic_error("Not implemented yet");
+    if (intercept)
+        throw std::logic_error("Multiplication by offset units isn't supported");
 }
+
+#if 0
+UnitImpl* AffineUnitImpl::multiplyBy(const BaseUnitImpl& unit) const
+{
+    if (intercept)
+        throw std::logic_error("Multiplication by offset units isn't supported");
+}
+
+UnitImpl* AffineUnitImpl::multiplyBy(const AffineUnitImpl& unit) const
+{
+    if (intercept)
+        throw std::logic_error("Multiplication by offset units isn't supported");
+}
+#endif
 
 } // Namespace

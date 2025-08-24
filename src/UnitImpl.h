@@ -131,6 +131,20 @@ public:
 
 #if 0
     /**
+     * Multiplies by a base unit.
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     */
+    virtual UnitImpl* multiplyBy(const BaseUnitImpl& unit) const =0;
+
+    /**
+     * Multiplies by an affine unit.
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     */
+    virtual UnitImpl* multiplyBy(const AffineUnitImpl& unit) const =0;
+
+    /**
      * Divides by a numeric factor.
      * @param[in] factor The numeric factor
      * @return           A unit whose scale-transform is equal to this unit's divided by a
@@ -306,31 +320,31 @@ public:
 
     /**
      * Multiplies by another unit.
-     * @param[in] unit   The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * @param[in] other             The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the
+     *                              other unit's
+     * @throw     std::logic_error  If this operation isn't supported with these units
      */
-    UnitImpl* multiply(const UnitImpl& unit) const override;
+    UnitImpl* multiply(const UnitImpl& other) const override;
 
 #if 0
     /**
      * Multiplies by a base unit.
-     * @param[in] other  The base unit
-     * @return           A unit whose scale-transform is equal to this unit's multiplied by
-     *                   the base unit's
+     * @param[in] other             The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the
+     *                              other unit's
+     * @throw     std::logic_error  If this operation isn't supported with these units
      */
-    UnitImpl* BaseUnitImpl::multiply(const BaseUnitImpl* other) const {
-        throw std::logic_error("Not implemented yet");
-    }
+    UnitImpl* multiplyBy(const BaseUnitImpl& unit) const override;
 
     /**
      * Multiplies by an affine unit.
-     * @param[in] other  The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's multiplied by
-     *                   the affine unit's
+     * @param[in] other             The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the
+     *                              other unit's
+     * @throw     std::logic_error  If this operation isn't supported with these units
      */
-    UnitImpl* BaseUnitImpl::multiply(const AffineUnitImpl* other) const {
-        throw std::logic_error("Not implemented yet");
-    }
+    UnitImpl* multiplyBy(const AffineUnitImpl& unit) const override;
 #endif
 };
 
@@ -443,6 +457,22 @@ public:
      * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
     UnitImpl* multiply(const UnitImpl& other) const override;
+
+#if 0
+    /**
+     * Multiplies by a base unit.
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     */
+    UnitImpl* multiplyBy(const BaseUnitImpl& unit) const override;
+
+    /**
+     * Multiplies by an affine unit.
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     */
+    UnitImpl* multiplyBy(const AffineUnitImpl& unit) const override;
+#endif
 };
 
 } // namespace quantity
