@@ -116,8 +116,10 @@ public:
 
     /**
      * Multiplies by another unit.
-     * @param[in] other  The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * @param[in] other             The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the
+     *                              other unit's
+     * @throw     std::logic_error  If this operation isn't supported with these units
      */
     Unit multiply(const Unit& other) const;
 
