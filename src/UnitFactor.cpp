@@ -45,7 +45,7 @@ private:
 
 public:
     /**
-     * Constructs from a dimension and an exponent.
+     * Constructs from a unit and an exponent.
      * @param[in] base  The base unit (e.g., meter)
      * @param[in] exp   The exponent
      */
@@ -53,6 +53,18 @@ public:
                    const Exponent& exp)
         : base{base}
         , exp(exp)
+    {}
+
+    /**
+     * Constructs from a unit and a rational exponent.
+     * @param[in] base  The base unit (e.g., meter)
+     * @param[in] numer The numerator of the exponent
+     * @param[in] denom The denominator of the exponent
+     */
+    UnitFactorImpl(const BaseUnit& base,
+                   const int       numer,
+                   const int       denom)
+        : UnitFactorImpl(base, Exponent(numer, denom))
     {}
 
     /**
@@ -133,10 +145,10 @@ UnitFactor::UnitFactor(UnitFactorImpl* impl)
 {}
 
 UnitFactor::UnitFactor(
-        const Unit& dim,
-        const int        numer,
-        const int        denom)
-    : UnitFactor(new UnitFactorImpl(dim, numer, denom))
+        const Unit& unit,
+        const int   numer,
+        const int   denom)
+    : UnitFactor(new UnitFactorImpl(unit, numer, denom))
 {}
 
 int UnitFactor::getNumer() const
