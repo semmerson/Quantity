@@ -50,6 +50,7 @@ protected:
     Dimension mass{"Mass", "M"};
     BaseUnit meter{"meter", "m"};
     BaseUnit kilogram{"kilogram", "kg"};
+    BaseUnit kelvin{"kelvin", "°K"};
 };
 
 /// Tests construction
@@ -81,6 +82,14 @@ TEST_F(AffineUnitTest, Convert)
     AffineUnit unit{meter, 3, 5};
     ASSERT_EQ(5, unit.convert(0));
     ASSERT_EQ(8, unit.convert(1));
+
+    AffineUnit celsius{kelvin, 1, -273.15};
+    EXPECT_EQ("°K - 273.150000", celsius.to_string());
+    EXPECT_EQ(-273.15, celsius.convert(0));
+
+    AffineUnit fahrenheit{kelvin, 1.8, -459.67};
+    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit.to_string());
+    EXPECT_EQ(-459.67, fahrenheit.convert(0));
 }
 
 #if 0

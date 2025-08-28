@@ -84,7 +84,7 @@ TEST_F(BaseUnitTest, Multiplication)
 {
     BaseUnit meter{"meter", "m"};
     BaseUnit kilogram{"kilogram", "kg"};
-    EXPECT_THROW(meter.multiply(kilogram), std::logic_error);
+    EXPECT_EQ("kg·m", meter.multiply(kilogram).to_string());
 }
 
 }  // namespace

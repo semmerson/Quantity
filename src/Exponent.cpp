@@ -23,6 +23,7 @@
 #include "Exponent.h"
 
 #include <cmath>
+#include <functional>
 #include <stdexcept>
 
 using namespace std;
@@ -110,6 +111,16 @@ public:
     }
 
     /**
+     * Indicates if this instance is one.
+     * @retval true     This instance is one
+     * @retval false    This instance is not one
+     */
+    bool isUnity() const
+    {
+        return numer == 1 && denom == 1;
+    }
+
+    /**
      * Returns the numerator of the exponent.
      * @return The numerator of the exponent
      */
@@ -145,6 +156,16 @@ public:
     }
 
     /**
+     * Returns the hash code of this instance.
+     * @return The hash code of this instance
+     */
+    size_t hash() const
+    {
+        static const auto myHash = std::hash<int>();
+        return myHash(numer) ^ myHash(denom);
+    }
+
+    /**
      * Compares this instance with another.
      * @param[in] other The other instance
      * @return          A value less than, equal to, or greater than zero as this instance is
@@ -172,34 +193,43 @@ public:
     }
 
     /**
-     * Raises a dimensional factor to a rational exponent.
-     * @param[in] n             The numerator of the exponent
-     * @param[in] d             The denominator of the exponent
-     * @return                  The result of raising this instance to the given power
-     * @throw std::domain_error The denominator of the exponent is zero
+     * Multiplies this instance by a rational number.
+     * @param[in] n             The numerator of the rational number
+     * @param[in] d             The denominator of the rational number
+     * @return                  The result of multiplying this instance by the given amount
+     * @throw std::domain_error The denominator of the rational number is zero
      */
-    ExponentImpl* pow(int n,
-                      int d) const
+    ExponentImpl& multiply(int n,
+                           int d)
     {
         if (d == 0)
-            throw domain_error("Denominator of exponent is zero");
+            throw domain_error("Denominator is zero");
 
-        auto newNumer = numer*n;
-        auto newDenom = denom*d;
-        return new ExponentImpl(newNumer, newDenom);
+        numer *= n;
+        denom *= d;
+        if (denom < 0) {
+            numer = -numer;
+            denom = -denom;
+        }
+        int  div = gcd(numer, denom);
+        numer /= div;
+        denom /= div;
+        return *this;
     }
 
     /**
-     * Multiplies by another instance
+     * Adds another instance
      * @param[in] other         Another instance
-     * @return                  The product of this instance and the other instance
+     * @return                  The sum of this instance and the other instance
      */
-    ExponentImpl* multiply(const ExponentImpl& other) const
+    ExponentImpl& add(const ExponentImpl& other)
     {
         auto newNumer = numer*other.denom + other.numer*denom;
         auto newDenom = denom*other.denom;
         int  div = gcd(newNumer, newDenom);
-        return new ExponentImpl(newNumer/div, newDenom/div);
+        numer = newNumer/div;
+        denom = newDenom/div;
+        return *this;
     }
 };
 
@@ -211,6 +241,11 @@ Exponent::Exponent(const int numer,
                    const int denom)
     : Exponent(new ExponentImpl(numer, denom))
 {}
+
+bool Exponent::isUnity() const
+{
+    return pImpl->isUnity();
+}
 
 int Exponent::getNumer() const
 {
@@ -227,20 +262,27 @@ string Exponent::to_string() const
     return pImpl->to_string();
 }
 
+size_t Exponent::hash() const
+{
+    return pImpl->hash();
+}
+
 int Exponent::compare(const Exponent& other) const
 {
     return pImpl->compare(*other.pImpl);
 }
 
-Exponent Exponent::pow(const int numer,
-                       const int denom) const
+Exponent& Exponent::multiply(const int numer,
+                             const int denom)
 {
-    return Exponent(pImpl->pow(numer, denom));
+    pImpl->multiply(numer, denom);
+    return *this;
 }
 
-Exponent Exponent::multiply(const Exponent& other) const
+Exponent& Exponent::add(const Exponent& other)
 {
-    return Exponent(pImpl->multiply(*other.pImpl));
+    pImpl->add(*other.pImpl);
+    return *this;
 }
 
 } // namespace quantity

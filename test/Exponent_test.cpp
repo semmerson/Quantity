@@ -48,6 +48,7 @@ protected:
 // Tests construction
 TEST_F(ExponentTest, Construction)
 {
+    EXPECT_TRUE(Exponent().isUnity());
     EXPECT_THROW(Exponent(1, 0).to_string(), std::invalid_argument);
     EXPECT_EQ("1", Exponent().to_string());
     EXPECT_EQ("1", Exponent(1).to_string());
@@ -77,24 +78,24 @@ TEST_F(ExponentTest, Comparison)
     EXPECT_EQ(1, Exponent(-3, 4).compare(Exponent(-2, 3)));
 }
 
-// Tests exponentiation
-TEST_F(ExponentTest, Exponentiation)
-{
-    EXPECT_THROW(Exponent(1).pow(1, 0).to_string(), std::domain_error);
-    EXPECT_EQ("2", Exponent().pow(2).to_string());
-    EXPECT_EQ("-1", Exponent().pow(-1).to_string());
-    EXPECT_EQ("(-2/3)", Exponent().pow(2, -3).to_string());
-    EXPECT_EQ("0", Exponent().pow(0, -3).to_string());
-}
-
 // Tests multiplication
 TEST_F(ExponentTest, Multiplication)
 {
-    EXPECT_EQ("3", Exponent().multiply(Exponent(2)).to_string());
-    EXPECT_EQ("0", Exponent().multiply(Exponent(-1)).to_string());
-    EXPECT_EQ("(1/3)", Exponent().multiply(Exponent(2, -3)).to_string());
-    EXPECT_EQ("(-1/3)", Exponent(-1).multiply(Exponent(2, 3)).to_string());
-    EXPECT_EQ("1", Exponent().multiply(Exponent(0, -3)).to_string());
+    EXPECT_THROW(Exponent(1).multiply(1, 0).to_string(), std::domain_error);
+    EXPECT_EQ("2", Exponent().multiply(2).to_string());
+    EXPECT_EQ("-1", Exponent().multiply(-1).to_string());
+    EXPECT_EQ("(-2/3)", Exponent().multiply(2, -3).to_string());
+    EXPECT_EQ("0", Exponent().multiply(0, -3).to_string());
+}
+
+// Tests addition
+TEST_F(ExponentTest, Addition)
+{
+    EXPECT_EQ("3", Exponent().add(Exponent(2)).to_string());
+    EXPECT_EQ("0", Exponent().add(Exponent(-1)).to_string());
+    EXPECT_EQ("(1/3)", Exponent().add(Exponent(2, -3)).to_string());
+    EXPECT_EQ("(-1/3)", Exponent(-1).add(Exponent(2, 3)).to_string());
+    EXPECT_EQ("1", Exponent().add(Exponent(0, -3)).to_string());
 }
 
 }  // namespace

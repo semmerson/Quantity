@@ -20,6 +20,8 @@
 
 #pragma once
 
+#include "Exponent.h"
+
 #include <cstddef>
 #include <memory>
 #include <string>
@@ -71,14 +73,6 @@ public:
 	 */
 	size_t hash() const;
 
-	/**
-	 * Compares this instance with another.
-	 * @param[in] other The other instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-	int compare(const Unit& other) const;
-
     /**
      * Returns a string representation
      * @retval A string representation
@@ -98,6 +92,14 @@ public:
      * retval false     This unit's origin is zero
      */
     bool isOffset() const;
+
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compare(const Unit& other) const;
 
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
@@ -122,42 +124,6 @@ public:
      * @throw     std::logic_error  If this operation isn't supported with these units
      */
     Unit multiply(const Unit& other) const;
-
-#if 0
-    /**
-     * Divides by a numeric factor.
-     * @param[in] factor The numeric factor
-     * @return           A unit whose scale-transform is equal to this unit's divided by a
-     *                   factor
-     */
-    Unit divideBy(const double factor) const;
-
-    /**
-     * Divides by another unit.
-     * @param[in] other  The other unit
-     * @return           A unit whose scale-transform is equal to this unit's divided by
-     *                   the other unit's
-     */
-    Unit divideBy(const Unit& other) const;
-
-    /**
-     * Raises to a numeric power.
-     * @param[in] power         The numeric power
-     * @return                  A unit whose scale-transform is equal to this unit's raised
-     *                          to a power
-     * @throw std::domain_error This unit can't be raised to a power
-     */
-    Unit pow(const int power) const;
-
-    /**
-     * Takes a root.
-     * @param[in] root          The numeric root
-     * @return                  A unit whose scale-transform is equal to a root of this
-     *                          unit's
-     * @throw std::domain_error This unit can't have a root taken
-     */
-    Unit root(const int root) const;
-#endif
 };
 
 /// Declaration of a base unit of a physical quantity.
@@ -174,6 +140,21 @@ public:
      */
     BaseUnit(const string&  name,
              const string&  symbol);
+};
+
+/// Declaration of a derived unit of a physical quantity.
+class DerivedUnit : public Unit
+{
+protected:
+    friend class BaseUnit;
+
+    /**
+     * Constructs from a base unit and an exponent.
+     * @param[in] base  The base unit
+     * @param[in] exp   The exponent of the base unit
+     */
+    DerivedUnit(const BaseUnit& base,
+                const Exponent& exp = Exponent{});
 };
 
 /// Declaration of an affine unit of a physical quantity.

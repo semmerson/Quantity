@@ -75,28 +75,6 @@ Unit Unit::multiply(const Unit& unit) const
     return Unit(pImpl->multiply(*unit.pImpl));
 }
 
-#if 0
-Unit Unit::divideBy(const double factor) const
-{
-    return pImpl->divideBy(pImpl->divideBy(factor));
-}
-
-Unit Unit::divideBy(const Unit& unit) const
-{
-    return Unit(pImpl->divideBy(unit.pImpl.get()));
-}
-
-Unit Unit::pow(const int power) const
-{
-    return Unit(pImpl->pow(power));
-}
-
-Unit Unit::root(const int root) const
-{
-    return Unit(pImpl->root(root));
-}
-#endif
-
 double Unit::convert(const double value) const
 {
     return pImpl->convert(value);

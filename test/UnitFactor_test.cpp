@@ -1,8 +1,8 @@
 /**
- * This file tests class DerivedUnit.
+ * This file tests class DimFactor.
  */
 
-#include "Unit.h"
+#include "DimFactor.h"
 
 #include "gtest/gtest.h"
 
@@ -11,18 +11,18 @@ namespace {
 using namespace quantity;
 
 /// The fixture for testing the class
-class DimensionTest : public ::testing::Test
+class DimFactorTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    DimensionTest()
+    DimFactorTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~DimensionTest()
+    virtual ~DimFactorTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -43,16 +43,26 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    BaseUnit kilogram{"kilogram", "kg"};
-    BaseUnit meter{"meter", "m"};
-    BaseUnit second{"second", "s"};
+    Dimension length{"Length", "L"};
 };
 
 // Tests construction
-TEST_F(DimensionTest, Construction)
+TEST_F(DimFactorTest, Construction)
 {
-    auto kg_m = kilogram.multiply(meter);
-    EXPECT_EQ("kg·m", kg_m.to_string());
+    EXPECT_EQ("Length", DimFactor(length).to_string());
+    EXPECT_EQ("Length^2", DimFactor(length, 2).to_string());
+    EXPECT_EQ("Length^-1", DimFactor(length, -1).to_string());
+    EXPECT_EQ("Length^(-2/3)", DimFactor(length, -2, 3).to_string());
+}
+
+// Tests exponentiation
+TEST_F(DimFactorTest, Exponentiation)
+{
+    EXPECT_THROW(DimFactor(length).pow(1, 0).to_string(), std::domain_error);
+    EXPECT_EQ("Length^2", DimFactor(length).pow(2).to_string());
+    EXPECT_EQ("Length^-1", DimFactor(length).pow(-1).to_string());
+    EXPECT_EQ("Length^(-2/3)", DimFactor(length).pow(2, -3).to_string());
+    EXPECT_EQ("Length^0", DimFactor(length).pow(0, -3).to_string());
 }
 
 }  // namespace

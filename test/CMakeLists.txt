@@ -22,6 +22,10 @@ add_executable(Exponent_test Exponent_test.cpp)
 target_link_libraries(Exponent_test libquant ${GTEST_LIBRARY})
 add_test(Exponent_test Exponent_test)
 
+add_executable(DerivedUnit_test DerivedUnit_test.cpp)
+target_link_libraries(DerivedUnit_test libquant ${GTEST_LIBRARY})
+add_test(DerivedUnit_test DerivedUnit_test)
+
 add_executable(DimFactor_test DimFactor_test.cpp)
 target_link_libraries(DimFactor_test libquant ${GTEST_LIBRARY})
 add_test(DimFactor_test DimFactor_test)

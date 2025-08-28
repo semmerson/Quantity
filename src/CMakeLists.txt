@@ -12,4 +12,5 @@ add_library(libquant OBJECT
     DimFactor.cpp           DimFactor.h
                             OrderedDimFactor.h
     Exponent.cpp            Exponent.h
+                            UnitFactor.h
     )

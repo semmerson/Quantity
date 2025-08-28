@@ -1,7 +1,7 @@
 /**
- * This file declares a rational exponent for dimensions and units(e.g., "2/3").
+ * This file declares a single unit factor (e.g., "m^2").
  *
- *        File: Exponent.h
+ *        File: UnitFactor.h
  *  Created on: Aug 8, 2025
  *      Author: Steven R. Emmerson
  *
@@ -22,22 +22,23 @@
 
 #pragma once
 
+#include "Unit.h"
+
 #include <memory>
-#include <cstddef>
 #include <stdexcept>
 
 using namespace std;
 
 namespace quantity {
 
-class ExponentImpl;
+class UnitFactorImpl;
 
-/// Implementation of an exponent.
-class Exponent
+/// Implementation of a unit factor (e.g., "m^2")
+class UnitFactor
 {
 private:
     /// Type of smart pointer to an implementation
-    using Pimpl = shared_ptr<ExponentImpl>;
+    using Pimpl = shared_ptr<UnitFactorImpl>;
 
     /// Smart pointer to an implementation.
     Pimpl pImpl;
@@ -46,24 +47,19 @@ private:
      * Constructs from a pointer to an implementation.
      * @param[in] impl  Pointer to an implementation
      */
-    Exponent(ExponentImpl* impl);
+    UnitFactor(UnitFactorImpl* impl);
 
 public:
-    /**
-     * Constructs from a rational exponent.
-     * @param[in] numer The numerator of the exponent
-     * @param[in] denom The denominator of the exponent
-     * @throw     std::invalid_argument The denominator is zero
-     */
-    Exponent(int numer = 1,
-             int denom = 1);
 
     /**
-     * Indicates if this instance is one.
-     * @retval true     This instance is one
-     * @retval false    This instance is not one
+     * Constructs from a base unit and a rational exponent.
+     * @param[in] base  The base unit (e.g., meter)
+     * @param[in] numer The numerator of the exponent
+     * @param[in] denom The denominator of the exponent
      */
-    bool isUnity() const;
+    UnitFactor(const Unit& base,
+               int         numer = 1,
+               int         denom = 1);
 
     /**
      * Returns the numerator of the exponent.
@@ -73,7 +69,7 @@ public:
 
     /**
      * Returns the denominator of the exponent.
-     * @return The denominator of the exponent. Will always be positive.
+     * @return The denominator of the exponent
      */
     int getDenom() const;
 
@@ -84,35 +80,29 @@ public:
     string to_string() const;
 
     /**
-     * Returns the hash code of this instance.
-     * @return The hash code of this instance
-     */
-    size_t hash() const;
-
-    /**
      * Compares this instance with another.
      * @param[in] other The other instance
      * @return          A value less than, equal to, or greater than zero as this instance is
      *                  considered less than, equal to, or greater than the other
      */
-    int compare(const Exponent& other) const;
+    int compare(const UnitFactor& other) const;
 
     /**
-     * Raises this instance to a rational exponent.
-     * @param[in] numer                 The numerator of the exponent
-     * @param[in] denom                 The denominator of the exponent
-     * @return                          This instance raised to the given power
-     * @throw     std::invalid_argument The denominator is zero
+     * Raises a unit factor to a rational exponent.
+     * @param[in] numer         The numerator of the exponent
+     * @param[in] denom         The denominator of the exponent
+     * @return                  The result of raising this instance to the given power
      */
-    Exponent& multiply(const int numer,
-                       const int denom = 1);
+    UnitFactor pow(const int numer,
+                   const int denom = 1) const;
 
     /**
-     * Multiplies this instance by another instance
-     * @param[in] other Another instance
-     * @return          This instance multiplied by the other instance
+     * Multiplies by another instance
+     * @param[in] other         Another instance
+     * @return                  The product of this instance and the other instance
+     * @throw std::domain_error The unit dimensions don't match
      */
-    Exponent& add(const Exponent& other);
+    UnitFactor multiply(const UnitFactor& other) const;
 };
 
 } // namespace quantity
