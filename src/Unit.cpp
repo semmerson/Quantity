@@ -38,7 +38,7 @@ namespace quantity {
  * @return              Smart pointer to the corresponding base unit
  */
 Unit::Pimpl Unit::getBase(const string&  name,
-                      const string&  symbol)
+                          const string&  symbol)
 {
     return Unit::Pimpl(new BaseUnit(name, symbol));
 }
@@ -53,8 +53,8 @@ Unit::Pimpl Unit::getBase(const string&  name,
  * @throw     std::invalid_argument The slope is zero
  */
 Unit::Pimpl Unit::getAffine(const Unit::Pimpl& core,
-                      const double       slope,
-                      const double       intercept)
+                            const double       slope,
+                            const double       intercept)
 {
     return (slope == 1 && intercept == 0)
         ? core
