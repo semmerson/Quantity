@@ -41,6 +41,14 @@ protected:
     Unit() =default;
 
 public:
+    /// Types of units
+    enum class UnitType
+    {
+        base,
+        derived,
+        affine,
+    };
+
     /// Smart pointer to an implementation of a unit.
     using Pimpl = shared_ptr<const Unit>;
 
@@ -57,9 +65,9 @@ public:
                          const string& symbol);
 
     /**
-     * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is the
-     * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
-     * returned.
+     * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is a
+     * numeric value in the underlying unit and "a" and "b" are the slope and intercept,
+     * respectively. If the slope is 1 and the intercept is 0, then the underlying unit is returned.
      * @param[in] core                  The underlying unit
      * @param[in] slope                 The slope for converting values from the @ core unit
      * @param[in] intercept             The intercept for converting values from the @ core unit
@@ -74,6 +82,12 @@ public:
      * @retval A string representation
      */
     virtual std::string to_string() const =0;
+
+    /**
+     * Indicates the type of this unit.
+     * @return The type of this unit
+     */
+    virtual UnitType type() const =0;
 
     /**
      * Indicates if this instance is a base unit (e.g., meter).
@@ -167,11 +181,11 @@ public:
     virtual bool isConvertibleTo(const AffineUnit& other) const =0;
 
     /**
-     * Converts a numeric value from the canonical unit (e.g., kg, m/s^2) to this unit.
-     * @param[in] value  The value to be converted from the canonical unit
+     * Converts a numeric value from any underlying unit to this unit.
+     * @param[in] value  The value to be converted from the underlying unit
      * @return           The converted value
      */
-    virtual double convertDown(const double value) const = 0;
+    virtual double convertTo(const double value) const = 0;
 
     /**
      * Multiplies by another unit.

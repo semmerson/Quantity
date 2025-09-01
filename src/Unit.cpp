@@ -57,8 +57,22 @@ Unit::Pimpl Unit::getAffine(const Unit::Pimpl& core,
                       const double       intercept)
 {
     return (slope == 1 && intercept == 0)
-            ? core
-            : Unit::Pimpl(new AffineUnit(core, slope, intercept));
+        ? core
+        : Unit::Pimpl(new AffineUnit(core, slope, intercept));
+
+#if 0
+    // The following is incorrect. It would need to get the core of the core, recursively. Better to
+    // simply daisy-chain affine unit transforms rather than attempt to merge them. Any merging
+    // could probably be accomplished in a Converter class.
+
+    // The core unit is affine. Merge the two affine transforms
+    const auto coreIntercept = core->convertTo(0);
+    const auto coreSlope = core->convertTo(1) - coreIntercept;
+    const auto newSlope = slope*coreSlope;
+    const auto newIntercept = slope*coreIntercept + intercept;
+
+    return Unit::Pimpl(new AffineUnit(core, newSlope, newIntercept));
+#endif
 }
 
 Unit::~Unit() noexcept =default;

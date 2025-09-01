@@ -69,6 +69,12 @@ public:
     std::string to_string() const override;
 
     /**
+     * Indicates the type of this unit.
+     * @return The type of this unit
+     */
+    UnitType type() const override;
+
+    /**
      * Indicates if this instance is a base unit (e.g., meter).
      * @retval true  This instance is a base unit
      * @retval false This instance is not a base unit
@@ -116,7 +122,7 @@ public:
      * @param[in] value  The value to be converted
      * @return           The converted value
      */
-    double convertDown(const double value) const override;
+    double convertTo(const double value) const override;
 
     /**
      * Multiplies by another unit.

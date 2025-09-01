@@ -61,11 +61,11 @@ std::string AffineUnit::to_string() const
     return rep;
 }
 
-/**
- * Indicates if this instance is a base unit (e.g., meter).
- * @retval true  This instance is a base unit
- * @retval false This instance is not a base unit
- */
+Unit::UnitType AffineUnit::type() const
+{
+    return UnitType::affine;
+}
+
 bool AffineUnit::isBase() const
 {
     return slope == 1 && intercept == 0 && core->isBase();
@@ -97,7 +97,7 @@ bool AffineUnit::isConvertible(const Pimpl& other) const
     return other->isConvertibleTo(*this);
 }
 
-double AffineUnit::convertDown(const double value) const
+double AffineUnit::convertTo(const double value) const
 {
     return value * slope + intercept;
 }

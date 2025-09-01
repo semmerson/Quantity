@@ -81,16 +81,27 @@ TEST_F(AffineUnitTest, IsConvertible)
 TEST_F(AffineUnitTest, Convert)
 {
     Unit::Pimpl unit = Unit::getAffine(meter, 3, 5);
-    ASSERT_EQ(5, unit->convertDown(0));
-    ASSERT_EQ(8, unit->convertDown(1));
+    ASSERT_EQ(5, unit->convertTo(0));
+    ASSERT_EQ(8, unit->convertTo(1));
 
     Unit::Pimpl celsius = Unit::getAffine(kelvin, 1, -273.15);
     EXPECT_EQ("°K - 273.150000", celsius->to_string());
-    EXPECT_EQ(-273.15, celsius->convertDown(0));
+    EXPECT_EQ(-273.15, celsius->convertTo(0));
 
-    Unit::Pimpl fahrenheit = Unit::getAffine(kelvin, 1.8, -459.67);
-    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit->to_string());
-    EXPECT_EQ(-459.67, fahrenheit->convertDown(0));
+    Unit::Pimpl rankine = Unit::getAffine(kelvin, 1.8, 0.0);
+    EXPECT_EQ("1.800000*°K", rankine->to_string());
+    EXPECT_LE(491.66, rankine->convertTo(273.15));
+    EXPECT_GE(491.68+.001, rankine->convertTo(273.15));
+
+    Unit::Pimpl fahrenheit1 = Unit::getAffine(rankine, 1.0, -459.67);
+    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit1->to_string());
+    EXPECT_LE(31.99, fahrenheit1->convertTo(491.67));
+    EXPECT_GE(32.01, fahrenheit1->convertTo(491.67));
+
+    Unit::Pimpl fahrenheit2 = Unit::getAffine(celsius, 1.8, 32);
+    EXPECT_EQ("1.800000*(°K - 273.150000) + 32.000000", fahrenheit2->to_string());
+    EXPECT_LE(31.99, fahrenheit2->convertTo(0));
+    EXPECT_GE(32.01, fahrenheit2->convertTo(0));
 }
 
 #if 0

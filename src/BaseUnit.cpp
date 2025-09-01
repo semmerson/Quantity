@@ -60,11 +60,11 @@ std::string BaseUnit::to_string() const
     return symbol;
 }
 
-/**
- * Indicates if this instance is a base unit (e.g., meter).
- * @retval true  This instance is a base unit
- * @retval false This instance is not a base unit
- */
+Unit::UnitType BaseUnit::type() const
+{
+    return UnitType::base;
+}
+
 bool BaseUnit::isBase() const
 {
     return true;
@@ -96,7 +96,7 @@ bool BaseUnit::isConvertible(const Pimpl& other) const
     return other->isConvertibleTo(*this);
 }
 
-double BaseUnit::convertDown(const double value) const
+double BaseUnit::convertTo(const double value) const
 {
     return value;
 }

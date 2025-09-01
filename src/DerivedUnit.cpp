@@ -61,10 +61,14 @@ std::string DerivedUnit::to_string() const
 }
 
 /**
- * Indicates if this instance is a base unit (e.g., meter).
- * @retval true  This instance is a base unit
- * @retval false This instance is not a base unit
+ * Indicates the type of this unit.
+ * @return The type of this unit
  */
+Unit::UnitType DerivedUnit::type() const
+{
+    return UnitType::derived;
+}
+
 bool DerivedUnit::isBase() const
 {
     return factors.size() == 1 && factors.begin()->second.isOne();
@@ -98,7 +102,7 @@ bool DerivedUnit::isConvertible(const Pimpl& other) const
     return other->isConvertibleTo(*this);
 }
 
-double DerivedUnit::convertDown(const double value) const
+double DerivedUnit::convertTo(const double value) const
 {
     return value;
 }
