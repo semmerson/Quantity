@@ -23,75 +23,84 @@
 #include "Exponent.h"
 
 #include <cstddef>
-#include <memory>
 #include <string>
 
 using namespace std;
 
 namespace quantity {
 
-class UnitImpl;
+class BaseUnit;
+class DerivedUnit;
+class AffineUnit;
 
 /// Declaration of a unit of a physical quantity.
 class Unit
 {
-public:
-    /// Type of PIMPL smart pointer
-    using Pimpl = std::shared_ptr<UnitImpl>;
-
-    /// Smart pointer to the implementation for automatic deletion
-    Pimpl pImpl;
-
-    /**
-     * Constructs.
-     */
+protected:
+    /// Default constructs.
     Unit() =default;
 
+public:
+    /// Smart pointer to an implementation of a unit.
+    using Pimpl = shared_ptr<const Unit>;
+
+    /// Destroys.
+    virtual ~Unit() noexcept =0;
+
     /**
-     * Constructs from a pointer to an implementation.
-     * @param[in] impl  Pointer to an implementation
+     * Returns a base unit. Creates it if necessary.
+     * @param[in] name      The name of the unit
+     * @param[in] symbol    The symbol of the unit
+     * @return              Smart pointer to the corresponding base unit
      */
-    Unit(UnitImpl* impl);
+    static Pimpl getBase(const string& name,
+                         const string& symbol);
 
     /**
-     * Copy assigns.
-     * @param[in] rhs  The value to be assigned to this instance
-     * @retval         This instance with the assigned value
+     * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is the
+     * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
+     * returned.
+     * @param[in] core                  The underlying unit
+     * @param[in] slope                 The slope for converting values from the @ core unit
+     * @param[in] intercept             The intercept for converting values from the @ core unit
+     * @throw     std::invalid_argument The slope is zero
      */
-    Unit& operator=(const Unit& rhs);
+    static Pimpl getAffine(const Pimpl& core,
+                           const double slope,
+                           const double intercept);
 
     /**
-     * Indicates if this instance is valid (i.e., wasn't default constructed).
-     * @retval true     This instance is valid
-     * @retval false    This instance is not valid
-     */
-    operator bool() const noexcept;
-
-	/**
-	 * Returns the hash code of this instance.
-	 * @return  The hash code of this instance
-	 */
-	size_t hash() const;
-
-    /**
-     * Returns a string representation
+     * Returns a string representation.
      * @retval A string representation
      */
-    std::string to_string() const;
+    virtual std::string to_string() const =0;
+
+    /**
+     * Indicates if this instance is a base unit (e.g., meter).
+     * @retval true  This instance is a base unit
+     * @retval false This instance is not a base unit
+     */
+    virtual bool isBase() const =0;
 
     /**
      * Indicates if this unit is dimensionless.
      * retval true      This unit is dimensionless
      * retval false     This unit is not dimensionless
      */
-    bool isDimensionless() const;
+    virtual bool isDimensionless() const =0;
 
     /**
-     * Indicates this unit's origin is *not* zero
-     * retval true      This unit's origin is *not* zero
-     * retval false     This unit's origin is zero
+     * Indicates if the origin of this unit is *not* zero
+     * retval true      The origin of this unit is *not* zero
+     * retval false     The origin of this unit is zero
      */
-    bool isOffset() const;
+    virtual bool isOffset() const =0;
+
+	/**
+	 * Returns the hash code of this instance.
+	 * @return The hash code of this instance
+	 */
+    virtual size_t hash() const =0;
 
 	/**
 	 * Compares this instance with another.
@@ -99,7 +108,31 @@ public:
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compare(const Unit& other) const;
+    virtual int compare(const Pimpl& other) const =0;
+
+	/**
+	 * Compares this instance with a base unit.
+	 * @param[in] other The base unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+    virtual int compareTo(const BaseUnit& other) const =0;
+
+	/**
+	 * Compares this instance with a derived unit.
+	 * @param[in] other The derived unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+    virtual int compareTo(const DerivedUnit& other) const =0;
+
+	/**
+	 * Compares this instance with an affine unit.
+	 * @param[in] other The affine unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+    virtual int compareTo(const AffineUnit& other) const =0;
 
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
@@ -107,71 +140,66 @@ public:
      * @retval    true  They are convertible
      * @retval    false They are not convertible
      */
-    bool isConvertible(const Unit& other) const;
+    virtual bool isConvertible(const Pimpl& other) const =0;
 
     /**
-     * Converts a numeric value.
-     * @param[in] value  The value to be converted
+     * Indicates if numeric values in this unit are convertible with a base unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    virtual bool isConvertibleTo(const BaseUnit& other) const =0;
+
+    /**
+     * Indicates if numeric values in this unit are convertible with a derived unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    virtual bool isConvertibleTo(const DerivedUnit& other) const =0;
+
+    /**
+     * Indicates if numeric values in this unit are convertible with an affine unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    virtual bool isConvertibleTo(const AffineUnit& other) const =0;
+
+    /**
+     * Converts a numeric value from the canonical unit (e.g., kg, m/s^2) to this unit.
+     * @param[in] value  The value to be converted from the canonical unit
      * @return           The converted value
      */
-    double convert(const double value) const;
+    virtual double convertDown(const double value) const = 0;
 
     /**
      * Multiplies by another unit.
-     * @param[in] other             The other unit
-     * @return                      A unit whose scale-transform is equal to this unit's times the
-     *                              other unit's
-     * @throw     std::logic_error  If this operation isn't supported with these units
+     * @param[in] unit   The other unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    Unit multiply(const Unit& other) const;
-};
-
-/// Declaration of a base unit of a physical quantity.
-class BaseUnit : public Unit
-{
-public:
-    /// Default constructs
-    BaseUnit() =default;
+    virtual Pimpl multiply(const Pimpl& unit) const =0;
 
     /**
-     * Constructs.
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
+     * Multiplies by a base unit.
+     * @param[in] other  The base unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    BaseUnit(const string&  name,
-             const string&  symbol);
-};
-
-/// Declaration of a derived unit of a physical quantity.
-class DerivedUnit : public Unit
-{
-protected:
-    friend class BaseUnit;
+    virtual Pimpl multiplyBy(const BaseUnit& other) const =0;
 
     /**
-     * Constructs from a base unit and an exponent.
-     * @param[in] base  The base unit
-     * @param[in] exp   The exponent of the base unit
+     * Multiplies by a derived unit.
+     * @param[in] other  The derived unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    DerivedUnit(const BaseUnit& base,
-                const Exponent& exp = Exponent{});
-};
+    virtual Pimpl multiplyBy(const DerivedUnit& other) const =0;
 
-/// Declaration of an affine unit of a physical quantity.
-class AffineUnit : public Unit
-{
-public:
     /**
-     * Constructs.
-     * @param[in] core                  The underlying unit
-     * @param[in] slope                 The slope for converting values to the @ core unit
-     * @param[in] intercept             The intercept for converting values to the @ core unit
-     * @throw     std::invalid_argument The slope is zero
+     * Multiplies by an affine unit.
+     * @param[in] other  The affine unit
+     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    AffineUnit(
-            const Unit&     core,
-            const double    slope,
-            const double    intercept);
+    virtual Pimpl multiplyBy(const AffineUnit& other) const =0;
 };
 
 } // namespace quantity

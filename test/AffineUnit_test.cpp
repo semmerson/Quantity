@@ -48,48 +48,49 @@ protected:
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
     Dimension mass{"Mass", "M"};
-    BaseUnit meter{"meter", "m"};
-    BaseUnit kilogram{"kilogram", "kg"};
-    BaseUnit kelvin{"kelvin", "°K"};
+    Unit::Pimpl meter = Unit::getBase("meter", "m");
+    Unit::Pimpl kilogram = Unit::getBase("kilogram", "kg");
+    Unit::Pimpl kelvin = Unit::getBase("kelvin", "°K");
 };
 
 /// Tests construction
 TEST_F(AffineUnitTest, Construction)
 {
-    EXPECT_THROW(AffineUnit(meter, 0, 1), std::logic_error);
+    EXPECT_THROW(Unit::getAffine(meter, 0, 1), std::logic_error);
 
-    AffineUnit unit1{meter, 3, 1};
-    EXPECT_TRUE(unit1.isOffset());
-    EXPECT_FALSE(unit1.isDimensionless());
+    Unit::Pimpl unit1 = Unit::getAffine(meter, 3, 1);
+    EXPECT_FALSE(unit1->isBase());
+    EXPECT_TRUE(unit1->isOffset());
+    EXPECT_FALSE(unit1->isDimensionless());
 }
 
 /// Tests Unit::isConvertible()
 TEST_F(AffineUnitTest, IsConvertible)
 {
-    AffineUnit unit{meter, 3, 5};
-    ASSERT_TRUE(meter.isConvertible(unit));
-    ASSERT_TRUE(unit.isConvertible(meter));
-    ASSERT_FALSE(kilogram.isConvertible(unit));
+    Unit::Pimpl unit = Unit::getAffine(meter, 3, 5);
+    ASSERT_TRUE(meter->isConvertible(unit));
+    ASSERT_TRUE(unit->isConvertible(meter));
+    ASSERT_FALSE(kilogram->isConvertible(unit));
 
-    AffineUnit unit2{kilogram, 3, 5};
-    ASSERT_FALSE(unit2.isConvertible(unit));
-    ASSERT_FALSE(unit.isConvertible(unit2));
+    Unit::Pimpl unit2 = Unit::getAffine(kilogram, 3, 5);
+    ASSERT_FALSE(unit2->isConvertible(unit));
+    ASSERT_FALSE(unit->isConvertible(unit2));
 }
 
 /// Tests conversion
 TEST_F(AffineUnitTest, Convert)
 {
-    AffineUnit unit{meter, 3, 5};
-    ASSERT_EQ(5, unit.convert(0));
-    ASSERT_EQ(8, unit.convert(1));
+    Unit::Pimpl unit = Unit::getAffine(meter, 3, 5);
+    ASSERT_EQ(5, unit->convertDown(0));
+    ASSERT_EQ(8, unit->convertDown(1));
 
-    AffineUnit celsius{kelvin, 1, -273.15};
-    EXPECT_EQ("°K - 273.150000", celsius.to_string());
-    EXPECT_EQ(-273.15, celsius.convert(0));
+    Unit::Pimpl celsius = Unit::getAffine(kelvin, 1, -273.15);
+    EXPECT_EQ("°K - 273.150000", celsius->to_string());
+    EXPECT_EQ(-273.15, celsius->convertDown(0));
 
-    AffineUnit fahrenheit{kelvin, 1.8, -459.67};
-    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit.to_string());
-    EXPECT_EQ(-459.67, fahrenheit.convert(0));
+    Unit::Pimpl fahrenheit = Unit::getAffine(kelvin, 1.8, -459.67);
+    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit->to_string());
+    EXPECT_EQ(-459.67, fahrenheit->convertDown(0));
 }
 
 #if 0

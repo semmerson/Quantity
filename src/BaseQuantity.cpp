@@ -20,6 +20,7 @@
 
 #include "BaseQuantity.h"
 
+#include "BaseUnit.h"
 #include "Dimension.h"
 #include "UnorderedDimension.h"
 #include "UnorderedUnit.h"
@@ -39,11 +40,11 @@ namespace quantity {
 class BaseQuantityImpl final : public BaseQuantity
 {
 private:
-    const Dimension dim;    ///< Associated physical dimension
-    const BaseUnit  unit;   ///< Associated base unit
+    const Dimension   dim;    ///< Associated physical dimension
+    const Unit::Pimpl unit;   ///< Associated base unit
 
-    static UnorderedDimensionMap<Pimpl>  dimMap;  ///< Dimension-to-impl map
-    static UnorderedUnitMap<Pimpl>       unitMap; ///< Unit-to-impl map
+    static UnorderedDimensionMap<Unit::Pimpl>  dimMap;  ///< Dimension-to-impl map
+    static UnorderedUnitMap<Unit::Pimpl>       unitMap; ///< Unit-to-impl map
 
 public:
     /**
@@ -51,8 +52,8 @@ public:
      * @param[in] dim   Associated dimension (e.g., length)
      * @param[in] unit  Associated base unit (e.g., meter)
      */
-    BaseQuantityImpl(const Dimension& dim,
-                     const BaseUnit&  unit)
+    BaseQuantityImpl(const Dimension&   dim,
+                     const Unit::Pimpl& unit)
         : dim(dim)
         , unit(unit)
     {}
@@ -65,16 +66,19 @@ public:
      * @throw std::invalid_argument The dimension or unit is already associated with a different
      *                              base quantity
      */
-    static Pimpl get(const Dimension& dim,
-                     const BaseUnit&  unit)
+    static Pimpl get(const Dimension&   dim,
+                     const Unit::Pimpl& unit)
     {
+        if (!unit->isBase())
+            throw std::invalid_argument("Unit isn't a base unit");
+
         Pimpl pImpl;
 
         // Ensure that a redefinition isn't being attempted
         if (dimMap.count(dim)) {
             pImpl = dimMap[dim];
             auto baseUnit = pImpl->baseUnit();
-            if (baseUnit.compare(unit))
+            if (baseUnit.compareTo(unit))
                 throw invalid_argument("Dimension \"" + dim.to_string() +
                         "\" is already associated with base unit \"" + baseUnit.to_string() + "\"");
         }

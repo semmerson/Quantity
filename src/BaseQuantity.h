@@ -47,8 +47,8 @@ public:
      * @param[in] dim   Associated dimension (e.g., length)
      * @param[in] unit  Associated base unit (e.g., meter)
      */
-    static Pimpl get(const Dimension& dim,
-                     const BaseUnit&  unit);
+    static Pimpl get(const Dimension&    dim,
+                     const Unit::Pimpl&  unit);
 
     /**
      * Returns the associated physical dimension.

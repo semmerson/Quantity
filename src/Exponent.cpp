@@ -111,11 +111,21 @@ public:
     }
 
     /**
+     * Indicates if this instance is zero.
+     * @retval true     This instance is zero
+     * @retval false    This instance is not zero
+     */
+    bool isZero() const
+    {
+        return numer == 0;
+    }
+
+    /**
      * Indicates if this instance is one.
      * @retval true     This instance is one
      * @retval false    This instance is not one
      */
-    bool isUnity() const
+    bool isOne() const
     {
         return numer == 1 && denom == 1;
     }
@@ -193,20 +203,14 @@ public:
     }
 
     /**
-     * Multiplies this instance by a rational number.
-     * @param[in] n             The numerator of the rational number
-     * @param[in] d             The denominator of the rational number
-     * @return                  The result of multiplying this instance by the given amount
-     * @throw std::domain_error The denominator of the rational number is zero
+     * Multiplies this instance by another instance.
+     * @param[in] other         The other instance
+     * @return                  This instance multiplied by the other instance
      */
-    ExponentImpl& multiply(int n,
-                           int d)
+    ExponentImpl& multiply(const ExponentImpl& other)
     {
-        if (d == 0)
-            throw domain_error("Denominator is zero");
-
-        numer *= n;
-        denom *= d;
+        numer *= other.numer;
+        denom *= other.denom;
         if (denom < 0) {
             numer = -numer;
             denom = -denom;
@@ -218,9 +222,9 @@ public:
     }
 
     /**
-     * Adds another instance
+     * Adds to this instance another instance
      * @param[in] other         Another instance
-     * @return                  The sum of this instance and the other instance
+     * @return                  This instance
      */
     ExponentImpl& add(const ExponentImpl& other)
     {
@@ -242,9 +246,14 @@ Exponent::Exponent(const int numer,
     : Exponent(new ExponentImpl(numer, denom))
 {}
 
-bool Exponent::isUnity() const
+bool Exponent::isOne() const
 {
-    return pImpl->isUnity();
+    return pImpl->isOne();
+}
+
+bool Exponent::isZero() const
+{
+    return pImpl->isZero();
 }
 
 int Exponent::getNumer() const
@@ -272,10 +281,9 @@ int Exponent::compare(const Exponent& other) const
     return pImpl->compare(*other.pImpl);
 }
 
-Exponent& Exponent::multiply(const int numer,
-                             const int denom)
+Exponent& Exponent::multiply(const Exponent& other)
 {
-    pImpl->multiply(numer, denom);
+    pImpl->multiply(*other.pImpl);
     return *this;
 }
 

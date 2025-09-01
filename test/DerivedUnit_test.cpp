@@ -43,16 +43,17 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    BaseUnit kilogram{"kilogram", "kg"};
-    BaseUnit meter{"meter", "m"};
-    BaseUnit second{"second", "s"};
+    Unit::Pimpl kilogram = Unit::getBase("kilogram", "kg");
+    Unit::Pimpl meter = Unit::getBase("meter", "m");
+    Unit::Pimpl second = Unit::getBase("second", "s");
 };
 
 // Tests construction
 TEST_F(DimensionTest, Construction)
 {
-    auto kg_m = kilogram.multiply(meter);
-    EXPECT_EQ("kg·m", kg_m.to_string());
+    const auto kg_m = kilogram->multiply(meter);
+    EXPECT_EQ("kg·m", kg_m->to_string());
+    EXPECT_EQ("kg·m^2", kg_m->multiply(meter)->to_string());
 }
 
 }  // namespace

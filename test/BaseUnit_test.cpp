@@ -4,6 +4,7 @@
 
 #include "Unit.h"
 
+#include "BaseUnit.h"
 #include "Dimension.h"
 
 #include <gtest/gtest.h>
@@ -61,6 +62,7 @@ TEST_F(BaseUnitTest, Construction)
     EXPECT_THROW(BaseUnit("meter", ""), std::invalid_argument);
 
     BaseUnit meter{"meter", "m"};
+    EXPECT_TRUE(meter.isBase());
     EXPECT_FALSE(meter.isDimensionless());
     EXPECT_FALSE(meter.isOffset());
 
@@ -71,20 +73,22 @@ TEST_F(BaseUnitTest, Construction)
 // Tests convertibility
 TEST_F(BaseUnitTest, Convertibility)
 {
-    BaseUnit meter{"meter", "m"};
-    EXPECT_TRUE(meter.isConvertible(meter));
+    auto meter = Unit::getBase("meter", "m");
+    EXPECT_TRUE(meter->isConvertible(meter));
 
-    BaseUnit kilogram{"kilogram", "kg"};
-    EXPECT_FALSE(meter.isConvertible(kilogram));
-    EXPECT_FALSE(kilogram.isConvertible(meter));
+    auto kilogram = Unit::getBase("kilogram", "kg");
+    EXPECT_FALSE(meter->isConvertible(kilogram));
+    EXPECT_FALSE(kilogram->isConvertible(meter));
 }
 
 // Tests multiplication
 TEST_F(BaseUnitTest, Multiplication)
 {
-    BaseUnit meter{"meter", "m"};
-    BaseUnit kilogram{"kilogram", "kg"};
-    EXPECT_EQ("kg·m", meter.multiply(kilogram).to_string());
+    auto meter = Unit::getBase("meter", "m");
+    auto kilogram = Unit::getBase("kilogram", "kg");
+    auto kg_m = meter->multiply(kilogram);
+    EXPECT_EQ("kg·m", kg_m->to_string());
+    EXPECT_FALSE(kg_m->isBase());
 }
 
 }  // namespace

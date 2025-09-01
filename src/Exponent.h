@@ -50,7 +50,7 @@ private:
 
 public:
     /**
-     * Constructs from a rational exponent.
+     * Constructs from a rational number.
      * @param[in] numer The numerator of the exponent
      * @param[in] denom The denominator of the exponent
      * @throw     std::invalid_argument The denominator is zero
@@ -59,11 +59,24 @@ public:
              int denom = 1);
 
     /**
+     * Returns a string representation.
+     * @return A string representation
+     */
+    string to_string() const;
+
+    /**
+     * Indicates if this instance is zero.
+     * @retval true     This instance is zero
+     * @retval false    This instance is not zero
+     */
+    bool isZero() const;
+
+    /**
      * Indicates if this instance is one.
      * @retval true     This instance is one
      * @retval false    This instance is not one
      */
-    bool isUnity() const;
+    bool isOne() const;
 
     /**
      * Returns the numerator of the exponent.
@@ -76,12 +89,6 @@ public:
      * @return The denominator of the exponent. Will always be positive.
      */
     int getDenom() const;
-
-    /**
-     * Returns a string representation.
-     * @return A string representation
-     */
-    string to_string() const;
 
     /**
      * Returns the hash code of this instance.
@@ -98,19 +105,18 @@ public:
     int compare(const Exponent& other) const;
 
     /**
-     * Raises this instance to a rational exponent.
-     * @param[in] numer                 The numerator of the exponent
-     * @param[in] denom                 The denominator of the exponent
-     * @return                          This instance raised to the given power
-     * @throw     std::invalid_argument The denominator is zero
+     * Multiplies this instance by another instance. This implements raising a unit factor to a
+     * power.
+     * @param[in] other                 The other instance
+     * @return                          This instance multiplied by the given exponent
      */
-    Exponent& multiply(const int numer,
-                       const int denom = 1);
+    Exponent& multiply(const Exponent& other);
 
     /**
-     * Multiplies this instance by another instance
+     * Adds another instance to this instance. This implements multiplying together two unit factors
+     * with the same base unit.
      * @param[in] other Another instance
-     * @return          This instance multiplied by the other instance
+     * @return          This instance after being added to
      */
     Exponent& add(const Exponent& other);
 };

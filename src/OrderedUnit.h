@@ -38,16 +38,16 @@ struct UnitLess {
      * @retval    true      @a lhs is less than @a rhs
      * @retval    false     @a lhs is not less than @a rhs
      */
-    bool operator()(const Unit& lhs, const Unit& rhs) const {
-        return lhs.compare(rhs) < 0;
+    bool operator()(const Unit::Pimpl& lhs, const Unit::Pimpl& rhs) const {
+        return lhs->compare(rhs) < 0;
     }
 };
 
 /// An ordered set of units.
-using UnitSet = std::set<Unit, UnitLess>;
+using UnitSet = std::set<Unit::Pimpl, UnitLess>;
 
 /// An ordered map with with unit as key.
 template<typename V>
-using UnitMap = std::map<Unit, V, UnitLess>;
+using UnitMap = std::map<Unit::Pimpl, V, UnitLess>;
 
 } // namespace quantity

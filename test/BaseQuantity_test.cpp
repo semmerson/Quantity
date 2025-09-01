@@ -46,16 +46,16 @@ protected:
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
     Dimension mass{"Mass", "M"};
-    BaseUnit  meter{"meter", "m"};
-    BaseUnit  kilogram{"kilogram", "kg"};
+    Unit::Pimpl meter = Unit::getBase("meter", "m");
+    Unit::Pimpl kilogram = Unit::getBase("kilogram", "kg");
 };
 
 // Tests construction
 TEST_F(BaseQuantityTest, Construction)
 {
     auto lengthQuant = BaseQuantity::get(length, meter);
-    EXPECT_THROW(BaseQuantity::get(length, kilogram), std::invalid_argument);
-    EXPECT_THROW(BaseQuantity::get(mass, meter), std::invalid_argument);
+    EXPECT_THROW(Unit::getBase(length, kilogram), std::invalid_argument);
+    EXPECT_THROW(Unit::getBase(mass, meter), std::invalid_argument);
 }
 
 }  // namespace
