@@ -59,7 +59,7 @@ TEST_F(AffineUnitTest, Construction)
     EXPECT_THROW(Unit::getAffine(meter, 0, 1), std::logic_error);
 
     Unit::Pimpl unit1 = Unit::getAffine(meter, 3, 1);
-    EXPECT_FALSE(unit1->isBase());
+    EXPECT_FALSE(unit1->type() == Unit::Type::base);
     EXPECT_TRUE(unit1->isOffset());
     EXPECT_FALSE(unit1->isDimensionless());
 }

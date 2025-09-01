@@ -69,7 +69,7 @@ public:
     static Pimpl get(const Dimension&   dim,
                      const Unit::Pimpl& unit)
     {
-        if (!unit->isBase())
+        if (!unit->type() == Unit::Type::base)
             throw std::invalid_argument("Unit isn't a base unit");
 
         Pimpl pImpl;

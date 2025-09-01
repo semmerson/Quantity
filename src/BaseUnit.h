@@ -72,7 +72,7 @@ public:
      * Indicates the type of this unit.
      * @return The type of this unit
      */
-    UnitType type() const override;
+    Type type() const override;
 
     /**
      * Indicates if this instance is a base unit (e.g., meter).

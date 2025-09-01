@@ -88,7 +88,7 @@ TEST_F(BaseUnitTest, Multiplication)
     auto kilogram = Unit::getBase("kilogram", "kg");
     auto kg_m = meter->multiply(kilogram);
     EXPECT_EQ("kg·m", kg_m->to_string());
-    EXPECT_FALSE(kg_m->isBase());
+    EXPECT_FALSE(kg_m->type() == Unit::Type::base);
 }
 
 }  // namespace

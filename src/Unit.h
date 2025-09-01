@@ -42,7 +42,7 @@ protected:
 
 public:
     /// Types of units
-    enum class UnitType
+    enum class Type
     {
         base,
         derived,
@@ -87,7 +87,7 @@ public:
      * Indicates the type of this unit.
      * @return The type of this unit
      */
-    virtual UnitType type() const =0;
+    virtual Type type() const =0;
 
     /**
      * Indicates if this instance is a base unit (e.g., meter).

@@ -61,14 +61,14 @@ std::string AffineUnit::to_string() const
     return rep;
 }
 
-Unit::UnitType AffineUnit::type() const
+Unit::Type AffineUnit::type() const
 {
-    return UnitType::affine;
+    return Type::affine;
 }
 
 bool AffineUnit::isBase() const
 {
-    return slope == 1 && intercept == 0 && core->isBase();
+    return slope == 1 && intercept == 0 && core->type() == Type::base;
 }
 
 bool AffineUnit::isDimensionless() const

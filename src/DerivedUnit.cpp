@@ -64,9 +64,9 @@ std::string DerivedUnit::to_string() const
  * Indicates the type of this unit.
  * @return The type of this unit
  */
-Unit::UnitType DerivedUnit::type() const
+Unit::Type DerivedUnit::type() const
 {
-    return UnitType::derived;
+    return Type::derived;
 }
 
 bool DerivedUnit::isBase() const

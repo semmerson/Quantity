@@ -60,9 +60,9 @@ std::string BaseUnit::to_string() const
     return symbol;
 }
 
-Unit::UnitType BaseUnit::type() const
+Unit::Type BaseUnit::type() const
 {
-    return UnitType::base;
+    return Type::base;
 }
 
 bool BaseUnit::isBase() const
