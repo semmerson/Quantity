@@ -48,9 +48,11 @@ Unit::Pimpl Unit::getBase(const string&  name,
  * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
  * returned.
  * @param[in] core                  The underlying unit
- * @param[in] slope                 The slope for converting values from the @ core unit
- * @param[in] intercept             The intercept for converting values from the @ core unit
- * @throw     std::invalid_argument The slope is zero
+ * @param[in] slope                 The slope for converting values from the @ core unit. May be one
+ *                                  but only if the intercept isn't zero.
+ * @param[in] intercept             The intercept for converting values from the @ core unit. May be
+ *                                  zero but only if the slope isn't one.
+ * @throw     std::invalid_argument The slope is zero or the slope is one and the intercept is zero
  */
 Unit::Pimpl Unit::getAffine(const Unit::Pimpl& core,
                             const double       slope,

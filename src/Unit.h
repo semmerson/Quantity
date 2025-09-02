@@ -44,9 +44,10 @@ public:
     /// Types of units
     enum class Type
     {
-        base,
-        derived,
-        affine,
+        one,        ///< Canonical unit with zero base units (dimensionless unit one)
+        base,       ///< Canonical unit with one base unit
+        canonical,  ///< Canonical unit with two or more base units
+        affine,     ///< Affine unit
     };
 
     /// Smart pointer to an implementation of a unit.
@@ -88,13 +89,6 @@ public:
      * @return The type of this unit
      */
     virtual Type type() const =0;
-
-    /**
-     * Indicates if this instance is a base unit (e.g., meter).
-     * @retval true  This instance is a base unit
-     * @retval false This instance is not a base unit
-     */
-    virtual bool isBase() const =0;
 
     /**
      * Indicates if this unit is dimensionless.
