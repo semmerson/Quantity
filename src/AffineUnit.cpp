@@ -37,6 +37,8 @@ AffineUnit::AffineUnit(
 {
     if (slope == 0)
         throw std::invalid_argument("Slope is zero");
+    if (slope == 1 && intercept == 0)
+        throw std::invalid_argument("Slope is one and intercept is zero");
 }
 
 std::string AffineUnit::to_string() const
@@ -63,12 +65,9 @@ std::string AffineUnit::to_string() const
 
 Unit::Type AffineUnit::type() const
 {
-    return Type::affine;
-}
-
-bool AffineUnit::isBase() const
-{
-    return slope == 1 && intercept == 0 && core->type() == Type::base;
+    return (slope == 1 && intercept == 0)
+            ? core->type()
+            : Type::affine;
 }
 
 bool AffineUnit::isDimensionless() const
@@ -156,10 +155,7 @@ Unit::Pimpl AffineUnit::multiplyBy(const BaseUnit& other) const
     if (intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    auto newCore = core->multiplyBy(other);
-    return slope == 1
-            ? newCore
-            : Unit::Pimpl(new AffineUnit(newCore, slope, 0));
+    return getAffine(core->multiplyBy(other), slope, 0);
 }
 
 Unit::Pimpl AffineUnit::multiplyBy(const DerivedUnit& other) const
@@ -167,10 +163,7 @@ Unit::Pimpl AffineUnit::multiplyBy(const DerivedUnit& other) const
     if (intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    auto newCore = core->multiplyBy(other);
-    return slope == 1
-            ? newCore
-            : make_shared<AffineUnit>(newCore, slope, 0);
+    return getAffine(core->multiplyBy(other), slope, 0);
 }
 
 Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
@@ -178,11 +171,7 @@ Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
     if (intercept != 0 || other.intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    Pimpl newCore = core->multiply(other.core);
-    const auto newSlope = slope*other.slope;
-    return newSlope == 1
-            ? newCore
-            : make_shared<AffineUnit>(newCore, newSlope, 0);
+    return getAffine(core->multiplyBy(other), slope*other.slope, 0);
 }
 
 } // Namespace

@@ -28,19 +28,26 @@
 
 namespace quantity {
 
-/// Definition of an affine unit of a physical quantity.
+/**
+ * Definition of an affine unit of a physical quantity. An invariant is that (slope == 1 &&
+ * intercept == 0) will always be false.
+ */
 class AffineUnit final : public Unit
 {
-    const Pimpl     core;       ///< The underlying unit
-    const double    slope;      ///< The slope for converting a numeric value to the @ core unit
-    const double    intercept;  ///< The intercept for converting a numeric value to the @ core unit
+    const Pimpl     core;        ///< The underlying unit
+    const double    slope;       ///< The slope for converting a numeric value from the @ core unit.
+                                 ///< May be one but only if the intercept isn't zero.
+    const double    intercept;   ///< The intercept for converting a numeric value from the @ core
+                                 ///< unit. May be zero but only if the slope isn't one.
 
 public:
     /**
      * Constructs
-     * @param[in] core      The underlying unit from which this unit is derived
-     * @param[in] slope     The slope to convert values to the @ core unit
-     * @param[in] intercept The intercept to convert values to the @ core unit
+     * @param[in] core                      The underlying unit from which this unit is derived
+     * @param[in] slope                     The slope to convert values from the @ core unit
+     * @param[in] intercept                 The intercept to convert values from the @ core unit
+     * @throw     std::invalid_argument     Slope is zero
+     * @throw     std::invalid_argument     Slope is one and intercept is zero
      */
     AffineUnit(
             const Pimpl&      core,
@@ -58,13 +65,6 @@ public:
      * @return The type of this unit
      */
     Type type() const override;
-
-    /**
-     * Indicates if this instance is a base unit (e.g., meter).
-     * @retval true  This instance is a base unit
-     * @retval false This instance is not a base unit
-     */
-    bool isBase() const override;
 
     /**
      * Indicates if this unit is dimensionless.
