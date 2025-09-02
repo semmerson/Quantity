@@ -66,12 +66,9 @@ std::string DerivedUnit::to_string() const
  */
 Unit::Type DerivedUnit::type() const
 {
-    return Type::derived;
-}
-
-bool DerivedUnit::isBase() const
-{
-    return factors.size() == 1 && factors.begin()->second.isOne();
+    return (factors.size() == 1 && factors.begin()->second.isOne())
+            ? Type::base
+            : Type::canonical;
 }
 
 bool DerivedUnit::isDimensionless() const
