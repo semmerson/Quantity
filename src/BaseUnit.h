@@ -75,13 +75,6 @@ public:
     Type type() const override;
 
     /**
-     * Indicates if this instance is a base unit (e.g., meter).
-     * @retval true  This instance is a base unit
-     * @retval false This instance is not a base unit
-     */
-    bool isBase() const override;
-
-    /**
      * Indicates if this unit is dimensionless.
      * retval true      This unit is dimensionless
      * retval false     This unit is not dimensionless

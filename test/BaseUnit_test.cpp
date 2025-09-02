@@ -62,7 +62,7 @@ TEST_F(BaseUnitTest, Construction)
     EXPECT_THROW(BaseUnit("meter", ""), std::invalid_argument);
 
     BaseUnit meter{"meter", "m"};
-    EXPECT_TRUE(meter.isBase());
+    EXPECT_EQ(Unit::Type::base, meter.type());
     EXPECT_FALSE(meter.isDimensionless());
     EXPECT_FALSE(meter.isOffset());
 

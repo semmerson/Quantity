@@ -65,11 +65,6 @@ Unit::Type BaseUnit::type() const
     return Type::base;
 }
 
-bool BaseUnit::isBase() const
-{
-    return true;
-}
-
 bool BaseUnit::isDimensionless() const
 {
     return false;
