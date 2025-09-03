@@ -1,11 +1,11 @@
 add_library(libquant OBJECT
     Dimension.cpp           Dimension.h
-    Calendar.cpp            Calendar.h
+    BaseInfo.cpp            BaseInfo.h
     Unit.cpp                Unit.h
                             OrderedUnit.h
                             UnorderedUnit.h
-    BaseUnit.cpp            BaseUnit.h
-    DerivedUnit.cpp         DerivedUnit.h
+    CanonicalUnit.cpp       CanonicalUnit.h
     AffineUnit.cpp          AffineUnit.h
     Exponent.cpp            Exponent.h
+    Calendar.cpp            Calendar.h
     )

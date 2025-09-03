@@ -19,31 +19,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "DerivedUnit.h"
+#include "CanonicalUnit.h"
 
 #include "AffineUnit.h"
-#include "BaseUnit.h"
+#include "BaseInfo.h"
 #include "Exponent.h"
 
 namespace quantity {
 
-DerivedUnit::DerivedUnit(const UnitFactors& otherFactors)
+CanonicalUnit::CanonicalUnit(const UnitFactors& otherFactors)
     : factors(otherFactors)
 {}
 
-DerivedUnit::DerivedUnit(const BaseUnit& base,
-                         Exponent        exp)
-    : DerivedUnit()
+CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo,
+                             Exponent        exp)
+    : CanonicalUnit()
 {
-    factors.insert(UnitFactor(base, exp));
+    factors.insert(UnitFactor(baseInfo, exp));
 }
 
-DerivedUnit::DerivedUnit(const BaseUnit& base)
-    : DerivedUnit(base, Exponent(1, 1))
+#if 1
+CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo)
+    : CanonicalUnit(baseInfo, Exponent(1, 1))
 {}
+#endif
 
-std::string DerivedUnit::to_string() const
+std::string CanonicalUnit::to_string() const
 {
     string rep{""};
     bool   haveFactor = false;
@@ -64,24 +65,24 @@ std::string DerivedUnit::to_string() const
  * Indicates the type of this unit.
  * @return The type of this unit
  */
-Unit::Type DerivedUnit::type() const
+Unit::Type CanonicalUnit::type() const
 {
     return (factors.size() == 1 && factors.begin()->second.isOne())
             ? Type::base
             : Type::canonical;
 }
 
-bool DerivedUnit::isDimensionless() const
+bool CanonicalUnit::isDimensionless() const
 {
     return factors.size() == 0;
 }
 
-bool DerivedUnit::isOffset() const
+bool CanonicalUnit::isOffset() const
 {
-    return false;   // The origin of a derived unit is zero
+    return false;   // The origin of a derived unit is always zero
 }
 
-size_t DerivedUnit::hash() const
+size_t CanonicalUnit::hash() const
 {
     size_t hash = 0;
     for (const auto& factor : factors)
@@ -89,32 +90,27 @@ size_t DerivedUnit::hash() const
     return hash;
 }
 
-int DerivedUnit::compare(const Pimpl& other) const
+int CanonicalUnit::compare(const Pimpl& other) const
 {
     return -other->compareTo(*this);
 }
 
-bool DerivedUnit::isConvertible(const Pimpl& other) const
+bool CanonicalUnit::isConvertible(const Pimpl& other) const
 {
     return other->isConvertibleTo(*this);
 }
 
-double DerivedUnit::convertTo(const double value) const
+double CanonicalUnit::convertTo(const double value) const
 {
     return value;
 }
 
-DerivedUnit::Pimpl DerivedUnit::multiply(const Pimpl& other) const
+CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const
 {
     return other->multiplyBy(*this);
 }
 
-int DerivedUnit::compareTo(const BaseUnit& other) const
-{
-    return 1; // Derived units come after base units
-}
-
-int DerivedUnit::compareTo(const DerivedUnit& other) const
+int CanonicalUnit::compareTo(const CanonicalUnit& other) const
 {
     auto       iter1 = factors.begin();
     const auto end1 = factors.end();
@@ -122,7 +118,7 @@ int DerivedUnit::compareTo(const DerivedUnit& other) const
     const auto end2 = other.factors.end();
 
     while (iter1 != end1 && iter2 != end2) {
-        auto cmp = iter1->first.compareTo(iter2->first);    // Primary sort on base units
+        auto cmp = iter1->first.compare(iter2->first);      // Primary sort on base units
         if (cmp)
             return cmp;
         cmp = iter1->second.compare(iter2->second);         // Secondary sort on exponents
@@ -139,22 +135,12 @@ int DerivedUnit::compareTo(const DerivedUnit& other) const
               : 1;
 }
 
-int DerivedUnit::compareTo(const AffineUnit& other) const
+int CanonicalUnit::compareTo(const AffineUnit& other) const
 {
     return -1;  // Derived units come before affine units
 }
 
-bool DerivedUnit::isConvertibleTo(const BaseUnit& other) const
-{
-    if (factors.size() != 1)
-        return false;
-
-    const auto iter = factors.begin();
-
-    return iter->first.compareTo(other) == 0 && iter->second.isOne();
-}
-
-bool DerivedUnit::isConvertibleTo(const DerivedUnit& other) const
+bool CanonicalUnit::isConvertibleTo(const CanonicalUnit& other) const
 {
     if (factors.size() != other.factors.size())
         return false;
@@ -164,23 +150,18 @@ bool DerivedUnit::isConvertibleTo(const DerivedUnit& other) const
     const auto end1 = factors.end();
 
     for (; iter1 != end1; ++iter1, ++iter2)
-        if (iter1->first.compareTo(iter2->first) != 0 || iter1->second.compare(iter2->second) != 0)
+        if (iter1->first.compare(iter2->first) != 0 || iter1->second.compare(iter2->second) != 0)
             return false;
 
     return true;
 }
 
-bool DerivedUnit::isConvertibleTo(const AffineUnit& other) const
+bool CanonicalUnit::isConvertibleTo(const AffineUnit& other) const
 {
     return other.isConvertibleTo(*this); // Defer to the affine unit
 }
 
-Unit::Pimpl DerivedUnit::multiplyBy(const BaseUnit& baseUnit) const
-{
-    return multiplyBy(DerivedUnit(baseUnit));
-}
-
-Unit::Pimpl DerivedUnit::multiplyBy(const DerivedUnit& other) const
+Unit::Pimpl CanonicalUnit::multiplyBy(const CanonicalUnit& other) const
 {
     UnitFactors newFactors(factors);
 
@@ -196,10 +177,10 @@ Unit::Pimpl DerivedUnit::multiplyBy(const DerivedUnit& other) const
         }
     }
 
-    return Pimpl(new DerivedUnit(newFactors));
+    return Pimpl(new CanonicalUnit(newFactors));
 }
 
-Unit::Pimpl DerivedUnit::multiplyBy(const AffineUnit& other) const
+Unit::Pimpl CanonicalUnit::multiplyBy(const AffineUnit& other) const
 {
     return other.multiplyBy(*this); // Defer to the affine unit
 }

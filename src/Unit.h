@@ -29,8 +29,8 @@ using namespace std;
 
 namespace quantity {
 
-class BaseUnit;
-class DerivedUnit;
+class BaseInfo;
+class CanonicalUnit;
 class AffineUnit;
 
 /// Declaration of a unit of a physical quantity.
@@ -44,7 +44,7 @@ public:
     /// Types of units
     enum class Type
     {
-        one,        ///< Canonical unit with zero base units (dimensionless unit one)
+        one,        ///< Canonical unit with zero base units (i.e., the dimensionless unit one)
         base,       ///< Canonical unit with one base unit
         canonical,  ///< Canonical unit with two or more base units
         affine,     ///< Affine unit
@@ -57,13 +57,11 @@ public:
     virtual ~Unit() noexcept =0;
 
     /**
-     * Returns a base unit. Creates it if necessary.
-     * @param[in] name      The name of the unit
-     * @param[in] symbol    The symbol of the unit
-     * @return              Smart pointer to the corresponding base unit
+     * Returns a canonical unit comprising a single base unit.
+     * @param[in] baseInfo  Base unit information
+     * @return              Corresponding canonical unit
      */
-    static Pimpl getBase(const string& name,
-                         const string& symbol);
+    static Pimpl get(const BaseInfo& baseInfo);
 
     /**
      * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is a
@@ -74,9 +72,9 @@ public:
      * @param[in] intercept             The intercept for converting values from the @ core unit
      * @throw     std::invalid_argument The slope is zero
      */
-    static Pimpl getAffine(const Pimpl& core,
-                           const double slope,
-                           const double intercept);
+    static Pimpl get(const Pimpl& core,
+                     const double slope,
+                     const double intercept);
 
     /**
      * Returns a string representation.
@@ -119,20 +117,12 @@ public:
     virtual int compare(const Pimpl& other) const =0;
 
 	/**
-	 * Compares this instance with a base unit.
-	 * @param[in] other The base unit instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-    virtual int compareTo(const BaseUnit& other) const =0;
-
-	/**
 	 * Compares this instance with a derived unit.
 	 * @param[in] other The derived unit instance
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-    virtual int compareTo(const DerivedUnit& other) const =0;
+    virtual int compareTo(const CanonicalUnit& other) const =0;
 
 	/**
 	 * Compares this instance with an affine unit.
@@ -151,20 +141,12 @@ public:
     virtual bool isConvertible(const Pimpl& other) const =0;
 
     /**
-     * Indicates if numeric values in this unit are convertible with a base unit.
-     * @param[in] other The other unit
-     * @retval    true  They are convertible
-     * @retval    false They are not convertible
-     */
-    virtual bool isConvertibleTo(const BaseUnit& other) const =0;
-
-    /**
      * Indicates if numeric values in this unit are convertible with a derived unit.
      * @param[in] other The other unit
      * @retval    true  They are convertible
      * @retval    false They are not convertible
      */
-    virtual bool isConvertibleTo(const DerivedUnit& other) const =0;
+    virtual bool isConvertibleTo(const CanonicalUnit& other) const =0;
 
     /**
      * Indicates if numeric values in this unit are convertible with an affine unit.
@@ -189,18 +171,11 @@ public:
     virtual Pimpl multiply(const Pimpl& unit) const =0;
 
     /**
-     * Multiplies by a base unit.
-     * @param[in] other  The base unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    virtual Pimpl multiplyBy(const BaseUnit& other) const =0;
-
-    /**
      * Multiplies by a derived unit.
      * @param[in] other  The derived unit
      * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    virtual Pimpl multiplyBy(const DerivedUnit& other) const =0;
+    virtual Pimpl multiplyBy(const CanonicalUnit& other) const =0;
 
     /**
      * Multiplies by an affine unit.

@@ -17,11 +17,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-
 #include "Unit.h"
 
+#include "BaseInfo.h"
 #include "AffineUnit.h"
-#include "BaseUnit.h"
+#include "CanonicalUnit.h"
 
 #include <memory>
 #include <stdexcept>
@@ -31,16 +31,10 @@ using namespace std;
 
 namespace quantity {
 
-/**
- * Returns a base unit. Creates it if necessary.
- * @param[in] name      The name of the unit
- * @param[in] symbol    The symbol of the unit
- * @return              Smart pointer to the corresponding base unit
- */
-Unit::Pimpl Unit::getBase(const string&  name,
-                          const string&  symbol)
+Unit::Pimpl Unit::get(const BaseInfo& baseInfo)
 {
-    return Unit::Pimpl(new BaseUnit(name, symbol));
+    Exponent exponent{1, 1};
+    return Unit::Pimpl(new CanonicalUnit(baseInfo, exponent));
 }
 
 /**
@@ -54,7 +48,7 @@ Unit::Pimpl Unit::getBase(const string&  name,
  *                                  zero but only if the slope isn't one.
  * @throw     std::invalid_argument The slope is zero or the slope is one and the intercept is zero
  */
-Unit::Pimpl Unit::getAffine(const Unit::Pimpl& core,
+Unit::Pimpl Unit::get(const Unit::Pimpl& core,
                             const double       slope,
                             const double       intercept)
 {
@@ -65,7 +59,7 @@ Unit::Pimpl Unit::getAffine(const Unit::Pimpl& core,
 #if 0
     // The following is incorrect. It would need to get the core of the core, recursively. Better to
     // simply daisy-chain affine unit transforms rather than attempt to merge them. Any merging
-    // could probably be accomplished in a Converter class.
+    // might be accomplished in a Converter class.
 
     // The core unit is affine. Merge the two affine transforms
     const auto coreIntercept = core->convertTo(0);

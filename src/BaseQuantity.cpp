@@ -18,9 +18,9 @@
  * the License.
  */
 
+#include <BaseInfo.h>
 #include "BaseQuantity.h"
 
-#include "BaseUnit.h"
 #include "Dimension.h"
 #include "UnorderedDimension.h"
 #include "UnorderedUnit.h"
@@ -114,7 +114,7 @@ public:
      * Returns the associated base unit.
      * @return The associated base unit
      */
-    const BaseUnit& baseUnit() const noexcept override
+    const BaseInfo& baseUnit() const noexcept override
     {
         return unit;
     }
@@ -127,7 +127,7 @@ UnorderedDimensionMap<BaseQuantity::Pimpl>   BaseQuantityImpl::dimMap(7);
 UnorderedUnitMap<BaseQuantity::Pimpl>        BaseQuantityImpl::unitMap(7);
 
 BaseQuantity::Pimpl BaseQuantity::get(const Dimension& dim,
-                                      const BaseUnit&  unit)
+                                      const BaseInfo&  unit)
 {
     return BaseQuantityImpl::get(dim, unit);
 }

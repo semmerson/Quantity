@@ -2,9 +2,9 @@
  * This file tests class BaseUnit.
  */
 
+#include <BaseInfo.h>
 #include "Unit.h"
 
-#include "BaseUnit.h"
 #include "Dimension.h"
 
 #include <gtest/gtest.h>
@@ -58,37 +58,39 @@ protected:
 // Tests construction
 TEST_F(BaseUnitTest, Construction)
 {
-    EXPECT_THROW(BaseUnit("", "m"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit("meter", ""), std::invalid_argument);
+    EXPECT_THROW(BaseInfo("", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo("meter", ""), std::invalid_argument);
 
-    BaseUnit meter{"meter", "m"};
-    EXPECT_EQ(Unit::Type::base, meter.type());
-    EXPECT_FALSE(meter.isDimensionless());
-    EXPECT_FALSE(meter.isOffset());
+    BaseInfo meter{"meter", "m"};
 
-    EXPECT_THROW(BaseUnit("meter", "s"), std::invalid_argument);
-    EXPECT_THROW(BaseUnit("bar", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo("meter", "s"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo("bar", "m"), std::invalid_argument);
 }
 
-// Tests convertibility
-TEST_F(BaseUnitTest, Convertibility)
+// Tests to_string()
+TEST_F(BaseUnitTest, to_string)
 {
-    auto meter = Unit::getBase("meter", "m");
-    EXPECT_TRUE(meter->isConvertible(meter));
-
-    auto kilogram = Unit::getBase("kilogram", "kg");
-    EXPECT_FALSE(meter->isConvertible(kilogram));
-    EXPECT_FALSE(kilogram->isConvertible(meter));
+    BaseInfo meter{"meter", "m"};
+    EXPECT_EQ("m", meter.to_string());
 }
 
-// Tests multiplication
-TEST_F(BaseUnitTest, Multiplication)
+// Tests hashing
+TEST_F(BaseUnitTest, Hashing)
 {
-    auto meter = Unit::getBase("meter", "m");
-    auto kilogram = Unit::getBase("kilogram", "kg");
-    auto kg_m = meter->multiply(kilogram);
-    EXPECT_EQ("kg·m", kg_m->to_string());
-    EXPECT_FALSE(kg_m->type() == Unit::Type::base);
+    BaseInfo meter{"meter", "m"};
+    BaseInfo second{"second", "s"};
+    EXPECT_NE(meter.hash(), second.hash());
+}
+
+// Tests comparison
+TEST_F(BaseUnitTest, Comparison)
+{
+    BaseInfo meter{"meter", "m"};
+    EXPECT_EQ(0, meter.compare(meter));
+
+    BaseInfo second{"second", "s"};
+    EXPECT_GT(0, meter.compare(second));
+    EXPECT_LT(0, second.compare(meter));
 }
 
 }  // namespace

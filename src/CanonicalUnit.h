@@ -23,8 +23,7 @@
 #pragma once
 
 #include "Unit.h"
-
-#include "BaseUnit.h"
+#include "BaseInfo.h"
 
 #include <map>
 
@@ -32,25 +31,26 @@ using namespace std;
 
 namespace quantity {
 
-/// A derived unit of a physical quantity. A derived unit comprises a set of zero or more base units
-/// and their associated exponents. No exponent will be zero. An empty set is equivalent to the
-/// dimensionless unit one; a set with one factor is equivalent to a base unit.
-class DerivedUnit final : public Unit
+/**
+ * A derived unit of a physical quantity. A derived unit comprises a set of zero or more base units
+ * and their associated exponents. No exponent will be zero. An empty set is equivalent to the
+ * dimensionless unit one; a set with one factor is equivalent to a base unit.
+ */
+class CanonicalUnit final : public Unit
 {
 private:
-    /// Comparison functor for base units
-    struct BaseUnitLess {
-        bool operator()(const BaseUnit& base1, const BaseUnit& base2) {
-            // NB: Ignore the exponents
-            return base1.compareTo(base2) < 0;
+    /// Comparison functor for base unit information
+    struct BaseInfoLess {
+        bool operator()(const BaseInfo& base1, const BaseInfo& base2) {
+            return base1.compare(base2) < 0;
         }
     };
 
     /// Container for unit factors.
-    using UnitFactors = map<BaseUnit, Exponent, BaseUnitLess>;
+    using UnitFactors = map<BaseInfo, Exponent, BaseInfoLess>;
 
     /// A unit factor
-    using UnitFactor = pair<const BaseUnit, Exponent>;
+    using UnitFactor = pair<const BaseInfo, Exponent>;
 
     /// This instance's unit factors. No factor shall be the dimensionless unit one.
     UnitFactors factors;
@@ -59,28 +59,31 @@ private:
      * Constructs from a set of base unit factors. Factors with an exponent of zero will be ignored.
      * @param[in] factors A set of base unit factors
      */
-    DerivedUnit(const UnitFactors& factors);
+    CanonicalUnit(const UnitFactors& factors);
 
 public:
     /**
      * Default constructs an empty derived unit. The resulting instance is equivalent to the
      * dimensionless unit one.
      */
-    DerivedUnit() =default;
+    CanonicalUnit() =default;
 
     /**
-     * Constructs from a base unit and an exponent. If the exponent is zero, then the derived unit
-     * will be empty and equivalent to the dimensionless unit one.
-     * @param[in] base  The base unit
-     * @param[in] exp   The exponent of the base unit
+     * Constructs from base unit information and an exponent. If the exponent is zero, then the
+     * base unit information will be ignored and the derived unit will be empty and equivalent to
+     * the dimensionless unit one.
+     * @param[in] baseInfo  Base unit information
+     * @param[in] exp       Exponent for the base unit
      */
-    DerivedUnit(const BaseUnit& base, Exponent exp);
+    CanonicalUnit(const BaseInfo& baseInfo, Exponent exp);
 
+#if 1
     /**
-     * Constructs from a base unit. The exponent will be one.
-     * @param[in] base  The base unit
+     * Constructs from information on a base unit. The exponent of the single base unit will be one.
+     * @param[in] baseInfo  Base unit information
      */
-    DerivedUnit(const BaseUnit& base);
+    CanonicalUnit(const BaseInfo& baseInfo);
+#endif
 
     /**
      * Returns a string representation
@@ -123,20 +126,12 @@ public:
     int compare(const Pimpl& other) const override;
 
 	/**
-	 * Compares this instance with a base unit.
-	 * @param[in] other The base unit
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-	int compareTo(const BaseUnit& other) const override;
-
-	/**
 	 * Compares this instance with a derived unit.
 	 * @param[in] other The derived unit
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compareTo(const DerivedUnit& other) const override;
+	int compareTo(const CanonicalUnit& other) const override;
 
 	/**
 	 * Compares this instance with an affine unit.
@@ -155,20 +150,12 @@ public:
     bool isConvertible(const Pimpl& other) const override;
 
     /**
-     * Indicates if numeric values in this unit are convertible with a base unit.
-     * @param[in] other The other unit
-     * @retval    true  They are convertible
-     * @retval    false They are not convertible
-     */
-    bool isConvertibleTo(const BaseUnit& other) const override;
-
-    /**
      * Indicates if numeric values in this unit are convertible with a derived unit.
      * @param[in] other The other unit
      * @retval    true  They are convertible
      * @retval    false They are not convertible
      */
-    bool isConvertibleTo(const DerivedUnit& other) const override;
+    bool isConvertibleTo(const CanonicalUnit& other) const override;
 
     /**
      * Indicates if numeric values in this unit are convertible with an affine unit.
@@ -193,18 +180,11 @@ public:
     Pimpl multiply(const Pimpl& other) const override;
 
     /**
-     * Returns a new unit that is the product of this instance and a base unit.
-     * @param[in] other  The base unit
-     * @return           The product of this instance and the other unit
-     */
-    Pimpl multiplyBy(const BaseUnit& other) const override;
-
-    /**
      * Returns a new unit that is the product of this instance and a derived unit.
      * @param[in] other  The derived unit
      * @return           The product of this instance and the other unit
      */
-    Pimpl multiplyBy(const DerivedUnit& other) const override;
+    Pimpl multiplyBy(const CanonicalUnit& other) const override;
 
     /**
      * Returns a new unit that is the product of this instance and an affine unit.

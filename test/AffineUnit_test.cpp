@@ -2,10 +2,12 @@
  * This file tests class AffineUnit.
  */
 
-#include "Unit.h"
+#include "BaseInfo.h"
+#include "AffineUnit.h"
 #include "Dimension.h"
-#include "gtest/gtest.h"
+#include "Unit.h"
 
+#include <gtest/gtest.h>
 #include <stdexcept>
 
 namespace {
@@ -48,17 +50,17 @@ protected:
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
     Dimension mass{"Mass", "M"};
-    Unit::Pimpl meter = Unit::getBase("meter", "m");
-    Unit::Pimpl kilogram = Unit::getBase("kilogram", "kg");
-    Unit::Pimpl kelvin = Unit::getBase("kelvin", "°K");
+    const Unit::Pimpl meter{Unit::get(BaseInfo("meter", "m"))};
+    const Unit::Pimpl kilogram{Unit::get(BaseInfo("kilogram", "kg"))};
+    const Unit::Pimpl kelvin{Unit::get(BaseInfo("kelvin", "°K"))};
 };
 
 /// Tests construction
 TEST_F(AffineUnitTest, Construction)
 {
-    EXPECT_THROW(Unit::getAffine(meter, 0, 1), std::logic_error);
+    EXPECT_THROW(Unit::get(meter, 0, 1), std::logic_error);
 
-    Unit::Pimpl unit1 = Unit::getAffine(meter, 3, 1);
+    Unit::Pimpl unit1 = Unit::get(meter, 3, 1);
     EXPECT_FALSE(unit1->type() == Unit::Type::base);
     EXPECT_TRUE(unit1->isOffset());
     EXPECT_FALSE(unit1->isDimensionless());
@@ -67,12 +69,12 @@ TEST_F(AffineUnitTest, Construction)
 /// Tests Unit::isConvertible()
 TEST_F(AffineUnitTest, IsConvertible)
 {
-    Unit::Pimpl unit = Unit::getAffine(meter, 3, 5);
+    Unit::Pimpl unit = Unit::get(meter, 3, 5);
     ASSERT_TRUE(meter->isConvertible(unit));
     ASSERT_TRUE(unit->isConvertible(meter));
     ASSERT_FALSE(kilogram->isConvertible(unit));
 
-    Unit::Pimpl unit2 = Unit::getAffine(kilogram, 3, 5);
+    Unit::Pimpl unit2 = Unit::get(kilogram, 3, 5);
     ASSERT_FALSE(unit2->isConvertible(unit));
     ASSERT_FALSE(unit->isConvertible(unit2));
 }
@@ -80,25 +82,25 @@ TEST_F(AffineUnitTest, IsConvertible)
 /// Tests conversion
 TEST_F(AffineUnitTest, Convert)
 {
-    Unit::Pimpl unit = Unit::getAffine(meter, 3, 5);
+    Unit::Pimpl unit = Unit::get(meter, 3, 5);
     ASSERT_EQ(5, unit->convertTo(0));
     ASSERT_EQ(8, unit->convertTo(1));
 
-    Unit::Pimpl celsius = Unit::getAffine(kelvin, 1, -273.15);
+    Unit::Pimpl celsius = Unit::get(kelvin, 1, -273.15);
     EXPECT_EQ("°K - 273.150000", celsius->to_string());
     EXPECT_EQ(-273.15, celsius->convertTo(0));
 
-    Unit::Pimpl rankine = Unit::getAffine(kelvin, 1.8, 0.0);
+    Unit::Pimpl rankine = Unit::get(kelvin, 1.8, 0.0);
     EXPECT_EQ("1.800000*°K", rankine->to_string());
     EXPECT_LE(491.66, rankine->convertTo(273.15));
     EXPECT_GE(491.68+.001, rankine->convertTo(273.15));
 
-    Unit::Pimpl fahrenheit1 = Unit::getAffine(rankine, 1.0, -459.67);
+    Unit::Pimpl fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
     EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit1->to_string());
     EXPECT_LE(31.99, fahrenheit1->convertTo(491.67));
     EXPECT_GE(32.01, fahrenheit1->convertTo(491.67));
 
-    Unit::Pimpl fahrenheit2 = Unit::getAffine(celsius, 1.8, 32);
+    Unit::Pimpl fahrenheit2 = Unit::get(celsius, 1.8, 32);
     EXPECT_EQ("1.800000*(°K - 273.150000) + 32.000000", fahrenheit2->to_string());
     EXPECT_LE(31.99, fahrenheit2->convertTo(0));
     EXPECT_GE(32.01, fahrenheit2->convertTo(0));

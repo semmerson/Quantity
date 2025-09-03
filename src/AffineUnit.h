@@ -118,20 +118,12 @@ public:
     Pimpl multiply(const Pimpl& other) const override;
 
 	/**
-	 * Compares this instance with a base unit.
-	 * @param[in] other The base unit instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-	int compareTo(const BaseUnit& other) const override;
-
-	/**
 	 * Compares this instance with a derived unit.
 	 * @param[in] other The derived unit instance
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compareTo(const DerivedUnit& other) const override;
+	int compareTo(const CanonicalUnit& other) const override;
 
 	/**
 	 * Compares this instance with an affine unit.
@@ -142,20 +134,12 @@ public:
 	int compareTo(const AffineUnit& other) const override;
 
     /**
-     * Indicates if numeric values in this unit are convertible with a base unit.
-     * @param[in] other The other unit
-     * @retval    true  They are convertible
-     * @retval    false They are not convertible
-     */
-    bool isConvertibleTo(const BaseUnit& other) const override;
-
-    /**
      * Indicates if numeric values in this unit are convertible with a derived unit.
      * @param[in] other The other unit
      * @retval    true  They are convertible
      * @retval    false They are not convertible
      */
-    bool isConvertibleTo(const DerivedUnit& other) const override;
+    bool isConvertibleTo(const CanonicalUnit& other) const override;
 
     /**
      * Indicates if numeric values in this unit are convertible with an affine unit.
@@ -166,18 +150,11 @@ public:
     bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
-     * Multiplies by a base unit.
-     * @param[in] other  The base unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    Pimpl multiplyBy(const BaseUnit& other) const override;
-
-    /**
      * Multiplies by a derived unit.
      * @param[in] other  The derived unit
      * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
-    Pimpl multiplyBy(const DerivedUnit& other) const override;
+    Pimpl multiplyBy(const CanonicalUnit& other) const override;
 
     /**
      * Multiplies by an affine unit.

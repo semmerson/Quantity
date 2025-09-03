@@ -21,9 +21,8 @@
  */
 
 #include "AffineUnit.h"
+#include "CanonicalUnit.h"
 
-#include "BaseUnit.h"
-#include "DerivedUnit.h"
 
 namespace quantity {
 
@@ -106,12 +105,7 @@ Unit::Pimpl AffineUnit::multiply(const Pimpl& other) const
     return other->multiplyBy(*this);
 }
 
-int AffineUnit::compareTo(const BaseUnit& other) const
-{
-    return 1;   // Affine units come after base units
-}
-
-int AffineUnit::compareTo(const DerivedUnit& other) const
+int AffineUnit::compareTo(const CanonicalUnit& other) const
 {
     return 1;   // Affine units come after derived units
 }
@@ -135,12 +129,7 @@ int AffineUnit::compareTo(const AffineUnit& other) const
               : 0;
 }
 
-bool AffineUnit::isConvertibleTo(const BaseUnit& other) const
-{
-    return core->isConvertibleTo(other);
-}
-
-bool AffineUnit::isConvertibleTo(const DerivedUnit& other) const
+bool AffineUnit::isConvertibleTo(const CanonicalUnit& other) const
 {
     return core->isConvertibleTo(other);
 }
@@ -150,20 +139,12 @@ bool AffineUnit::isConvertibleTo(const AffineUnit& other) const
     return core->isConvertible(other.core);
 }
 
-Unit::Pimpl AffineUnit::multiplyBy(const BaseUnit& other) const
+Unit::Pimpl AffineUnit::multiplyBy(const CanonicalUnit& other) const
 {
     if (intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    return getAffine(core->multiplyBy(other), slope, 0);
-}
-
-Unit::Pimpl AffineUnit::multiplyBy(const DerivedUnit& other) const
-{
-    if (intercept != 0)
-        throw std::logic_error("Multiplication by an offset unit isn't supported");
-
-    return getAffine(core->multiplyBy(other), slope, 0);
+    return get(core->multiplyBy(other), slope, 0);
 }
 
 Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
@@ -171,7 +152,7 @@ Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
     if (intercept != 0 || other.intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    return getAffine(core->multiplyBy(other), slope*other.slope, 0);
+    return get(core->multiplyBy(other), slope*other.slope, 0);
 }
 
 } // Namespace

@@ -60,7 +60,7 @@ public:
      * Returns the associated base unit.
      * @return The associated base unit
      */
-    virtual const BaseUnit& baseUnit() const noexcept =0;
+    virtual const BaseInfo& baseUnit() const noexcept =0;
 };
 
 } // namespace quantity

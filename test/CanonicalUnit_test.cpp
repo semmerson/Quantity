@@ -1,7 +1,8 @@
 /**
- * This file tests class DerivedUnit.
+ * This file tests class CanonicalUnit.
  */
 
+#include "BaseInfo.h"
 #include "Unit.h"
 
 #include "gtest/gtest.h"
@@ -11,18 +12,18 @@ namespace {
 using namespace quantity;
 
 /// The fixture for testing the class
-class DimensionTest : public ::testing::Test
+class CanonicalUnitTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    DimensionTest()
+    CanonicalUnitTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~DimensionTest()
+    virtual ~CanonicalUnitTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -43,13 +44,17 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Unit::Pimpl kilogram = Unit::getBase("kilogram", "kg");
-    Unit::Pimpl meter = Unit::getBase("meter", "m");
-    Unit::Pimpl second = Unit::getBase("second", "s");
+    //auto kilogram = Unit::getCanonical(BaseInfo("kilogram", "kg")); // Doesn't work
+    const BaseInfo kgInfo{"kilogram", "kg"};
+    const BaseInfo mInfo{"meter", "m"};
+    const BaseInfo sInfo{"second", "s"};
+    const Unit::Pimpl kilogram{Unit::get(kgInfo)};
+    const Unit::Pimpl meter{Unit::get(mInfo)};
+    const Unit::Pimpl second{Unit::get(sInfo)};
 };
 
 // Tests construction
-TEST_F(DimensionTest, Construction)
+TEST_F(CanonicalUnitTest, Construction)
 {
     const auto kg_m = kilogram->multiply(meter);
     EXPECT_EQ("kg·m", kg_m->to_string());
