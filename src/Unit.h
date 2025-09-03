@@ -183,6 +183,13 @@ public:
      * @return           A unit whose scale-transform is equal to this unit's times the other unit's
      */
     virtual Pimpl multiplyBy(const AffineUnit& other) const =0;
+
+    /**
+     * Returns this instance raised to a power in a new unit.
+     * @param[in] exp   The exponent
+     * @return          The result
+     */
+    virtual Pimpl pow(const Exponent exp) const =0;
 };
 
 } // namespace quantity

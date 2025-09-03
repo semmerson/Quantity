@@ -235,6 +235,16 @@ public:
         denom = newDenom/div;
         return *this;
     }
+
+    /**
+     * Raises a value to the power of this instance.
+     * @param[in] value     The value to be raised
+     * @return              The value raised to the power of this instance
+     */
+    double exponentiate(const double value) const
+    {
+        return pow(value, static_cast<double>(numer)/static_cast<double>(denom));
+    }
 };
 
 Exponent::Exponent(ExponentImpl* impl)
@@ -291,6 +301,11 @@ Exponent& Exponent::add(const Exponent& other)
 {
     pImpl->add(*other.pImpl);
     return *this;
+}
+
+double Exponent::exponentiate(const double value) const
+{
+    return pImpl->exponentiate(value);
 }
 
 } // namespace quantity

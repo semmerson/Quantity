@@ -119,6 +119,13 @@ public:
      * @return          This instance after being added to
      */
     Exponent& add(const Exponent& other);
+
+    /**
+     * Raises a value to the power of this instance.
+     * @param[in] value     The value to be raised
+     * @return              The value raised to the power of this instance
+     */
+    double exponentiate(const double value) const;
 };
 
 } // namespace quantity

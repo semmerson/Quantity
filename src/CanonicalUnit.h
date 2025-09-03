@@ -41,13 +41,13 @@ class CanonicalUnit final : public Unit
 private:
     /// Comparison functor for base unit information
     struct BaseInfoLess {
-        bool operator()(const BaseInfo& base1, const BaseInfo& base2) {
+        bool operator()(const BaseInfo& base1, const BaseInfo& base2) const {
             return base1.compare(base2) < 0;
         }
     };
 
     /// Container for unit factors.
-    using UnitFactors = map<BaseInfo, Exponent, BaseInfoLess>;
+    using UnitFactors = map<const BaseInfo, Exponent, BaseInfoLess>;
 
     /// A unit factor
     using UnitFactor = pair<const BaseInfo, Exponent>;
@@ -192,6 +192,13 @@ public:
      * @return           The product of this instance and the other unit
      */
     Pimpl multiplyBy(const AffineUnit& other) const override;
+
+    /**
+     * Returns this instance raised to a power in a new unit.
+     * @param[in] exp   The exponent
+     * @return          The result
+     */
+    Pimpl pow(const Exponent exp) const override;
 };
 
 

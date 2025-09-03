@@ -53,12 +53,24 @@ protected:
     const Unit::Pimpl second{Unit::get(sInfo)};
 };
 
-// Tests construction
-TEST_F(CanonicalUnitTest, Construction)
+// Tests multiplication
+TEST_F(CanonicalUnitTest, Multiplication)
 {
     const auto kg_m = kilogram->multiply(meter);
     EXPECT_EQ("kg·m", kg_m->to_string());
     EXPECT_EQ("kg·m^2", kg_m->multiply(meter)->to_string());
+}
+
+// Tests exponetiation
+TEST_F(CanonicalUnitTest, Exponetiation)
+{
+    const auto perS = second->pow(Exponent(-1));
+    EXPECT_EQ("s^-1", perS->to_string());
+    const auto perS2 = perS->pow(Exponent(2));
+    EXPECT_EQ("s^-2", perS2->to_string());
+    const auto mPerS = meter->multiply(perS);
+    EXPECT_EQ("m·s^-1", mPerS->to_string());
+    EXPECT_EQ("m^2·s^-2", meter->multiply(second->pow(Exponent(-1)))->pow(Exponent(2))->to_string());
 }
 
 }  // namespace

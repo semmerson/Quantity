@@ -33,10 +33,8 @@ CanonicalUnit::CanonicalUnit(const UnitFactors& otherFactors)
 
 CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo,
                              Exponent        exp)
-    : CanonicalUnit()
-{
-    factors.insert(UnitFactor(baseInfo, exp));
-}
+    : factors{UnitFactor(baseInfo, exp)}
+{}
 
 #if 1
 CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo)
@@ -163,17 +161,28 @@ bool CanonicalUnit::isConvertibleTo(const AffineUnit& other) const
 
 Unit::Pimpl CanonicalUnit::multiplyBy(const CanonicalUnit& other) const
 {
-    UnitFactors newFactors(factors);
+    UnitFactors newFactors{};
+
+    for (const auto& thisFactor : factors) {
+        const auto& thisExp = thisFactor.second;
+        Exponent newExp{thisExp.getNumer(), thisExp.getDenom()};  // An Exponent isn't const
+        newFactors.insert(UnitFactor{thisFactor.first, newExp});
+    }
 
     for (const auto& otherFactor : other.factors) {
-        auto iter = newFactors.find(otherFactor.first); // Find same base unit
-        if (iter == newFactors.end()) {
-            newFactors.insert(otherFactor);             // Insert if doesn't exit
+        const auto& otherExp = otherFactor.second;
+        const auto newIter = newFactors.find(otherFactor.first);    // Find same base unit
+        if (newIter == newFactors.end()) {
+            // This instance doesn't have the same base unit
+            Exponent newExp{otherExp.getNumer(), otherExp.getDenom()};  // An Exponent isn't const
+            newFactors.insert(UnitFactor{otherFactor.first, newExp});
         }
         else {
-            iter->second.add(otherFactor.second);       // Add exponents of base units
-            if (iter->second.isZero())
-                newFactors.erase(iter);                 // Delete dimensionless unit one factor
+            // This instance has the same base unit
+            auto& newExp = newIter->second;
+            newExp.add(otherExp);
+            if (newExp.isZero())
+                newFactors.erase(newIter);  // To maintain the invariant
         }
     }
 
@@ -183,6 +192,19 @@ Unit::Pimpl CanonicalUnit::multiplyBy(const CanonicalUnit& other) const
 Unit::Pimpl CanonicalUnit::multiplyBy(const AffineUnit& other) const
 {
     return other.multiplyBy(*this); // Defer to the affine unit
+}
+
+Unit::Pimpl CanonicalUnit::pow(const Exponent exp) const
+{
+    UnitFactors newFactors{};
+
+    for (const auto& thisFactor : factors) {
+        const auto& thisExp = thisFactor.second;
+        Exponent newExp{thisExp.getNumer(), thisExp.getDenom()};    // An Exponent isn't const
+        newFactors.insert(UnitFactor{thisFactor.first, newExp.multiply(exp)});
+    }
+
+    return Pimpl(new CanonicalUnit(newFactors));
 }
 
 } // Namespace

@@ -155,4 +155,12 @@ Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
     return get(core->multiplyBy(other), slope*other.slope, 0);
 }
 
+Unit::Pimpl AffineUnit::pow(const Exponent exp) const
+{
+    if (intercept != 0)
+        throw std::logic_error("Exponentiating an offset unit isn't supported");
+
+    return get(core->pow(exp), exp.exponentiate(slope), 0);
+}
+
 } // Namespace
