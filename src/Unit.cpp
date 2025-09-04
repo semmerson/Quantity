@@ -73,4 +73,9 @@ Unit::Pimpl Unit::get(const Unit::Pimpl& core,
 
 Unit::~Unit() noexcept =default;
 
+Unit::Pimpl Unit::divideBy(const Pimpl& unit) const
+{
+    return multiply(unit->pow(Exponent(-1)));
+}
+
 } // namespace quantity

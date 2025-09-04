@@ -152,7 +152,7 @@ Unit::Pimpl AffineUnit::multiplyBy(const AffineUnit& other) const
     if (intercept != 0 || other.intercept != 0)
         throw std::logic_error("Multiplication by an offset unit isn't supported");
 
-    return get(core->multiplyBy(other), slope*other.slope, 0);
+    return get(core->multiply(other.core), slope*other.slope, 0);
 }
 
 Unit::Pimpl AffineUnit::pow(const Exponent exp) const

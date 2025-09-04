@@ -73,6 +73,12 @@ TEST_F(CanonicalUnitTest, Exponetiation)
     EXPECT_EQ("m^2·s^-2", meter->multiply(second->pow(Exponent(-1)))->pow(Exponent(2))->to_string());
 }
 
+// Tests division
+TEST_F(CanonicalUnitTest, Division)
+{
+    EXPECT_EQ("m·s^-1", meter->divideBy(second)->to_string());
+}
+
 }  // namespace
 
 int main(int argc, char **argv) {

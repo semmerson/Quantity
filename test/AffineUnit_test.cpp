@@ -53,6 +53,7 @@ protected:
     const Unit::Pimpl meter{Unit::get(BaseInfo("meter", "m"))};
     const Unit::Pimpl kilogram{Unit::get(BaseInfo("kilogram", "kg"))};
     const Unit::Pimpl kelvin{Unit::get(BaseInfo("kelvin", "°K"))};
+    const Unit::Pimpl second{Unit::get(BaseInfo("second", "s"))};
 };
 
 /// Tests construction
@@ -139,39 +140,16 @@ TEST_F(AffineUnitTest, Exponentiation)
     EXPECT_GE(2000001, km2->convertToCanonical(2));
 }
 
-#if 0
-
-/// Tests division
+/// Tests Unit::divide()
 TEST_F(AffineUnitTest, Division)
 {
-    AffineUnit unit1{meter, 4, 1};
-    auto unit2 = unit1.divideBy(2);
-    ASSERT_EQ(1, unit2.convert(0));
-    ASSERT_EQ(3, unit2.convert(1));
+    Unit::Pimpl km = Unit::get(meter, 1.0/1000.0, 0);
+    Unit::Pimpl hr = Unit::get(second, 1.0/3600.0, 0);
+    const auto kmPerHr = km->divideBy(hr);
+    EXPECT_EQ("3.600000 m·s^-1", kmPerHr->to_string());
+    EXPECT_LE(27.76, kmPerHr->convertToCanonical(100));
+    EXPECT_GE(27.78, kmPerHr->convertToCanonical(100));
 }
-
-/// Tests raising to a power
-TEST_F(AffineUnitTest, Power)
-{
-    ASSERT_THROW(AffineUnit(meter, 2, 1).pow(2), std::domain_error);
-    AffineUnit unit1{meter, 2, 0};
-    auto unit2 = unit1.pow(2);
-    ASSERT_EQ(0, unit2.convert(0));
-    ASSERT_EQ(4, unit2.convert(1));
-}
-
-/// Tests taking a root
-TEST_F(AffineUnitTest, Root)
-{
-    EXPECT_THROW(AffineUnit(meter, 2, 0).root(0), std::invalid_argument);
-    EXPECT_THROW(AffineUnit(meter, 2, 0).root(-1), std::invalid_argument);
-    AffineUnit unit1{meter, 2, 0};
-    auto unit2 = unit1.pow(2);
-    auto unit3 = unit2.root(2);
-    EXPECT_EQ(0, unit3.convert(0));
-    EXPECT_EQ(2, unit3.convert(1));
-}
-#endif
 
 }  // namespace
 

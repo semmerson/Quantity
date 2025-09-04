@@ -187,6 +187,14 @@ public:
     virtual Pimpl multiplyBy(const AffineUnit& other) const =0;
 
     /**
+     * Returns the quotient of this unit divided by another.
+     * @param[in] unit          The other unit
+     * @return                  The quotient of this unit divided by the other
+     * @throw std::logic_error  Division isn't supported
+     */
+    Pimpl divideBy(const Pimpl& unit) const;
+
+    /**
      * Returns this instance raised to a power in a new unit.
      * @param[in] exp   The exponent
      * @return          The result
