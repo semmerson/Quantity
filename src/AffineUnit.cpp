@@ -44,7 +44,7 @@ std::string AffineUnit::to_string() const
 {
     string rep{""};
     if (slope != 1) {
-        rep += std::to_string(slope) + "*";
+        rep += std::to_string(slope) + " ";
     }
     string coreStr = core->to_string();
     const bool haveBlank = coreStr.find(" ") != string::npos;

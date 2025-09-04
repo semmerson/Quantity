@@ -91,19 +91,43 @@ TEST_F(AffineUnitTest, Convert)
     EXPECT_EQ(-273.15, celsius->convertTo(0));
 
     Unit::Pimpl rankine = Unit::get(kelvin, 1.8, 0.0);
-    EXPECT_EQ("1.800000*°K", rankine->to_string());
+    EXPECT_EQ("1.800000 °K", rankine->to_string());
     EXPECT_LE(491.66, rankine->convertTo(273.15));
     EXPECT_GE(491.68+.001, rankine->convertTo(273.15));
 
     Unit::Pimpl fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
-    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit1->to_string());
+    EXPECT_EQ("(1.800000 °K) - 459.670000", fahrenheit1->to_string());
     EXPECT_LE(31.99, fahrenheit1->convertTo(491.67));
     EXPECT_GE(32.01, fahrenheit1->convertTo(491.67));
 
     Unit::Pimpl fahrenheit2 = Unit::get(celsius, 1.8, 32);
-    EXPECT_EQ("1.800000*(°K - 273.150000) + 32.000000", fahrenheit2->to_string());
+    EXPECT_EQ("1.800000 (°K - 273.150000) + 32.000000", fahrenheit2->to_string());
     EXPECT_LE(31.99, fahrenheit2->convertTo(0));
     EXPECT_GE(32.01, fahrenheit2->convertTo(0));
+}
+
+/// Tests Unit::Multiply()
+TEST_F(AffineUnitTest, Multiplication)
+{
+    const auto unit1 = Unit::get(meter, 3, 1);
+    EXPECT_THROW(unit1->multiply(meter), logic_error);
+    EXPECT_THROW(meter->multiply(unit1), logic_error);
+
+    Unit::Pimpl km = Unit::get(meter, 1000, 0);
+    EXPECT_EQ("1000.000000 m", km->to_string());
+
+    EXPECT_EQ("1000.000000 m·°K", km->multiply(kelvin)->to_string());
+}
+
+/// Tests Unit::pow()
+TEST_F(AffineUnitTest, Exponentiation)
+{
+    const auto unit1 = Unit::get(meter, 3, 1);
+    EXPECT_THROW(unit1->pow(Exponent(2)), logic_error);
+
+    Unit::Pimpl km = Unit::get(meter, 1000, 0);
+    const auto km2 = km->pow(2);
+    EXPECT_EQ("1000000.000000 m^2", km2->to_string());
 }
 
 #if 0
