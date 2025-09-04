@@ -98,8 +98,8 @@ TEST_F(AffineUnitTest, Convert)
 
     Unit::Pimpl fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
     EXPECT_EQ("(1.800000 °K) - 459.670000", fahrenheit1->to_string());
-    EXPECT_LE(491.66, fahrenheit1->convertToCanonical(32));
-    EXPECT_GE(491.68, fahrenheit1->convertToCanonical(32));
+    EXPECT_LE(273.14, fahrenheit1->convertToCanonical(32));
+    EXPECT_GE(273.16, fahrenheit1->convertToCanonical(32));
 
     Unit::Pimpl fahrenheit2 = Unit::get(kelvin, 1.8, -459.67);
     EXPECT_EQ("1.800000 °K - 459.670000", fahrenheit2->to_string());
@@ -108,8 +108,8 @@ TEST_F(AffineUnitTest, Convert)
 
     Unit::Pimpl fahrenheit3 = Unit::get(celsius, 1.8, 32);
     EXPECT_EQ("1.800000 (°K - 273.150000) + 32.000000", fahrenheit3->to_string());
-    EXPECT_LE(-0.01, fahrenheit3->convertToCanonical(32));
-    EXPECT_GE(+0.01, fahrenheit3->convertToCanonical(32));
+    EXPECT_LE(273.14, fahrenheit3->convertToCanonical(32));
+    EXPECT_GE(273.16, fahrenheit3->convertToCanonical(32));
 }
 
 /// Tests Unit::Multiply()
