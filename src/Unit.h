@@ -68,8 +68,9 @@ public:
      * numeric value in the underlying unit and "a" and "b" are the slope and intercept,
      * respectively. If the slope is 1 and the intercept is 0, then the underlying unit is returned.
      * @param[in] core                  The underlying unit
-     * @param[in] slope                 The slope for converting values from the @ core unit
-     * @param[in] intercept             The intercept for converting values from the @ core unit
+     * @param[in] slope                 The slope for converting numeric values from the @ core unit
+     * @param[in] intercept             The intercept for converting numeric values from the @ core
+     *                                  unit
      * @throw     std::invalid_argument The slope is zero
      */
     static Pimpl get(const Pimpl& core,
@@ -77,7 +78,8 @@ public:
                      const double intercept);
 
     /**
-     * Returns a string representation.
+     * Returns a string representation of the transformation from a numeric value in the @ core unit
+     * to a numeric value in this unit.
      * @retval A string representation
      */
     virtual std::string to_string() const =0;
@@ -157,11 +159,11 @@ public:
     virtual bool isConvertibleTo(const AffineUnit& other) const =0;
 
     /**
-     * Converts a numeric value from any underlying unit to this unit.
-     * @param[in] value  The value to be converted from the underlying unit
+     * Converts a numeric value to the canonical underlying unit.
+     * @param[in] value  The value to be converted to the canonical underlying unit
      * @return           The converted value
      */
-    virtual double convertTo(const double value) const = 0;
+    virtual double convertToCanonical(const double value) const = 0;
 
     /**
      * Multiplies by another unit.

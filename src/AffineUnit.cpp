@@ -95,9 +95,9 @@ bool AffineUnit::isConvertible(const Pimpl& other) const
     return other->isConvertibleTo(*this);
 }
 
-double AffineUnit::convertTo(const double value) const
+double AffineUnit::convertToCanonical(const double value) const
 {
-    return value * slope + intercept;
+    return (value-intercept)/slope;
 }
 
 Unit::Pimpl AffineUnit::multiply(const Pimpl& other) const

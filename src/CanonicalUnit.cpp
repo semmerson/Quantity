@@ -98,7 +98,7 @@ bool CanonicalUnit::isConvertible(const Pimpl& other) const
     return other->isConvertibleTo(*this);
 }
 
-double CanonicalUnit::convertTo(const double value) const
+double CanonicalUnit::convertToCanonical(const double value) const
 {
     return value;
 }

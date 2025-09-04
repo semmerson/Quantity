@@ -103,11 +103,11 @@ public:
     bool isConvertible(const Pimpl& other) const override;
 
     /**
-     * Converts a numeric value.
+     * Converts a numeric value to the canonical underlying unit.
      * @param[in] value  The value to be converted
      * @return           The converted value
      */
-    double convertTo(const double value) const override;
+    double convertToCanonical(const double value) const override;
 
     /**
      * Multiplies by another unit.
