@@ -173,6 +173,13 @@ public:
     double convertToCanonical(const double value) const override;
 
     /**
+     * Converts a numeric value from the canonical underlying unit to this unit.
+     * @param[in] value  The value to be converted to the canonical underlying unit
+     * @return           The converted value
+     */
+    double convertFromCanonical(const double value) const override;
+
+    /**
      * Returns a new unit that is the product of this instance and another unit.
      * @param[in] other  The other unit
      * @return           The product of this instance and the other unit

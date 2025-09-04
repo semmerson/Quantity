@@ -159,11 +159,18 @@ public:
     virtual bool isConvertibleTo(const AffineUnit& other) const =0;
 
     /**
-     * Converts a numeric value to the canonical underlying unit.
+     * Converts a numeric value to the canonical underlying unit from this unit.
      * @param[in] value  The value to be converted to the canonical underlying unit
      * @return           The converted value
      */
     virtual double convertToCanonical(const double value) const = 0;
+
+    /**
+     * Converts a numeric value from the canonical underlying unit to this unit.
+     * @param[in] value  The value to be converted to the canonical underlying unit
+     * @return           The converted value
+     */
+    virtual double convertFromCanonical(const double value) const = 0;
 
     /**
      * Multiplies by another unit.

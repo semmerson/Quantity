@@ -79,6 +79,15 @@ TEST_F(CanonicalUnitTest, Division)
     EXPECT_EQ("m·s^-1", meter->divideBy(second)->to_string());
 }
 
+// Tests conversion
+TEST_F(CanonicalUnitTest, Conversion)
+{
+    EXPECT_EQ(0, meter->convertToCanonical(0));
+    EXPECT_EQ(1, meter->convertToCanonical(1));
+    EXPECT_EQ(0, meter->convertFromCanonical(0));
+    EXPECT_EQ(1, meter->convertFromCanonical(1));
+}
+
 }  // namespace
 
 int main(int argc, char **argv) {

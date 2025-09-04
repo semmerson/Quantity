@@ -97,7 +97,12 @@ bool AffineUnit::isConvertible(const Pimpl& other) const
 
 double AffineUnit::convertToCanonical(const double value) const
 {
-    return (value-intercept)/slope;
+    return core->convertToCanonical((value-intercept)/slope);
+}
+
+double AffineUnit::convertFromCanonical(const double value) const
+{
+    return slope*core->convertFromCanonical(value) + intercept;
 }
 
 Unit::Pimpl AffineUnit::multiply(const Pimpl& other) const

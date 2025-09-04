@@ -86,30 +86,41 @@ TEST_F(AffineUnitTest, Convert)
     Unit::Pimpl unit = Unit::get(meter, 3, 5);
     ASSERT_EQ(0, unit->convertToCanonical(5));
     ASSERT_EQ(1, unit->convertToCanonical(8));
+    EXPECT_EQ(5, unit->convertFromCanonical(unit->convertToCanonical(5)));
 
     Unit::Pimpl rankine = Unit::get(kelvin, 1.8, 0.0);
     EXPECT_EQ("1.800000 °K", rankine->to_string());
     EXPECT_LE(273.14, rankine->convertToCanonical(491.67));
     EXPECT_GE(273.16, rankine->convertToCanonical(491.67));
+    EXPECT_LE(491.66, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
+    EXPECT_GE(491.68, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
 
     Unit::Pimpl celsius = Unit::get(kelvin, 1, -273.15);
     EXPECT_EQ("°K - 273.150000", celsius->to_string());
     EXPECT_EQ(0, celsius->convertToCanonical(-273.15));
+    EXPECT_LE(273.14, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
+    EXPECT_GE(273.16, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
 
     Unit::Pimpl fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
     EXPECT_EQ("(1.800000 °K) - 459.670000", fahrenheit1->to_string());
     EXPECT_LE(273.14, fahrenheit1->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit1->convertToCanonical(32));
+    EXPECT_LE(31.99, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
+    EXPECT_GE(32.01, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
 
     Unit::Pimpl fahrenheit2 = Unit::get(kelvin, 1.8, -459.67);
     EXPECT_EQ("1.800000 °K - 459.670000", fahrenheit2->to_string());
     EXPECT_LE(273.14, fahrenheit2->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit2->convertToCanonical(32));
+    EXPECT_LE(31.99, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
+    EXPECT_GE(32.01, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
 
     Unit::Pimpl fahrenheit3 = Unit::get(celsius, 1.8, 32);
     EXPECT_EQ("1.800000 (°K - 273.150000) + 32.000000", fahrenheit3->to_string());
     EXPECT_LE(273.14, fahrenheit3->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit3->convertToCanonical(32));
+    EXPECT_LE(31.99, fahrenheit3->convertFromCanonical(fahrenheit3->convertToCanonical(32)));
+    EXPECT_GE(32.01, fahrenheit3->convertFromCanonical(fahrenheit3->convertToCanonical(32)));
 }
 
 /// Tests Unit::Multiply()

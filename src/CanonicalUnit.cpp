@@ -103,6 +103,11 @@ double CanonicalUnit::convertToCanonical(const double value) const
     return value;
 }
 
+double CanonicalUnit::convertFromCanonical(const double value) const
+{
+    return value;
+}
+
 CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const
 {
     return other->multiplyBy(*this);
