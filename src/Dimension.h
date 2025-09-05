@@ -61,6 +61,12 @@ public:
 	            const string&   symbol);
 
 	/**
+	 * Copy constructs.
+	 * @param[in] dim   A physical dimension
+	 */
+	Dimension(const Dimension& dim) =default;
+
+	/**
 	 * Returns the hash code of this instance.
 	 * @return                  The hash code of this instance
 	 * @throw std:: logic_error This instance has not been initialized

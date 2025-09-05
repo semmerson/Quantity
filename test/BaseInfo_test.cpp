@@ -20,6 +20,7 @@ class BaseUnitTest : public ::testing::Test
 protected:
     Dimension length;
     Dimension mass;
+    Dimension time;
 
     // You can remove any or all of the following functions if its body
     // is empty.
@@ -27,6 +28,7 @@ protected:
     BaseUnitTest()
         : length(Dimension("Length", "L"))
         , mass(Dimension("Mass", "M"))
+        , time(Dimension("Time", "T"))
     {
         // You can do set-up work for each test here.
     }
@@ -58,37 +60,37 @@ protected:
 // Tests construction
 TEST_F(BaseUnitTest, Construction)
 {
-    EXPECT_THROW(BaseInfo("", "m"), std::invalid_argument);
-    EXPECT_THROW(BaseInfo("meter", ""), std::invalid_argument);
+    EXPECT_THROW(BaseInfo(length, "", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo(length, "meter", ""), std::invalid_argument);
 
-    BaseInfo meter{"meter", "m"};
+    BaseInfo meter{length, "meter", "m"};
 
-    EXPECT_THROW(BaseInfo("meter", "s"), std::invalid_argument);
-    EXPECT_THROW(BaseInfo("bar", "m"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo(length, "meter", "s"), std::invalid_argument);
+    EXPECT_THROW(BaseInfo(length, "bar", "m"), std::invalid_argument);
 }
 
 // Tests to_string()
 TEST_F(BaseUnitTest, to_string)
 {
-    BaseInfo meter{"meter", "m"};
+    BaseInfo meter{length, "meter", "m"};
     EXPECT_EQ("m", meter.to_string());
 }
 
 // Tests hashing
 TEST_F(BaseUnitTest, Hashing)
 {
-    BaseInfo meter{"meter", "m"};
-    BaseInfo second{"second", "s"};
+    BaseInfo meter{length, "meter", "m"};
+    BaseInfo second{time, "second", "s"};
     EXPECT_NE(meter.hash(), second.hash());
 }
 
 // Tests comparison
 TEST_F(BaseUnitTest, Comparison)
 {
-    BaseInfo meter{"meter", "m"};
+    BaseInfo meter{length, "meter", "m"};
     EXPECT_EQ(0, meter.compare(meter));
 
-    BaseInfo second{"second", "s"};
+    BaseInfo second{time, "second", "s"};
     EXPECT_GT(0, meter.compare(second));
     EXPECT_LT(0, second.compare(meter));
 }

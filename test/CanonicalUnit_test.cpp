@@ -3,6 +3,7 @@
  */
 
 #include "BaseInfo.h"
+#include "Dimension.h"
 #include "Unit.h"
 
 #include "gtest/gtest.h"
@@ -45,9 +46,12 @@ protected:
 
     // Objects declared here can be used by all tests in the test case for Error.
     //auto kilogram = Unit::getCanonical(BaseInfo("kilogram", "kg")); // Doesn't work
-    const BaseInfo kgInfo{"kilogram", "kg"};
-    const BaseInfo mInfo{"meter", "m"};
-    const BaseInfo sInfo{"second", "s"};
+    Dimension mass{"Mass", "M"};
+    Dimension length{"Length", "L"};
+    Dimension time{"Time", "T"};
+    const BaseInfo kgInfo{mass, "kilogram", "kg"};
+    const BaseInfo mInfo{length, "meter", "m"};
+    const BaseInfo sInfo{time, "second", "s"};
     const Unit::Pimpl kilogram{Unit::get(kgInfo)};
     const Unit::Pimpl meter{Unit::get(mInfo)};
     const Unit::Pimpl second{Unit::get(sInfo)};

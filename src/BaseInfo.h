@@ -22,7 +22,6 @@
 
 #pragma once
 
-//#include "CanonicalUnit.h"
 #include "Unit.h"
 
 #include <memory>
@@ -33,7 +32,7 @@ using namespace std;
 namespace quantity {
 
 class BaseInfoImpl;
-class Unit;
+class Dimension;
 
 /**
  * Information on a base unit of a physical quantity. NB: This class *isn't* a unit and so it
@@ -53,11 +52,13 @@ public:
 
     /**
      * Constructs from a name and a symbol.
+     * @param[in] dim     Associated physical dimension
      * @param[in] name    Base unit name
      * @param[in] symbol  Base unit symbol
      */
-    BaseInfo(const string& name,
-             const string& symbol);
+    BaseInfo(const Dimension& dim,
+             const string&    name,
+             const string&    symbol);
 
     /**
      * Returns a string representation

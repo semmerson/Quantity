@@ -50,10 +50,12 @@ protected:
     // Objects declared here can be used by all tests in the test case for Error.
     Dimension length{"Length", "L"};
     Dimension mass{"Mass", "M"};
-    const Unit::Pimpl meter{Unit::get(BaseInfo("meter", "m"))};
-    const Unit::Pimpl kilogram{Unit::get(BaseInfo("kilogram", "kg"))};
-    const Unit::Pimpl kelvin{Unit::get(BaseInfo("kelvin", "°K"))};
-    const Unit::Pimpl second{Unit::get(BaseInfo("second", "s"))};
+    Dimension temperature{"Temperature", "Θ"};
+    Dimension time{"Time", "T"};
+    const Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
+    const Unit::Pimpl kilogram{Unit::get(BaseInfo(mass, "kilogram", "kg"))};
+    const Unit::Pimpl kelvin{Unit::get(BaseInfo(temperature, "kelvin", "°K"))};
+    const Unit::Pimpl second{Unit::get(BaseInfo(time, "second", "s"))};
 };
 
 /// Tests construction

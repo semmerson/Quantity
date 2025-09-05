@@ -21,6 +21,7 @@
  */
 
 #include "BaseInfo.h"
+#include "Dimension.h"
 
 #include "Unit.h"
 
@@ -34,6 +35,7 @@ namespace quantity {
 class BaseInfoImpl final
 {
 private:
+    const Dimension dim;        ///< Associated physical dimension
     const string    name;       ///< Base unit name
     const string    symbol;     ///< Base unit symbol
 
@@ -46,12 +48,15 @@ public:
 
     /**
      * Constructs.
-     * @param[in] name    Unit name
-     * @param[in] symbol  Unit symbol
+     * @param[in] dim       Associated physical dimension
+     * @param[in] name      Unit name
+     * @param[in] symbol    Unit symbol
      */
-    BaseInfoImpl(const std::string& name,
-                 const std::string& symbol)
-        : name(name)
+    BaseInfoImpl(const Dimension& dim,
+                 const string&    name,
+                 const string&    symbol)
+        : dim(dim)
+        , name(name)
         , symbol(symbol)
     {
         if (name.size() == 0)
@@ -109,9 +114,10 @@ public:
 unordered_set<string>    BaseInfoImpl::nameSet;    ///< Set of extant base unit names
 unordered_set<string>    BaseInfoImpl::symSet;     ///< Set of extant base unit symbols
 
-BaseInfo::BaseInfo(const string& name,
-                   const string& symbol)
-    : pImpl(new BaseInfoImpl(name, symbol))
+BaseInfo::BaseInfo(const Dimension& dim,
+                   const string&    name,
+                   const string&    symbol)
+    : pImpl(new BaseInfoImpl(dim, name, symbol))
 {}
 
 std::string BaseInfo::to_string() const

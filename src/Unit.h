@@ -32,6 +32,7 @@ namespace quantity {
 class BaseInfo;
 class CanonicalUnit;
 class AffineUnit;
+class TemporalUnit;
 
 /// Declaration of a unit of a physical quantity.
 class Unit
@@ -47,7 +48,8 @@ public:
         one,        ///< Canonical unit with zero base units (i.e., the dimensionless unit one)
         base,       ///< Canonical unit with one base unit
         canonical,  ///< Canonical unit with two or more base units
-        affine,     ///< Affine unit
+        affine,     ///< Affine unit (transformation from canonical unit has form "y=ax+b")
+        temporal,   ///< Temporal unit (time increment and a start-time)
     };
 
     /// Smart pointer to an implementation of a unit.
