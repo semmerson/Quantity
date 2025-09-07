@@ -65,11 +65,7 @@ protected:
 // Tests construction
 TEST_F(CalendarTest, Construction)
 {
-    Calendar::Timestamp t1 = {2025, 07, 19, 12, 7, 37};
-    Calendar::Timestamp t2 = t1;
-    auto gregorian{Calendar::getGregorian()};
-
-    EXPECT_EQ(gregorian->difference(t1, t2), 0);
+    EXPECT_THROW(Calendar::getGregorian(), std::logic_error);
 }
 
 }  // namespace

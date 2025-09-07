@@ -7,5 +7,10 @@ add_library(libquant OBJECT
     CanonicalUnit.cpp       CanonicalUnit.h
     AffineUnit.cpp          AffineUnit.h
     Exponent.cpp            Exponent.h
+    Timestamp.cpp           Timestamp.h
     Calendar.cpp            Calendar.h
+    GregorianCalendar.cpp   GregorianCalendar.h
+    Timestamp.cpp           Timestamp.h
+    TimestampImpl.cpp       TimestampImpl.h
+    GregorianTimestamp.cpp  GregorianTimestamp.h
     )

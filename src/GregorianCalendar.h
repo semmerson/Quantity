@@ -1,7 +1,7 @@
 /**
- * This file declares an interface for calendars.
+ * This file declares a Gregorian calendar.
  *
- *        File: Calendar.h
+ *        File: Gregorian.h
  *  Created on: Jul 17, 2025
  *      Author: Steven R. Emmerson
  *
@@ -22,35 +22,29 @@
 
 #pragma once
 
-#include <memory>
+#include "Calendar.h"
 
 using namespace std;
 
 namespace quantity {
 
 /**
- * Calendar interface.
+ * A Gregorian calendar
  */
-class Calendar {
+class GregorianCalendar final : public Calendar {
 public:
-    using Pimpl = shared_ptr<Calendar>; ///< Type of smart pointer to the implementation
-
     /**
-     * Returns a Gregorian calendar.
-     * @return A Gregorian calendar
+     * Returns a Gregorian calendar
      */
-    static Pimpl getGregorian();
-
-    /// Destroys.
-    virtual ~Calendar();
+    static Pimpl get();
 
     /**
-     * Indicates if times in this calendar are convertible with another.
+     * Indicates if times in this instance are convertible with another calendar.
      * @param[in] other     Other calendar
-     * @retval    true      Times in this calendar are convertible with the other
-     * @retval    false     Times in this calendar are not convertible with the other
+     * @retval    true      Times in this instance are convertible with the other calendar
+     * @retval    false     Times in this instance are not convertible with the other calendar
      */
-    virtual bool isConvertible(const Pimpl& other) const =0;
+    bool isConvertible(const Pimpl& other) const override;
 };
 
 } // Namespace

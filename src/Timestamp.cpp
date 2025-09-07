@@ -1,8 +1,8 @@
 /**
- * This file implements class Calendar
+ * This file implements a timestamp.
  *
- *        File: Calendar.cpp
- *  Created on: Jul 17, 2025
+ *        File: Timestamp.h
+ *  Created on: Sep 6, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -19,18 +19,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Calendar.h"
+#include "Timestamp.h"
 
-#include "GregorianCalendar.h"
+#include "TimestampImpl.h"
+#include "Unit.h"
+
+#include <string>
+
+using namespace std;
 
 namespace quantity {
 
-Calendar::Pimpl Calendar::getGregorian()
+string Timestamp::to_string() const
 {
-    return GregorianCalendar::get();
+    return pImpl->to_string();
 }
 
-Calendar::~Calendar()
-{}
+bool Timestamp::isConvertible(const Timestamp& other) const
+{
+    return pImpl->isConvertible(*pImpl);
+}
+
+double Timestamp::subtract(const Timestamp& other, const Unit::Pimpl& unit) const
+{
+    return pImpl->subtract(*other.pImpl, unit);
+}
 
 } // Namespace

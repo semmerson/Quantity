@@ -1,7 +1,7 @@
 /**
- * This file implements class Calendar
+ * This file implements a Gregorian calendar.
  *
- *        File: Calendar.cpp
+ *        File: Gregorian.cpp
  *  Created on: Jul 17, 2025
  *      Author: Steven R. Emmerson
  *
@@ -19,18 +19,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Calendar.h"
 
 #include "GregorianCalendar.h"
 
+#include <stdexcept>
+
+using namespace std;
+
 namespace quantity {
 
-Calendar::Pimpl Calendar::getGregorian()
+Calendar::Pimpl GregorianCalendar::get()
 {
-    return GregorianCalendar::get();
+    throw logic_error("Not implemented yet");
 }
 
-Calendar::~Calendar()
-{}
+bool GregorianCalendar::isConvertible(const Pimpl& other) const
+{
+    throw logic_error("Not implemented yet");
+}
 
 } // Namespace
