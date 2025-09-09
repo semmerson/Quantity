@@ -25,12 +25,18 @@
 
 namespace quantity {
 
-Calendar::Pimpl Calendar::getGregorian()
+Calendar::Calendar(CalendarImpl* impl)
+    : pImpl(impl)
+{}
+
+Calendar Calendar::getGregorian()
 {
-    return GregorianCalendar::get();
+    return Calendar(new GregorianCalendar());
 }
 
-Calendar::~Calendar()
-{}
+bool Calendar::isConvertible(const Calendar& other) const
+{
+    return pImpl->isConvertible(*other.pImpl);
+}
 
 } // Namespace

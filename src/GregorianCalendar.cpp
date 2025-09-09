@@ -28,14 +28,35 @@ using namespace std;
 
 namespace quantity {
 
-Calendar::Pimpl GregorianCalendar::get()
+/// A singleton Gregorian calendar implementation.
+class GregorianSingleton final : public CalendarImpl
 {
-    throw logic_error("Not implemented yet");
-}
+public:
+    GregorianSingleton()
+    {}
 
-bool GregorianCalendar::isConvertible(const Pimpl& other) const
+    /**
+     * Indicates if times in this calendar are convertible with another calendar.
+     * @param[in] other     Other calendar
+     * @retval    true      Times in this calendar are convertible with the other
+     * @retval    false     Times in this calendar are not convertible with the other
+     */
+    bool isConvertible(const CalendarImpl& other) const override
+    {
+        // TODO
+        throw logic_error("Not implemented yet");
+    }
+};
+
+/**
+ * Singleton instance of the Gregorian calendar. NB: Because initialization only occurs in the
+ * translation unit in which the object is used, initialization order is irrelevant.
+ */
+GregorianSingleton GregorianCalendar::impl{};
+
+bool GregorianCalendar::isConvertible(const CalendarImpl& other) const
 {
-    throw logic_error("Not implemented yet");
+    return impl.isConvertible(other); // Pass to singleton instance
 }
 
 } // Namespace

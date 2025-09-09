@@ -9,6 +9,7 @@ add_library(libquant OBJECT
     Exponent.cpp            Exponent.h
     Timestamp.cpp           Timestamp.h
     Calendar.cpp            Calendar.h
+                            CalendarImpl.h
     GregorianCalendar.cpp   GregorianCalendar.h
     Timestamp.cpp           Timestamp.h
     TimestampImpl.cpp       TimestampImpl.h

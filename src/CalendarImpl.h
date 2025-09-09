@@ -1,7 +1,7 @@
 /**
- * This file declares an implementation of a Gregorian calendar.
+ * This file declares a base class for calendar implementations.
  *
- *        File: GregorianCalendar.h
+ *        File: CalendarImpl.h
  *  Created on: Jul 17, 2025
  *      Author: Steven R. Emmerson
  *
@@ -22,32 +22,27 @@
 
 #pragma once
 
-#include "CalendarImpl.h"
+#include <memory>
 
 using namespace std;
 
 namespace quantity {
 
-class GregorianSingleton;
-
 /**
- * Implementation of a Gregorian calendar. This class wraps a singleton Gregorian calendar object
- * in a regular calendar implementation object allowing such instances to be created and destroyed
- * at will.
+ * Base class for calendar implementations.
  */
-class GregorianCalendar final : public CalendarImpl
+class CalendarImpl
 {
-private:
-    static GregorianSingleton impl;    ///< Singleton Gregorian calendar
-
 public:
+    virtual ~CalendarImpl() =default;
+
     /**
-     * Indicates if times in this calendar are convertible with another calendar.
+     * Indicates if times in this calendar are convertible with another.
      * @param[in] other     Other calendar
      * @retval    true      Times in this calendar are convertible with the other
      * @retval    false     Times in this calendar are not convertible with the other
      */
-    bool isConvertible(const CalendarImpl& other) const override;
+    virtual bool isConvertible(const CalendarImpl& other) const =0;
 };
 
 } // Namespace

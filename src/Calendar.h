@@ -28,21 +28,26 @@ using namespace std;
 
 namespace quantity {
 
+class CalendarImpl;
+
 /**
  * Calendar interface.
  */
-class Calendar {
+class Calendar
+{
+private:
+    Calendar(CalendarImpl* impl);
+
 public:
-    using Pimpl = shared_ptr<Calendar>; ///< Type of smart pointer to the implementation
+    using Pimpl = shared_ptr<CalendarImpl>; ///< Type of smart pointer to calendar implementations
+
+    Pimpl pImpl;                            ///< Smart pointer to a calendar implementation
 
     /**
      * Returns a Gregorian calendar.
      * @return A Gregorian calendar
      */
-    static Pimpl getGregorian();
-
-    /// Destroys.
-    virtual ~Calendar();
+    static Calendar getGregorian();
 
     /**
      * Indicates if times in this calendar are convertible with another.
@@ -50,7 +55,7 @@ public:
      * @retval    true      Times in this calendar are convertible with the other
      * @retval    false     Times in this calendar are not convertible with the other
      */
-    virtual bool isConvertible(const Pimpl& other) const =0;
+    bool isConvertible(const Calendar& other) const;
 };
 
 } // Namespace

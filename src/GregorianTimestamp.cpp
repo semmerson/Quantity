@@ -67,11 +67,13 @@ string GregorianTimestamp::to_string() const
 
 bool GregorianTimestamp::isConvertible(const TimestampImpl& other) const
 {
+    // TODO
     throw std::logic_error("Not implemented yet");
 }
 
 double GregorianTimestamp::subtract(const TimestampImpl& other, const Unit::Pimpl& unit) const
 {
+    // TODO
     throw std::logic_error("Not implemented yet");
 }
 

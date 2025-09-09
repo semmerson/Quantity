@@ -65,7 +65,11 @@ protected:
 // Tests construction
 TEST_F(CalendarTest, Construction)
 {
-    EXPECT_THROW(Calendar::getGregorian(), std::logic_error);
+    {
+        auto calendar = Calendar::getGregorian();
+        EXPECT_THROW(calendar.isConvertible(calendar), std::logic_error);
+    }
+    auto calendar = Calendar::getGregorian();
 }
 
 }  // namespace
