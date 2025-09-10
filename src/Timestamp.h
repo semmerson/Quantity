@@ -31,12 +31,38 @@ using namespace std;
 
 class TimestampImpl;
 
-/// An polymorphic base class for timestamps.
+/// A date-timestamp.
 class Timestamp {
-public:
-    using Pimpl = shared_ptr<TimestampImpl>;    ///< Type of smart pointer to implementation
+private:
+    /**
+     * Constructs from a pointer to an implementation.
+     * @param[in] impl  Pointer to an implementation
+     */
+    Timestamp(const TimestampImpl* impl);
 
-    Pimpl pImpl;                                ///< Smart pointer to an implementation
+public:
+    using Pimpl = shared_ptr<const TimestampImpl>;  ///< Type of smart pointer to implementation
+
+    Pimpl pImpl;                                    ///< Smart pointer to an implementation
+
+    /**
+     * Returns a timestamp based on the Gregorian calendar.
+     * @param[in] year              Year
+     * @param[in] month             Month (1 - 12)
+     * @param[in] day               Day of month (1 - 31)
+     * @param[in] hour              Hour (0 - 23)
+     * @param[in] min               Minute (0 - 59)
+     * @param[in] sec               Second (0 - 61)
+     * @param[in] zone              Time zone in minutes (-720 - 720)
+     * @throw std::invalid_argument Invalid Gregorian time
+     */
+    static Timestamp getGregorian(int    year,
+                                  int    month,
+                                  int    day,
+                                  int    hour,
+                                  int    min,
+                                  double sec,
+                                  int    zone = 0);
 
     /**
      * Returns a string representation of this instance.

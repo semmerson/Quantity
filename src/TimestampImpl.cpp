@@ -24,7 +24,8 @@
 
 namespace quantity {
 
-TimestampImpl::~TimestampImpl()
+TimestampImpl::TimestampImpl(Calendar cal)
+    : calendar(cal)
 {}
 
 } // Namespace

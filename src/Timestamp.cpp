@@ -21,7 +21,7 @@
  */
 #include "Timestamp.h"
 
-#include "TimestampImpl.h"
+#include "GregorianTimestamp.h"
 #include "Unit.h"
 
 #include <string>
@@ -29,6 +29,21 @@
 using namespace std;
 
 namespace quantity {
+
+Timestamp::Timestamp(const TimestampImpl* impl)
+    : pImpl(impl)
+{}
+
+Timestamp Timestamp::getGregorian(int    year,
+                                  int    month,
+                                  int    day,
+                                  int    hour,
+                                  int    min,
+                                  double sec,
+                                  int    zone)
+{
+    return Timestamp(new GregorianTimestamp(year, month, day, hour, min, sec, zone));
+}
 
 string Timestamp::to_string() const
 {

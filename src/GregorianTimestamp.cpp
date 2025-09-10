@@ -21,6 +21,7 @@
  */
 #include "GregorianTimestamp.h"
 
+#include "GregorianCalendar.h"
 #include "Unit.h"
 
 #include <cstdio>
@@ -31,37 +32,44 @@ using namespace std;
 
 namespace quantity {
 
-GregorianTimestamp::GregorianTimestamp(const int    zone,
-                                       const int    year,
+GregorianTimestamp::GregorianTimestamp(const int    year,
                                        const int    month,
                                        const int    day,
                                        const int    hour,
                                        const int    min,
-                                       const double sec)
-    : zone{zone}
+                                       const double sec,
+                                       const int    zone)
+    : TimestampImpl(Calendar::getGregorian())
     , year{year}
     , month{month}
     , day{day}
     , hour{hour}
     , min{min}
     , sec{sec}
+    , zone{zone}
 {
-    if (zone  < -12 || zone  > 12 ||
-        month <   1 || month > 12 ||
-        day   <   1 || day   > 31 ||
-        hour  <   0 || hour  > 23 ||
-        min   <   0 || min   > 59 ||
-        sec   <   0 || sec   > 61)
+    if (zone  < -720 || zone  > 720 ||
+        month <    1 || month > 12  ||
+        day   <    1 || day   > 31  ||
+        hour  <    0 || hour  > 23  ||
+        min   <    0 || min   > 59  ||
+        sec   <    0 || sec   > 61)
         throw std::invalid_argument("Invalid Gregorian time");
 }
 
 string GregorianTimestamp::to_string() const
 {
     char buf[80];
-    const int zoneHour{zone/60};
-    const int zoneMin{abs(zone % 60)};
-    snprintf(buf, sizeof(buf), "%d-%02d-%02dT%02d:%02d:%09.6f%+02d:%02d", year, month, day, hour,
-            min, sec, zoneHour, zoneMin);
+    if (zone == 0) {
+        snprintf(buf, sizeof(buf), "%d-%02d-%02dT%02d:%02d:%09.6fZ",
+                year, month, day, hour, min, sec);
+    }
+    else {
+        const int zoneHour{zone/60};
+        const int zoneMin{abs(zone % 60)};
+        snprintf(buf, sizeof(buf), "%d-%02d-%02dT%02d:%02d:%09.6f%+02d:%02d",
+                year, month, day, hour, min, sec, zoneHour, zoneMin);
+    }
     return std::string(buf);
 }
 

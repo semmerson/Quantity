@@ -34,32 +34,32 @@ namespace quantity {
 class GregorianTimestamp final : public TimestampImpl
 {
 private:
-    const int    zone;  ///< Timezone in minutes
     const int    year;  ///< Year
     const int    month; ///< Month (1 - 12)
     const int    day;   ///< Day of month (1 - 31)
     const int    hour;  ///< Hour (0 - 23)
     const int    min;   ///< Minute (0 - 59)
     const double sec;   ///< Second (0 - 61)
+    const int    zone;  ///< Timezone in minutes (-720 - 720)
 
 public:
     /**
      * Constructs.
-     * @param[in] zone      Time zone in minutes
      * @param[in] year      Year
      * @param[in] month     Month (1 - 12)
      * @param[in] day       Day of month (1 - 31)
      * @param[in] hour      Hour (0 - 23)
      * @param[in] min       Minute (0 - 59)
      * @param[in] sec       Second (0 - 61)
+     * @param[in] zone      Time zone in minutes (-720 - 720)
      */
-    GregorianTimestamp(const int    zone,
-                       const int    year,
+    GregorianTimestamp(const int    year,
                        const int    month,
                        const int    day,
                        const int    hour,
                        const int    min,
-                       const double sec);
+                       const double sec,
+                       const int    zone = 0);
 
     /**
      * Returns a string representation of this instance.

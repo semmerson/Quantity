@@ -20,6 +20,7 @@
  * limitations under the License.
  */
 
+#include "Calendar.h"
 #include "Timestamp.h"
 #include "Unit.h"
 
@@ -30,10 +31,19 @@ namespace quantity {
 /// Base class for concrete implementations of a timestamp.
 class TimestampImpl
 {
+private:
+    Calendar calendar;  ///< Calendar on which this timestamp is based
+
 protected:
-    virtual ~TimestampImpl();
+    /**
+     * Constructs from a calendar
+     * @param[in] calendar  The calendar on which this timestamp is based
+     */
+    TimestampImpl(Calendar calendar);
 
 public:
+    virtual ~TimestampImpl() =default;
+
     /**
      * Returns a string representation of this instance.
      * @return A string representation of this instance
