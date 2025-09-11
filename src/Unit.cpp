@@ -49,8 +49,8 @@ Unit::Pimpl Unit::get(const BaseInfo& baseInfo)
  * @throw     std::invalid_argument The slope is zero or the slope is one and the intercept is zero
  */
 Unit::Pimpl Unit::get(const Unit::Pimpl& core,
-                            const double       slope,
-                            const double       intercept)
+                      const double       slope,
+                      const double       intercept)
 {
     return (slope == 1 && intercept == 0)
         ? core
