@@ -52,10 +52,10 @@ protected:
     Dimension mass{"Mass", "M"};
     Dimension temperature{"Temperature", "Θ"};
     Dimension time{"Time", "T"};
-    const Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
-    const Unit::Pimpl kilogram{Unit::get(BaseInfo(mass, "kilogram", "kg"))};
-    const Unit::Pimpl kelvin{Unit::get(BaseInfo(temperature, "kelvin", "°K"))};
-    const Unit::Pimpl second{Unit::get(BaseInfo(time, "second", "s"))};
+    Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
+    Unit::Pimpl kilogram{Unit::get(BaseInfo(mass, "kilogram", "kg"))};
+    Unit::Pimpl kelvin{Unit::get(BaseInfo(temperature, "kelvin", "°K"))};
+    Unit::Pimpl second{Unit::get(BaseInfo(time, "second", "s"))};
 };
 
 /// Tests construction
@@ -63,7 +63,7 @@ TEST_F(AffineUnitTest, Construction)
 {
     EXPECT_THROW(Unit::get(meter, 0, 1), std::logic_error);
 
-    Unit::Pimpl unit1 = Unit::get(meter, 3, 1);
+    const auto unit1 = Unit::get(meter, 3, 1);
     EXPECT_FALSE(unit1->type() == Unit::Type::base);
     EXPECT_TRUE(unit1->isOffset());
     EXPECT_FALSE(unit1->isDimensionless());
@@ -72,12 +72,12 @@ TEST_F(AffineUnitTest, Construction)
 /// Tests Unit::isConvertible()
 TEST_F(AffineUnitTest, IsConvertible)
 {
-    Unit::Pimpl unit = Unit::get(meter, 3, 5);
+    const auto unit = Unit::get(meter, 3, 5);
     ASSERT_TRUE(meter->isConvertible(unit));
     ASSERT_TRUE(unit->isConvertible(meter));
     ASSERT_FALSE(kilogram->isConvertible(unit));
 
-    Unit::Pimpl unit2 = Unit::get(kilogram, 3, 5);
+    const auto unit2 = Unit::get(kilogram, 3, 5);
     ASSERT_FALSE(unit2->isConvertible(unit));
     ASSERT_FALSE(unit->isConvertible(unit2));
 }
@@ -85,39 +85,39 @@ TEST_F(AffineUnitTest, IsConvertible)
 /// Tests conversion
 TEST_F(AffineUnitTest, Convert)
 {
-    Unit::Pimpl unit = Unit::get(meter, 3, 5);
+    const auto unit = Unit::get(meter, 3, 5);
     ASSERT_EQ(0, unit->convertToCanonical(5));
     ASSERT_EQ(1, unit->convertToCanonical(8));
     EXPECT_EQ(5, unit->convertFromCanonical(unit->convertToCanonical(5)));
 
-    Unit::Pimpl rankine = Unit::get(kelvin, 1.8, 0.0);
+    const auto rankine = Unit::get(kelvin, 1.8, 0.0);
     EXPECT_EQ("1.800000 °K", rankine->to_string());
     EXPECT_LE(273.14, rankine->convertToCanonical(491.67));
     EXPECT_GE(273.16, rankine->convertToCanonical(491.67));
     EXPECT_LE(491.66, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
     EXPECT_GE(491.68, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
 
-    Unit::Pimpl celsius = Unit::get(kelvin, 1, -273.15);
+    const auto celsius = Unit::get(kelvin, 1, -273.15);
     EXPECT_EQ("°K - 273.150000", celsius->to_string());
     EXPECT_EQ(0, celsius->convertToCanonical(-273.15));
     EXPECT_LE(273.14, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
     EXPECT_GE(273.16, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
 
-    Unit::Pimpl fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
+    const auto fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
     EXPECT_EQ("(1.800000 °K) - 459.670000", fahrenheit1->to_string());
     EXPECT_LE(273.14, fahrenheit1->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit1->convertToCanonical(32));
     EXPECT_LE(31.99, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
     EXPECT_GE(32.01, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
 
-    Unit::Pimpl fahrenheit2 = Unit::get(kelvin, 1.8, -459.67);
+    const auto fahrenheit2 = Unit::get(kelvin, 1.8, -459.67);
     EXPECT_EQ("1.800000 °K - 459.670000", fahrenheit2->to_string());
     EXPECT_LE(273.14, fahrenheit2->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit2->convertToCanonical(32));
     EXPECT_LE(31.99, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
     EXPECT_GE(32.01, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
 
-    Unit::Pimpl fahrenheit3 = Unit::get(celsius, 1.8, 32);
+    const auto fahrenheit3 = Unit::get(celsius, 1.8, 32);
     EXPECT_EQ("1.800000 (°K - 273.150000) + 32.000000", fahrenheit3->to_string());
     EXPECT_LE(273.14, fahrenheit3->convertToCanonical(32));
     EXPECT_GE(273.16, fahrenheit3->convertToCanonical(32));
@@ -132,7 +132,7 @@ TEST_F(AffineUnitTest, Multiplication)
     EXPECT_THROW(unit1->multiply(meter), logic_error);
     EXPECT_THROW(meter->multiply(unit1), logic_error);
 
-    Unit::Pimpl km = Unit::get(meter, 1.0/1000.0, 0);
+    const auto km = Unit::get(meter, 1.0/1000.0, 0);
     EXPECT_EQ("0.001000 m", km->to_string());
     EXPECT_LE(1999, km->convertToCanonical(2));
     EXPECT_GE(2001, km->convertToCanonical(2));
@@ -146,7 +146,7 @@ TEST_F(AffineUnitTest, Exponentiation)
     const auto unit1 = Unit::get(meter, 3, 1);
     EXPECT_THROW(unit1->pow(Exponent(2)), logic_error);
 
-    Unit::Pimpl km = Unit::get(meter, 1.0/1000.0, 0);
+    const auto km = Unit::get(meter, 1.0/1000.0, 0);
     const auto km2 = km->pow(2);
     EXPECT_EQ("0.000001 m^2", km2->to_string());
     EXPECT_LE(1999999, km2->convertToCanonical(2));
@@ -156,8 +156,8 @@ TEST_F(AffineUnitTest, Exponentiation)
 /// Tests Unit::divide()
 TEST_F(AffineUnitTest, Division)
 {
-    Unit::Pimpl km = Unit::get(meter, 1.0/1000.0, 0);
-    Unit::Pimpl hr = Unit::get(second, 1.0/3600.0, 0);
+    const auto km = Unit::get(meter, 1.0/1000.0, 0);
+    const auto hr = Unit::get(second, 1.0/3600.0, 0);
     const auto kmPerHr = km->divideBy(hr);
     EXPECT_EQ("3.600000 m·s^-1", kmPerHr->to_string());
     EXPECT_LE(27.76, kmPerHr->convertToCanonical(100));
