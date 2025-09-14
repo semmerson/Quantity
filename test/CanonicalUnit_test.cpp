@@ -52,6 +52,8 @@ protected:
     const BaseInfo kgInfo{mass, "kilogram", "kg"};
     const BaseInfo mInfo{length, "meter", "m"};
     const BaseInfo sInfo{time, "second", "s"};
+    // Replacing "Unit::Pimpl name{...}" in the following with "auto name = Unit::get(...)" doesn't
+    // work
     const Unit::Pimpl kilogram{Unit::get(kgInfo)};
     const Unit::Pimpl meter{Unit::get(mInfo)};
     const Unit::Pimpl second{Unit::get(sInfo)};
@@ -86,10 +88,9 @@ TEST_F(CanonicalUnitTest, Division)
 // Tests conversion
 TEST_F(CanonicalUnitTest, Conversion)
 {
-    EXPECT_EQ(0, meter->convertToCanonical(0));
-    EXPECT_EQ(1, meter->convertToCanonical(1));
-    EXPECT_EQ(0, meter->convertFromCanonical(0));
-    EXPECT_EQ(1, meter->convertFromCanonical(1));
+    auto converter = meter->getConverterTo(meter);
+    EXPECT_EQ(0, converter.convert(0));
+    EXPECT_EQ(1, converter.convert(1));
 }
 
 }  // namespace

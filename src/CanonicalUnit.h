@@ -24,6 +24,7 @@
 
 #include "Unit.h"
 #include "BaseInfo.h"
+#include "Converter.h"
 
 #include <map>
 
@@ -39,7 +40,7 @@ namespace quantity {
 class CanonicalUnit final : public Unit
 {
 private:
-    /// Comparison functor for base unit information
+    /// Comparison functor for information on base units
     struct BaseInfoLess {
         bool operator()(const BaseInfo& base1, const BaseInfo& base2) const {
             return base1.compare(base2) < 0;
@@ -77,13 +78,11 @@ public:
      */
     CanonicalUnit(const BaseInfo& baseInfo, Exponent exp);
 
-#if 1
     /**
      * Constructs from information on a base unit. The exponent of the single base unit will be one.
      * @param[in] baseInfo  Base unit information
      */
     CanonicalUnit(const BaseInfo& baseInfo);
-#endif
 
     /**
      * Returns a string representation
@@ -178,6 +177,24 @@ public:
      * @return           The converted value
      */
     double convertFromCanonical(const double value) const override;
+
+    /**
+     * Returns a converter of numeric values to an output unit.
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterTo(const Pimpl& output) const override;
+
+    /**
+     * Returns a converter of numeric values in a Canonical unit to this unit.
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const CanonicalUnit& output) const override;
+
+    /**
+     * Returns a converter of numeric values in an Affine unit to this unit.
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const AffineUnit& output) const override;
 
     /**
      * Returns a new unit that is the product of this instance and another unit.

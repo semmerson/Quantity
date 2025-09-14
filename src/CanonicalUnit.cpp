@@ -1,7 +1,7 @@
 /**
- * This file implements a derived unit of a physical quantity.
+ * This file implements canonical units of physical quantities.
  *
- *        File: DerivedUnit.cpp
+ *        File: CanonicalUnit.cpp
  *  Created on: Aug 29, 2025
  *      Author: Steven R. Emmerson
  *
@@ -23,9 +23,25 @@
 
 #include "AffineUnit.h"
 #include "BaseInfo.h"
+#include "ConverterImpl.h"
 #include "Exponent.h"
 
 namespace quantity {
+
+/// A unit value converter that returns the same value.
+class TrivialConverter final : public ConverterImpl
+{
+public:
+    /**
+     * Converts a numeric value in the input unit to the equivalent value in the output unit.
+     * @param[in] value     Numeric value in the input unit
+     * @return              Equivalent value in the output unit
+     */
+    double convert(const double value) const override
+    {
+        return value;
+    }
+};
 
 CanonicalUnit::CanonicalUnit(const UnitFactors& otherFactors)
     : factors(otherFactors)
@@ -36,11 +52,9 @@ CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo,
     : factors{UnitFactor(baseInfo, exp)}
 {}
 
-#if 1
 CanonicalUnit::CanonicalUnit(const BaseInfo& baseInfo)
     : CanonicalUnit(baseInfo, Exponent(1, 1))
 {}
-#endif
 
 std::string CanonicalUnit::to_string() const
 {
@@ -66,8 +80,8 @@ std::string CanonicalUnit::to_string() const
 Unit::Type CanonicalUnit::type() const
 {
     return (factors.size() == 1 && factors.begin()->second.isOne())
-            ? Type::base
-            : Type::canonical;
+            ? Type::BASE
+            : Type::CANONICAL;
 }
 
 bool CanonicalUnit::isDimensionless() const
@@ -106,6 +120,24 @@ double CanonicalUnit::convertToCanonical(const double value) const
 double CanonicalUnit::convertFromCanonical(const double value) const
 {
     return value;
+}
+
+Converter CanonicalUnit::getConverterTo(const Pimpl& output) const
+{
+    return output->getConverterFrom(*this);
+}
+
+Converter CanonicalUnit::getConverterFrom(const CanonicalUnit& output) const
+{
+    if (!isConvertibleTo(output))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new TrivialConverter());
+}
+
+Converter CanonicalUnit::getConverterFrom(const AffineUnit& output) const
+{
+    throw logic_error("CanonicalUnit::getConverterFrom(AffineUnit) shouldn't be called");
 }
 
 CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const

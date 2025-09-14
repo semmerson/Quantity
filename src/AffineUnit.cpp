@@ -22,7 +22,8 @@
 
 #include "AffineUnit.h"
 #include "CanonicalUnit.h"
-
+#include "Converter.h"
+#include "ConverterImpl.h"
 
 namespace quantity {
 
@@ -44,7 +45,7 @@ std::string AffineUnit::to_string() const
 {
     string rep{""};
     if (slope != 1) {
-        rep += std::to_string(slope) + " ";
+        rep += std::to_string(slope) + "*";
     }
     string coreStr = core->to_string();
     const bool haveBlank = coreStr.find(" ") != string::npos;
@@ -66,7 +67,7 @@ Unit::Type AffineUnit::type() const
 {
     return (slope == 1 && intercept == 0)
             ? core->type()
-            : Type::affine;
+            : Type::AFFINE;
 }
 
 bool AffineUnit::isDimensionless() const
@@ -103,6 +104,30 @@ double AffineUnit::convertToCanonical(const double value) const
 double AffineUnit::convertFromCanonical(const double value) const
 {
     return slope*core->convertFromCanonical(value) + intercept;
+}
+
+Converter AffineUnit::getConverterTo(const Pimpl& output) const
+{
+    if (!isConvertible(output))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new ToConverter(core->getConverterTo(output), slope, intercept));
+}
+
+Converter AffineUnit::getConverterFrom(const CanonicalUnit& input) const
+{
+    if (!isConvertibleTo(input))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(core->getConverterFrom(input), slope, intercept));
+}
+
+Converter AffineUnit::getConverterFrom(const AffineUnit& input) const
+{
+    if (!isConvertibleTo(input))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(core->getConverterFrom(input), slope, intercept));
 }
 
 Unit::Pimpl AffineUnit::multiply(const Pimpl& other) const

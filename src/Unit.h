@@ -20,6 +20,7 @@
 
 #pragma once
 
+#include "Converter.h"
 #include "Exponent.h"
 
 #include <cstddef>
@@ -45,11 +46,12 @@ public:
     /// Types of units
     enum class Type
     {
-        one,        ///< Canonical unit with zero base units (i.e., the dimensionless unit one)
-        base,       ///< Canonical unit with one base unit
-        canonical,  ///< Canonical unit with two or more base units
-        affine,     ///< Affine unit (transformation from canonical unit has form "y=ax+b")
-        temporal,   ///< Temporal unit (time increment and a start-time)
+        ONE,        ///< Canonical unit with zero base units (i.e., the dimensionless unit one)
+        BASE,       ///< Canonical unit with one base unit
+        CANONICAL,  ///< Canonical unit with two or more base units
+        AFFINE,     ///< Affine unit (transformation from canonical unit has form "y=ax+b")
+        LOG,        ///< Logarithmic unit without a reference level
+        REF_LOG,    ///< Logarithmic unit with a reference level
     };
 
     /// Smart pointer to an implementation of a unit.
@@ -161,18 +163,24 @@ public:
     virtual bool isConvertibleTo(const AffineUnit& other) const =0;
 
     /**
-     * Converts a numeric value to the canonical underlying unit from this unit.
-     * @param[in] value  The value to be converted to the canonical underlying unit
-     * @return           The converted value
+     * Returns a converter of numeric values in this unit to an output unit.
+     * @throw std::invalid_argument     Values aren't convertible between the two units
      */
-    virtual double convertToCanonical(const double value) const = 0;
+    virtual Converter getConverterTo(const Pimpl& output) const =0;
 
     /**
-     * Converts a numeric value from the canonical underlying unit to this unit.
-     * @param[in] value  The value to be converted to the canonical underlying unit
-     * @return           The converted value
+     * Returns a converter of numeric values in a Canonical unit to this unit.
+     * @param[in] input                     Input unit
+     * @throw     std::invalid_argument     Values aren't convertible between the two units
      */
-    virtual double convertFromCanonical(const double value) const = 0;
+    virtual Converter getConverterFrom(const CanonicalUnit& input) const =0;
+
+    /**
+     * Returns a converter of numeric values in an Affine unit to this unit.
+     * @param[in] input                     Input unit
+     * @throw     std::invalid_argument     Values aren't convertible between the two units
+     */
+    virtual Converter getConverterFrom(const AffineUnit& input) const =0;
 
     /**
      * Multiplies by another unit.
@@ -201,7 +209,7 @@ public:
      * @return                  The quotient of this unit divided by the other
      * @throw std::logic_error  Division isn't supported
      */
-    Pimpl divideBy(const Pimpl& unit) const;
+    Pimpl divideBy(const Pimpl& unit) const; // NB: Not pure
 
     /**
      * Returns this instance raised to a power in a new unit.

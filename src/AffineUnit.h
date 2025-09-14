@@ -25,6 +25,8 @@
 #pragma once
 
 #include "Unit.h"
+#include "Converter.h"
+#include "ConverterImpl.h"
 
 namespace quantity {
 
@@ -39,6 +41,52 @@ class AffineUnit final : public Unit
                                  ///< May be one but only if the intercept isn't zero.
     const double    intercept;   ///< The intercept for converting a numeric value from the @ core
                                  ///< unit. May be zero but only if the slope isn't one.
+protected:
+    /// Converter of numeric values in the affine unit.
+    class ToConverter : public ConverterImpl {
+    private:
+        const Converter coreConverter;
+        const double    slope;
+        const double    intercept;
+    public:
+        /**
+         * Move constructs.
+         * @param[in] coreConverter     The core unit's converter to the output unit
+         * @param[in] slope             The affine unit's slope parameter
+         * @param[in] intercept         The affine unit's intercept parameter
+         */
+        ToConverter(const Converter&& coreConverter, const double slope, const double intercept)
+            : coreConverter(coreConverter)
+            , slope(slope)
+            , intercept(intercept)
+        {}
+        double convert(const double value) const override {
+            return coreConverter.convert((value - intercept)/slope);
+        }
+    };
+
+    /// Converter of numeric values in another unit.
+    class FromConverter : public ConverterImpl {
+    private:
+        const Converter coreConverter;
+        const double    slope;
+        const double    intercept;
+    public:
+        /**
+         * Move constructs.
+         * @param[in] coreConverter     The core unit's converter from the input unit
+         * @param[in] slope             The affine unit's slope parameter
+         * @param[in] intercept         The affine unit's intercept parameter
+         */
+        FromConverter(const Converter&& coreConverter, const double slope, const double intercept)
+            : coreConverter(coreConverter)
+            , slope(slope)
+            , intercept(intercept)
+        {}
+        double convert(const double value) const override {
+            return slope*coreConverter.convert(value) + intercept;
+        }
+    };
 
 public:
     /**
@@ -115,6 +163,26 @@ public:
      * @return           The converted value
      */
     double convertFromCanonical(const double value) const override;
+
+    /**
+     * Returns a converter of numeric values to an output unit.
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterTo(const Pimpl& output) const override;
+
+    /**
+     * Returns a converter of numeric values in a Canonical unit to this unit.
+     * @param[in] input                     Input unit
+     * @throw     std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const CanonicalUnit& input) const override;
+
+    /**
+     * Returns a converter of numeric values in an Affine unit to this unit.
+     * @param[in] input                     Input unit
+     * @throw     std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const AffineUnit& input) const override;
 
     /**
      * Multiplies by another unit.

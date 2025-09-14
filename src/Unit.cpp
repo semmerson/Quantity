@@ -48,13 +48,13 @@ Unit::Pimpl Unit::get(const BaseInfo& baseInfo)
  *                                  zero but only if the slope isn't one.
  * @throw     std::invalid_argument The slope is zero or the slope is one and the intercept is zero
  */
-Unit::Pimpl Unit::get(const Unit::Pimpl& core,
-                      const double       slope,
-                      const double       intercept)
+Unit::Pimpl Unit::get(const Pimpl& core,
+                      const double slope,
+                      const double intercept)
 {
     return (slope == 1 && intercept == 0)
         ? core
-        : Unit::Pimpl(new AffineUnit(core, slope, intercept));
+        : Pimpl(new AffineUnit(core, slope, intercept));
 
 #if 0
     // The following is incorrect. It would need to get the core of the core, recursively. Better to

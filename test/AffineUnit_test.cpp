@@ -64,7 +64,7 @@ TEST_F(AffineUnitTest, Construction)
     EXPECT_THROW(Unit::get(meter, 0, 1), std::logic_error);
 
     const auto unit1 = Unit::get(meter, 3, 1);
-    EXPECT_FALSE(unit1->type() == Unit::Type::base);
+    EXPECT_FALSE(unit1->type() == Unit::Type::BASE);
     EXPECT_TRUE(unit1->isOffset());
     EXPECT_FALSE(unit1->isDimensionless());
 }
@@ -86,43 +86,44 @@ TEST_F(AffineUnitTest, IsConvertible)
 TEST_F(AffineUnitTest, Convert)
 {
     const auto unit = Unit::get(meter, 3, 5);
-    ASSERT_EQ(0, unit->convertToCanonical(5));
-    ASSERT_EQ(1, unit->convertToCanonical(8));
-    EXPECT_EQ(5, unit->convertFromCanonical(unit->convertToCanonical(5)));
+    ASSERT_EQ(1, unit->getConverterTo(unit).convert(1));
+    ASSERT_EQ(0, unit->getConverterTo(meter).convert(5));
+    ASSERT_EQ(5, meter->getConverterTo(unit).convert(0));
+    ASSERT_EQ(1, unit->getConverterTo(meter).convert(8));
+    ASSERT_EQ(8, meter->getConverterTo(unit).convert(1));
 
     const auto rankine = Unit::get(kelvin, 1.8, 0.0);
-    EXPECT_EQ("1.800000 °K", rankine->to_string());
-    EXPECT_LE(273.14, rankine->convertToCanonical(491.67));
-    EXPECT_GE(273.16, rankine->convertToCanonical(491.67));
-    EXPECT_LE(491.66, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
-    EXPECT_GE(491.68, rankine->convertFromCanonical(rankine->convertToCanonical(491.67)));
+    EXPECT_EQ("1.800000*°K", rankine->to_string());
+    EXPECT_LE(273.14, rankine->getConverterTo(kelvin).convert(491.67));
+    EXPECT_GE(273.16, rankine->getConverterTo(kelvin).convert(491.67));
+    EXPECT_LE(491.66, kelvin->getConverterTo(rankine).convert(273.15));
+    EXPECT_GE(491.68, kelvin->getConverterTo(rankine).convert(273.15));
 
     const auto celsius = Unit::get(kelvin, 1, -273.15);
     EXPECT_EQ("°K - 273.150000", celsius->to_string());
-    EXPECT_EQ(0, celsius->convertToCanonical(-273.15));
-    EXPECT_LE(273.14, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
-    EXPECT_GE(273.16, celsius->convertFromCanonical(celsius->convertToCanonical(273.15)));
+    EXPECT_EQ(0, celsius->getConverterTo(kelvin).convert(-273.15));
+    EXPECT_EQ(-273.15, kelvin->getConverterTo(celsius).convert(0));
 
     const auto fahrenheit1 = Unit::get(rankine, 1.0, -459.67);
-    EXPECT_EQ("(1.800000 °K) - 459.670000", fahrenheit1->to_string());
-    EXPECT_LE(273.14, fahrenheit1->convertToCanonical(32));
-    EXPECT_GE(273.16, fahrenheit1->convertToCanonical(32));
-    EXPECT_LE(31.99, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
-    EXPECT_GE(32.01, fahrenheit1->convertFromCanonical(fahrenheit1->convertToCanonical(32)));
+    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit1->to_string());
+    EXPECT_LE(491.66, fahrenheit1->getConverterTo(rankine).convert(32));
+    EXPECT_GE(491.68, fahrenheit1->getConverterTo(rankine).convert(32));
+    EXPECT_LE(31.99, rankine->getConverterTo(fahrenheit1).convert(491.67));
+    EXPECT_GE(32.01, rankine->getConverterTo(fahrenheit1).convert(491.67));
 
     const auto fahrenheit2 = Unit::get(kelvin, 1.8, -459.67);
-    EXPECT_EQ("1.800000 °K - 459.670000", fahrenheit2->to_string());
-    EXPECT_LE(273.14, fahrenheit2->convertToCanonical(32));
-    EXPECT_GE(273.16, fahrenheit2->convertToCanonical(32));
-    EXPECT_LE(31.99, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
-    EXPECT_GE(32.01, fahrenheit2->convertFromCanonical(fahrenheit2->convertToCanonical(32)));
+    EXPECT_EQ("1.800000*°K - 459.670000", fahrenheit2->to_string());
+    EXPECT_LE(273.14, fahrenheit2->getConverterTo(kelvin).convert(32));
+    EXPECT_GE(273.16, fahrenheit2->getConverterTo(kelvin).convert(32));
+    EXPECT_LE(31.99, kelvin->getConverterTo(fahrenheit2).convert(273.15));
+    EXPECT_GE(32.01, kelvin->getConverterTo(fahrenheit2).convert(273.15));
 
     const auto fahrenheit3 = Unit::get(celsius, 1.8, 32);
-    EXPECT_EQ("1.800000 (°K - 273.150000) + 32.000000", fahrenheit3->to_string());
-    EXPECT_LE(273.14, fahrenheit3->convertToCanonical(32));
-    EXPECT_GE(273.16, fahrenheit3->convertToCanonical(32));
-    EXPECT_LE(31.99, fahrenheit3->convertFromCanonical(fahrenheit3->convertToCanonical(32)));
-    EXPECT_GE(32.01, fahrenheit3->convertFromCanonical(fahrenheit3->convertToCanonical(32)));
+    EXPECT_EQ("1.800000*(°K - 273.150000) + 32.000000", fahrenheit3->to_string());
+    EXPECT_LE(-0.01, fahrenheit3->getConverterTo(celsius).convert(32));
+    EXPECT_GE(+0.01, fahrenheit3->getConverterTo(celsius).convert(32));
+    EXPECT_LE(31.99, celsius->getConverterTo(fahrenheit3).convert(0));
+    EXPECT_GE(32.01, celsius->getConverterTo(fahrenheit3).convert(0));
 }
 
 /// Tests Unit::Multiply()
@@ -133,11 +134,11 @@ TEST_F(AffineUnitTest, Multiplication)
     EXPECT_THROW(meter->multiply(unit1), logic_error);
 
     const auto km = Unit::get(meter, 1.0/1000.0, 0);
-    EXPECT_EQ("0.001000 m", km->to_string());
+    EXPECT_EQ("0.001000*m", km->to_string());
     EXPECT_LE(1999, km->convertToCanonical(2));
     EXPECT_GE(2001, km->convertToCanonical(2));
 
-    EXPECT_EQ("0.001000 m·°K", km->multiply(kelvin)->to_string());
+    EXPECT_EQ("0.001000*m·°K", km->multiply(kelvin)->to_string());
 }
 
 /// Tests Unit::pow()
@@ -148,7 +149,7 @@ TEST_F(AffineUnitTest, Exponentiation)
 
     const auto km = Unit::get(meter, 1.0/1000.0, 0);
     const auto km2 = km->pow(2);
-    EXPECT_EQ("0.000001 m^2", km2->to_string());
+    EXPECT_EQ("0.000001*m^2", km2->to_string());
     EXPECT_LE(1999999, km2->convertToCanonical(2));
     EXPECT_GE(2000001, km2->convertToCanonical(2));
 }
@@ -159,7 +160,7 @@ TEST_F(AffineUnitTest, Division)
     const auto km = Unit::get(meter, 1.0/1000.0, 0);
     const auto hr = Unit::get(second, 1.0/3600.0, 0);
     const auto kmPerHr = km->divideBy(hr);
-    EXPECT_EQ("3.600000 m·s^-1", kmPerHr->to_string());
+    EXPECT_EQ("3.600000*m·s^-1", kmPerHr->to_string());
     EXPECT_LE(27.76, kmPerHr->convertToCanonical(100));
     EXPECT_GE(27.78, kmPerHr->convertToCanonical(100));
 }

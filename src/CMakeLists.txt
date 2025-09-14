@@ -14,4 +14,8 @@ add_library(libquant OBJECT
     Timestamp.cpp           Timestamp.h
     TimestampImpl.cpp       TimestampImpl.h
     GregorianTimestamp.cpp  GregorianTimestamp.h
+    Converter.cpp           Converter.h
+                            ConverterImpl.h
+    LogUnit.cpp             LogUnit.h
+    RefLogUnit.cpp          RefLogUnit.h
     )
