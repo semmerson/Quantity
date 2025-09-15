@@ -91,19 +91,43 @@ int AffineUnit::compare(const Pimpl& other) const
     return -other->compareTo(*this);
 }
 
+int AffineUnit::compareTo(const CanonicalUnit& other) const
+{
+    return 1;   // Affine units come after derived units
+}
+
+int AffineUnit::compareTo(const AffineUnit& other) const
+{
+    int cmp = core->compare(other.core);
+    if (cmp != 0)
+        return cmp;
+    cmp = slope < other.slope
+            ? -1
+            : slope > other.slope
+              ? 1
+              : 0;
+    if (cmp != 0)
+        return cmp;
+    return intercept < other.intercept
+            ? -1
+            : intercept > other.intercept
+              ? 1
+              : 0;
+}
+
 bool AffineUnit::isConvertible(const Pimpl& other) const
 {
     return other->isConvertibleTo(*this);
 }
 
-double AffineUnit::convertToCanonical(const double value) const
+bool AffineUnit::isConvertibleTo(const CanonicalUnit& other) const
 {
-    return core->convertToCanonical((value-intercept)/slope);
+    return core->isConvertibleTo(other);
 }
 
-double AffineUnit::convertFromCanonical(const double value) const
+bool AffineUnit::isConvertibleTo(const AffineUnit& other) const
 {
-    return slope*core->convertFromCanonical(value) + intercept;
+    return core->isConvertible(other.core);
 }
 
 Converter AffineUnit::getConverterTo(const Pimpl& output) const
@@ -133,40 +157,6 @@ Converter AffineUnit::getConverterFrom(const AffineUnit& input) const
 Unit::Pimpl AffineUnit::multiply(const Pimpl& other) const
 {
     return other->multiplyBy(*this);
-}
-
-int AffineUnit::compareTo(const CanonicalUnit& other) const
-{
-    return 1;   // Affine units come after derived units
-}
-
-int AffineUnit::compareTo(const AffineUnit& other) const
-{
-    int cmp = core->compare(other.core);
-    if (cmp != 0)
-        return cmp;
-    cmp = slope < other.slope
-            ? -1
-            : slope > other.slope
-              ? 1
-              : 0;
-    if (cmp != 0)
-        return cmp;
-    return intercept < other.intercept
-            ? -1
-            : intercept > other.intercept
-              ? 1
-              : 0;
-}
-
-bool AffineUnit::isConvertibleTo(const CanonicalUnit& other) const
-{
-    return core->isConvertibleTo(other);
-}
-
-bool AffineUnit::isConvertibleTo(const AffineUnit& other) const
-{
-    return core->isConvertible(other.core);
 }
 
 Unit::Pimpl AffineUnit::multiplyBy(const CanonicalUnit& other) const

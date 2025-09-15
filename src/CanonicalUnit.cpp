@@ -107,44 +107,6 @@ int CanonicalUnit::compare(const Pimpl& other) const
     return -other->compareTo(*this);
 }
 
-bool CanonicalUnit::isConvertible(const Pimpl& other) const
-{
-    return other->isConvertibleTo(*this);
-}
-
-double CanonicalUnit::convertToCanonical(const double value) const
-{
-    return value;
-}
-
-double CanonicalUnit::convertFromCanonical(const double value) const
-{
-    return value;
-}
-
-Converter CanonicalUnit::getConverterTo(const Pimpl& output) const
-{
-    return output->getConverterFrom(*this);
-}
-
-Converter CanonicalUnit::getConverterFrom(const CanonicalUnit& output) const
-{
-    if (!isConvertibleTo(output))
-        throw invalid_argument("Units are not convertible");
-
-    return Converter(new TrivialConverter());
-}
-
-Converter CanonicalUnit::getConverterFrom(const AffineUnit& output) const
-{
-    throw logic_error("CanonicalUnit::getConverterFrom(AffineUnit) shouldn't be called");
-}
-
-CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const
-{
-    return other->multiplyBy(*this);
-}
-
 int CanonicalUnit::compareTo(const CanonicalUnit& other) const
 {
     auto       iter1 = factors.begin();
@@ -175,6 +137,11 @@ int CanonicalUnit::compareTo(const AffineUnit& other) const
     return -1;  // Derived units come before affine units
 }
 
+bool CanonicalUnit::isConvertible(const Pimpl& other) const
+{
+    return other->isConvertibleTo(*this);
+}
+
 bool CanonicalUnit::isConvertibleTo(const CanonicalUnit& other) const
 {
     if (factors.size() != other.factors.size())
@@ -194,6 +161,29 @@ bool CanonicalUnit::isConvertibleTo(const CanonicalUnit& other) const
 bool CanonicalUnit::isConvertibleTo(const AffineUnit& other) const
 {
     return other.isConvertibleTo(*this); // Defer to the affine unit
+}
+
+Converter CanonicalUnit::getConverterTo(const Pimpl& output) const
+{
+    return output->getConverterFrom(*this);
+}
+
+Converter CanonicalUnit::getConverterFrom(const CanonicalUnit& output) const
+{
+    if (!isConvertibleTo(output))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new TrivialConverter());
+}
+
+Converter CanonicalUnit::getConverterFrom(const AffineUnit& output) const
+{
+    throw logic_error("CanonicalUnit::getConverterFrom(AffineUnit) shouldn't be called");
+}
+
+CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const
+{
+    return other->multiplyBy(*this);
 }
 
 Unit::Pimpl CanonicalUnit::multiplyBy(const CanonicalUnit& other) const

@@ -165,20 +165,6 @@ public:
     bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
-     * Converts a numeric value to the canonical underlying unit.
-     * @param[in] value  The value to be converted
-     * @return           The converted value
-     */
-    double convertToCanonical(const double value) const override;
-
-    /**
-     * Converts a numeric value from the canonical underlying unit to this unit.
-     * @param[in] value  The value to be converted to the canonical underlying unit
-     * @return           The converted value
-     */
-    double convertFromCanonical(const double value) const override;
-
-    /**
      * Returns a converter of numeric values to an output unit.
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */

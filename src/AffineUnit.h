@@ -142,6 +142,22 @@ public:
      */
     int compare(const Pimpl& other) const override;
 
+	/**
+	 * Compares this instance with a derived unit.
+	 * @param[in] other The derived unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compareTo(const CanonicalUnit& other) const override;
+
+	/**
+	 * Compares this instance with an affine unit.
+	 * @param[in] other The affine unit instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compareTo(const AffineUnit& other) const override;
+
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
      * @param[in] other The other unit
@@ -151,18 +167,20 @@ public:
     bool isConvertible(const Pimpl& other) const override;
 
     /**
-     * Converts a numeric value to the canonical underlying unit.
-     * @param[in] value  The value to be converted
-     * @return           The converted value
+     * Indicates if numeric values in this unit are convertible with a derived unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
      */
-    double convertToCanonical(const double value) const override;
+    bool isConvertibleTo(const CanonicalUnit& other) const override;
 
     /**
-     * Converts a numeric value from the canonical underlying unit to this unit.
-     * @param[in] value  The value to be converted to the canonical underlying unit
-     * @return           The converted value
+     * Indicates if numeric values in this unit are convertible with an affine unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
      */
-    double convertFromCanonical(const double value) const override;
+    bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
      * Returns a converter of numeric values to an output unit.
@@ -191,38 +209,6 @@ public:
      * @throw std::logic_error  This operation is not meaningful
      */
     Pimpl multiply(const Pimpl& other) const override;
-
-	/**
-	 * Compares this instance with a derived unit.
-	 * @param[in] other The derived unit instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-	int compareTo(const CanonicalUnit& other) const override;
-
-	/**
-	 * Compares this instance with an affine unit.
-	 * @param[in] other The affine unit instance
-	 * @return          A value less than, equal to, or greater than zero as this instance is
-	 *                  considered less than, equal to, or greater than the other, respectively.
-	 */
-	int compareTo(const AffineUnit& other) const override;
-
-    /**
-     * Indicates if numeric values in this unit are convertible with a derived unit.
-     * @param[in] other The other unit
-     * @retval    true  They are convertible
-     * @retval    false They are not convertible
-     */
-    bool isConvertibleTo(const CanonicalUnit& other) const override;
-
-    /**
-     * Indicates if numeric values in this unit are convertible with an affine unit.
-     * @param[in] other The other unit
-     * @retval    true  They are convertible
-     * @retval    false They are not convertible
-     */
-    bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
      * Multiplies by a derived unit.
