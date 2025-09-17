@@ -33,7 +33,7 @@ namespace quantity {
 class BaseInfo;
 class CanonicalUnit;
 class AffineUnit;
-class TemporalUnit;
+class RefLogUnit;
 
 /// Declaration of a unit of a physical quantity.
 class Unit
@@ -68,14 +68,16 @@ public:
     static Pimpl get(const BaseInfo& baseInfo);
 
     /**
-     * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is a
-     * numeric value in the underlying unit and "a" and "b" are the slope and intercept,
-     * respectively. If the slope is 1 and the intercept is 0, then the underlying unit is returned.
-     * @param[in] core                  The underlying unit
-     * @param[in] slope                 The slope for converting numeric values from the @ core unit
-     * @param[in] intercept             The intercept for converting numeric values from the @ core
-     *                                  unit
-     * @throw     std::invalid_argument The slope is zero
+     * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is the
+     * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
+     * returned.
+     * @param[in] core      The underlying unit
+     * @param[in] slope     The slope for converting values from the @ core unit. May be one, in
+     *                      which case @ core will be returned if the intercept is zero.
+     * @param[in] intercept The intercept for converting values from the @ core unit. May be zero,
+     *                      in which case @ core will be returned if @ slope is one.
+     * @return              A new affine unit or @ core if the slope is one and the intercept is
+     *                      zero
      */
     static Pimpl get(const Pimpl& core,
                      const double slope,
@@ -92,7 +94,7 @@ public:
      * Indicates the type of this unit.
      * @return The type of this unit
      */
-    virtual Type type() const =0;
+    virtual Unit::Type type() const =0;
 
     /**
      * Indicates if this unit is dimensionless.
@@ -115,7 +117,7 @@ public:
     virtual size_t hash() const =0;
 
 	/**
-	 * Compares this instance with another.
+	 * Compares this instance to another.
 	 * @param[in] other The other instance
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
@@ -123,7 +125,7 @@ public:
     virtual int compare(const Pimpl& other) const =0;
 
 	/**
-	 * Compares this instance with a derived unit.
+	 * Compares this instance to a derived unit.
 	 * @param[in] other The derived unit instance
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
@@ -131,12 +133,20 @@ public:
     virtual int compareTo(const CanonicalUnit& other) const =0;
 
 	/**
-	 * Compares this instance with an affine unit.
+	 * Compares this instance to an affine unit.
 	 * @param[in] other The affine unit instance
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
     virtual int compareTo(const AffineUnit& other) const =0;
+
+	/**
+	 * Compares this instance to a referenced logarithmic unit.
+	 * @param[in] other The referenced logarithmic unit
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+    virtual int compareTo(const RefLogUnit& other) const =0;
 
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
@@ -163,43 +173,61 @@ public:
     virtual bool isConvertibleTo(const AffineUnit& other) const =0;
 
     /**
+     * Indicates if numeric values in this unit are convertible with a reference logarithmic unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    virtual bool isConvertibleTo(const RefLogUnit& other) const =0;
+
+    /**
      * Returns a converter of numeric values in this unit to an output unit.
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
     virtual Converter getConverterTo(const Pimpl& output) const =0;
 
     /**
-     * Returns a converter of numeric values in a Canonical unit to this unit.
+     * Returns a converter of numeric values in a canonical unit to this unit.
      * @param[in] input                     Input unit
      * @throw     std::invalid_argument     Values aren't convertible between the two units
      */
     virtual Converter getConverterFrom(const CanonicalUnit& input) const =0;
 
     /**
-     * Returns a converter of numeric values in an Affine unit to this unit.
+     * Returns a converter of numeric values in an affine unit to this unit.
      * @param[in] input                     Input unit
      * @throw     std::invalid_argument     Values aren't convertible between the two units
      */
     virtual Converter getConverterFrom(const AffineUnit& input) const =0;
 
     /**
+     * Returns a converter of numeric values in a referenced log unit to this unit.
+     * @param[in] input                     Input unit
+     * @throw     std::invalid_argument     Values aren't convertible between the two units
+     */
+    virtual Converter getConverterFrom(const RefLogUnit& input) const =0;
+
+    /**
      * Multiplies by another unit.
-     * @param[in] unit   The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * @param[in] unit              The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
      */
     virtual Pimpl multiply(const Pimpl& unit) const =0;
 
     /**
      * Multiplies by a derived unit.
-     * @param[in] other  The derived unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * @param[in] other             The derived unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
      */
     virtual Pimpl multiplyBy(const CanonicalUnit& other) const =0;
 
     /**
      * Multiplies by an affine unit.
-     * @param[in] other  The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * @param[in] other             The affine unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
      */
     virtual Pimpl multiplyBy(const AffineUnit& other) const =0;
 

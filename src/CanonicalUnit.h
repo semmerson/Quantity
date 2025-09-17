@@ -140,6 +140,14 @@ public:
 	 */
 	int compareTo(const AffineUnit& other) const override;
 
+	/**
+	 * Compares this instance with a referenced logarithmic unit.
+	 * @param[in] other The referenced logarithmic unit
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compareTo(const RefLogUnit& other) const override;
+
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
      * @param[in] other The other unit
@@ -165,22 +173,40 @@ public:
     bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
+     * Indicates if numeric values in this unit are convertible with a referenced logarithmic unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    bool isConvertibleTo(const RefLogUnit& other) const override;
+
+    /**
      * Returns a converter of numeric values to an output unit.
+     * @param[in] output                Output unit
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
     Converter getConverterTo(const Pimpl& output) const override;
 
     /**
-     * Returns a converter of numeric values in a Canonical unit to this unit.
+     * Returns a converter of numeric values in a canonical unit to this unit.
+     * @param[in] input                 Input unit
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
-    Converter getConverterFrom(const CanonicalUnit& output) const override;
+    Converter getConverterFrom(const CanonicalUnit& input) const override;
 
     /**
-     * Returns a converter of numeric values in an Affine unit to this unit.
+     * Returns a converter of numeric values in an affine unit to this unit.
+     * @param[in] input                 Input unit
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
-    Converter getConverterFrom(const AffineUnit& output) const override;
+    Converter getConverterFrom(const AffineUnit& input) const override;
+
+    /**
+     * Returns a converter of numeric values in a referenced logarithmic unit to this unit.
+     * @param[in] input                 Input unit
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const RefLogUnit& input) const override;
 
     /**
      * Returns a new unit that is the product of this instance and another unit.

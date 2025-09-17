@@ -24,8 +24,55 @@
 #include "CanonicalUnit.h"
 #include "Converter.h"
 #include "ConverterImpl.h"
+#include "RefLogUnit.h"
 
 namespace quantity {
+
+/// Converter of numeric values in an affine unit to an output unit.
+class AffineUnit::ToConverter : public ConverterImpl {
+private:
+    const Converter coreConverter;
+    const double    slope;
+    const double    intercept;
+public:
+    /**
+     * Move constructs.
+     * @param[in] coreConverter     The core unit's converter to the output unit
+     * @param[in] slope             The affine unit's slope parameter
+     * @param[in] intercept         The affine unit's intercept parameter
+     */
+    ToConverter(const Converter&& coreConverter, const double slope, const double intercept)
+        : coreConverter(coreConverter)
+        , slope(slope)
+        , intercept(intercept)
+    {}
+    double convert(const double value) const override {
+        return coreConverter.convert((value - intercept)/slope);
+    }
+};
+
+/// Converter of numeric values in an input unit to an affine unit.
+class AffineUnit::FromConverter : public ConverterImpl {
+private:
+    const Converter coreConverter;
+    const double    slope;
+    const double    intercept;
+public:
+    /**
+     * Move constructs.
+     * @param[in] coreConverter     The core unit's converter from the input unit
+     * @param[in] slope             The affine unit's slope parameter
+     * @param[in] intercept         The affine unit's intercept parameter
+     */
+    FromConverter(const Converter&& coreConverter, const double slope, const double intercept)
+        : coreConverter(coreConverter)
+        , slope(slope)
+        , intercept(intercept)
+    {}
+    double convert(const double value) const override {
+        return slope*coreConverter.convert(value) + intercept;
+    }
+};
 
 AffineUnit::AffineUnit(
         const Pimpl&      core,
@@ -115,6 +162,11 @@ int AffineUnit::compareTo(const AffineUnit& other) const
               : 0;
 }
 
+int AffineUnit::compareTo(const RefLogUnit& other) const
+{
+    return -1;  // Affine units come before log units
+}
+
 bool AffineUnit::isConvertible(const Pimpl& other) const
 {
     return other->isConvertibleTo(*this);
@@ -128,6 +180,11 @@ bool AffineUnit::isConvertibleTo(const CanonicalUnit& other) const
 bool AffineUnit::isConvertibleTo(const AffineUnit& other) const
 {
     return core->isConvertible(other.core);
+}
+
+bool AffineUnit::isConvertibleTo(const RefLogUnit& other) const
+{
+    return other.isConvertibleTo(*this); // Defer to the other unit
 }
 
 Converter AffineUnit::getConverterTo(const Pimpl& output) const

@@ -28,20 +28,59 @@ namespace quantity {
 /// Abstract logarithmic unit.
 class LogUnit : public Unit
 {
+public:
+    /// Logarithmic base enumeration
+    enum class Base {
+        TWO,    ///< Binary logarithm
+        E,      ///< Natural logarithm
+        TEN     ///< Common logarithm
+    };
+
 protected:
-    const double base;      ///< Logarithmic base (e.g., 10, 2, e)
-    double       logBase;   ///< Natural logarithm of the logarithmic base
+    const Base   baseEnum;  ///< Logarithmic base enumeration
+    const double logBase;   ///< Natural logarithm of the base
 
     /**
      * Constructs from a logarithmic base.
-     * @param[in] base                      The logarithmic base
-     * @throw     std::invalid_argument     The base is not greater than one
+     * @param[in] base  The logarithmic base
      */
-    LogUnit(const double base);
+    LogUnit(const Base base);
 
 public:
     /// Destroys.
     virtual ~LogUnit() =0;
+
+    /**
+     * Multiplies by another unit.
+     * @param[in] unit              The other unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
+     */
+    Pimpl multiply(const Pimpl& unit) const override;
+
+    /**
+     * Multiplies by a derived unit.
+     * @param[in] other             The derived unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
+     */
+    Pimpl multiplyBy(const CanonicalUnit& other) const override;
+
+    /**
+     * Multiplies by an affine unit.
+     * @param[in] other             The affine unit
+     * @return                      A unit whose scale-transform is equal to this unit's times the other unit's
+     * @throw     std::logic_error  Multiplication isn't supported
+     */
+    Pimpl multiplyBy(const AffineUnit& other) const override;
+
+    /**
+     * Returns this instance raised to a power in a new unit.
+     * @param[in] exp   The exponent
+     * @return          The result
+     * @throw     std::logic_error  Exponentiation of a logarithmic unit isn't supported
+     */
+    Pimpl pow(const Exponent exp) const override;
 };
 
 } // namespace quantity

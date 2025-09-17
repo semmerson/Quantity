@@ -30,19 +30,31 @@ using namespace std;
 
 namespace quantity {
 
-LogUnit::LogUnit(const double base)
-    : base(base)
-    , logBase(0)
-{
-    if (base <= 1)
-        throw invalid_argument("Logarithmic base isn't greater than one.");
-
-    logBase = log(base);
-    const auto delta = abs(logBase - 1);
-    if (delta <= 2*DBL_EPSILON)
-        logBase = 1;
-};
+LogUnit::LogUnit(const Base baseEnum)
+    : baseEnum(baseEnum)
+    , logBase(baseEnum == Base::E ? 1 : baseEnum == Base::TWO ? log(2) : log(10))
+{};
 
 LogUnit::~LogUnit() =default;
+
+Unit::Pimpl LogUnit::multiply(const Pimpl& other) const
+{
+    throw logic_error("Multiplication of a logarithmic unit is not supported");
+}
+
+Unit::Pimpl LogUnit::multiplyBy(const CanonicalUnit& other) const
+{
+    throw logic_error("Multiplication of a logarithmic unit is not supported");
+}
+
+Unit::Pimpl LogUnit::multiplyBy(const AffineUnit& other) const
+{
+    throw logic_error("Multiplication of a logarithmic unit is not supported");
+}
+
+Unit::Pimpl LogUnit::pow(const Exponent exp) const
+{
+    throw logic_error("Exponentiation of a logarithmic unit is not supported");
+}
 
 } // Namespace

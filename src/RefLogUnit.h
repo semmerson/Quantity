@@ -30,17 +30,20 @@ namespace quantity {
 class RefLogUnit final : public LogUnit
 {
 private:
-    const Pimpl ref;  ///< Reference level
+    const Pimpl refLevel;  ///< Reference level
 
 public:
+    class ToConverter;      ///< Converter of numeric values in this affine unit to an output unit.
+    class FromConverter;    ///< Converter of numeric values in an input unit to this affine unit.
+
     /**
      * Constructs from a reference level and a logarithmic base.
-     * @param[in] ref                       Reference level. Must not be an offset unit.
-     * @param[in] base                      Logarithmic base
-     * @throw     std::invalid_argument     The logarithmic base is not greater than one
-     * @throw     std::invalid_argument     The reference level is an offset unit
+     * @param[in] refLevel  Reference level unit (the numeric value one in this unit is the
+     *                      reference level)
+     * @param[in] base      Logarithmic base: LogUnit::Base::TWO, LogUnit::Base::E, or
+     *                      LogUnit::Base::TEN.
      */
-    RefLogUnit(const Pimpl& ref, const double base = 10);
+    RefLogUnit(const Pimpl& refLevel, const Base base = Base::TEN);
 
     /**
      * Returns a string representation of this unit.
@@ -52,7 +55,7 @@ public:
      * Indicates the type of this unit.
      * @return The type of this unit
      */
-    Type type() const override;
+    Unit::Type type() const override;
 
     /**
      * Indicates if this unit is dimensionless.
@@ -98,6 +101,14 @@ public:
 	 */
     int compareTo(const AffineUnit& other) const override;
 
+	/**
+	 * Compares this instance with a referenced logarithmic unit.
+	 * @param[in] other The referenced logarithmic unit
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compareTo(const RefLogUnit& other) const override;
+
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
      * @param[in] other The other unit
@@ -123,6 +134,14 @@ public:
     bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
+     * Indicates if numeric values in this unit are convertible with a reference logarithmic unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    bool isConvertibleTo(const RefLogUnit& other) const override;
+
+    /**
      * Returns a converter of numeric values in this unit to an output unit.
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
@@ -143,30 +162,17 @@ public:
     Converter getConverterFrom(const AffineUnit& input) const override;
 
     /**
-     * Multiplies by another unit.
-     * @param[in] unit   The other unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
+     * Returns a converter of numeric values in a referenced logarithmic unit to this unit.
+     * @param[in] input                 Input unit
+     * @throw std::invalid_argument     Values aren't convertible between the two units
      */
-    Pimpl multiply(const Pimpl& unit) const override;
-
-    /**
-     * Multiplies by a derived unit.
-     * @param[in] other  The derived unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    Pimpl multiplyBy(const CanonicalUnit& other) const override;
-
-    /**
-     * Multiplies by an affine unit.
-     * @param[in] other  The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    Pimpl multiplyBy(const AffineUnit& other) const override;
+    Converter getConverterFrom(const RefLogUnit& input) const override;
 
     /**
      * Returns this instance raised to a power in a new unit.
-     * @param[in] exp   The exponent
-     * @return          The result
+     * @param[in] exp           The exponent
+     * @return                  The result
+     * @throw std::logic_error  Exponentiating a referenced logarithmic unit is not supported
      */
     Pimpl pow(const Exponent exp) const override;
 };

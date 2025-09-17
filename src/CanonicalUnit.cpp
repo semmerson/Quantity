@@ -25,6 +25,7 @@
 #include "BaseInfo.h"
 #include "ConverterImpl.h"
 #include "Exponent.h"
+#include "RefLogUnit.h"
 
 namespace quantity {
 
@@ -73,10 +74,6 @@ std::string CanonicalUnit::to_string() const
     return rep;
 }
 
-/**
- * Indicates the type of this unit.
- * @return The type of this unit
- */
 Unit::Type CanonicalUnit::type() const
 {
     return (factors.size() == 1 && factors.begin()->second.isOne())
@@ -134,7 +131,12 @@ int CanonicalUnit::compareTo(const CanonicalUnit& other) const
 
 int CanonicalUnit::compareTo(const AffineUnit& other) const
 {
-    return -1;  // Derived units come before affine units
+    return -1;  // Canonical units come before everything else
+}
+
+int CanonicalUnit::compareTo(const RefLogUnit& other) const
+{
+    return -1;  // Canonical units come before everything else
 }
 
 bool CanonicalUnit::isConvertible(const Pimpl& other) const
@@ -160,7 +162,12 @@ bool CanonicalUnit::isConvertibleTo(const CanonicalUnit& other) const
 
 bool CanonicalUnit::isConvertibleTo(const AffineUnit& other) const
 {
-    return other.isConvertibleTo(*this); // Defer to the affine unit
+    return other.isConvertibleTo(*this); // Defer to the other unit
+}
+
+bool CanonicalUnit::isConvertibleTo(const RefLogUnit& other) const
+{
+    return other.isConvertibleTo(*this); // Defer to the other unit
 }
 
 Converter CanonicalUnit::getConverterTo(const Pimpl& output) const
@@ -179,6 +186,11 @@ Converter CanonicalUnit::getConverterFrom(const CanonicalUnit& output) const
 Converter CanonicalUnit::getConverterFrom(const AffineUnit& output) const
 {
     throw logic_error("CanonicalUnit::getConverterFrom(AffineUnit) shouldn't be called");
+}
+
+Converter CanonicalUnit::getConverterFrom(const RefLogUnit& output) const
+{
+    throw logic_error("CanonicalUnit::getConverterFrom(RefLogUnit) shouldn't be called");
 }
 
 CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const

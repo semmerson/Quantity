@@ -26,7 +26,6 @@
 
 #include "Unit.h"
 #include "Converter.h"
-#include "ConverterImpl.h"
 
 namespace quantity {
 
@@ -40,55 +39,11 @@ class AffineUnit final : public Unit
     const double    slope;       ///< The slope for converting a numeric value from the @ core unit.
                                  ///< May be one but only if the intercept isn't zero.
     const double    intercept;   ///< The intercept for converting a numeric value from the @ core
-                                 ///< unit. May be zero but only if the slope isn't one.
-protected:
-    /// Converter of numeric values in the affine unit.
-    class ToConverter : public ConverterImpl {
-    private:
-        const Converter coreConverter;
-        const double    slope;
-        const double    intercept;
-    public:
-        /**
-         * Move constructs.
-         * @param[in] coreConverter     The core unit's converter to the output unit
-         * @param[in] slope             The affine unit's slope parameter
-         * @param[in] intercept         The affine unit's intercept parameter
-         */
-        ToConverter(const Converter&& coreConverter, const double slope, const double intercept)
-            : coreConverter(coreConverter)
-            , slope(slope)
-            , intercept(intercept)
-        {}
-        double convert(const double value) const override {
-            return coreConverter.convert((value - intercept)/slope);
-        }
-    };
-
-    /// Converter of numeric values in another unit.
-    class FromConverter : public ConverterImpl {
-    private:
-        const Converter coreConverter;
-        const double    slope;
-        const double    intercept;
-    public:
-        /**
-         * Move constructs.
-         * @param[in] coreConverter     The core unit's converter from the input unit
-         * @param[in] slope             The affine unit's slope parameter
-         * @param[in] intercept         The affine unit's intercept parameter
-         */
-        FromConverter(const Converter&& coreConverter, const double slope, const double intercept)
-            : coreConverter(coreConverter)
-            , slope(slope)
-            , intercept(intercept)
-        {}
-        double convert(const double value) const override {
-            return slope*coreConverter.convert(value) + intercept;
-        }
-    };
 
 public:
+    class ToConverter;      ///< Converter of numeric values in this affine unit to an output unit.
+    class FromConverter;    ///< Converter of numeric values in an input unit to this affine unit.
+
     /**
      * Constructs
      * @param[in] core                      The underlying unit from which this unit is derived
@@ -158,6 +113,14 @@ public:
 	 */
 	int compareTo(const AffineUnit& other) const override;
 
+	/**
+	 * Compares this instance with a referenced logarithmic unit.
+	 * @param[in] other The referenced logarithmic unit
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
+	int compareTo(const RefLogUnit& other) const override;
+
     /**
      * Indicates if numeric values in this unit are convertible with another unit.
      * @param[in] other The other unit
@@ -183,6 +146,14 @@ public:
     bool isConvertibleTo(const AffineUnit& other) const override;
 
     /**
+     * Indicates if numeric values in this unit are convertible with a referenced logarithmic unit.
+     * @param[in] other The other unit
+     * @retval    true  They are convertible
+     * @retval    false They are not convertible
+     */
+    bool isConvertibleTo(const RefLogUnit& other) const override;
+
+    /**
      * Returns a converter of numeric values to an output unit.
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
@@ -201,6 +172,13 @@ public:
      * @throw     std::invalid_argument     Values aren't convertible between the two units
      */
     Converter getConverterFrom(const AffineUnit& input) const override;
+
+    /**
+     * Returns a converter of numeric values in a referenced logarithmic unit to this unit.
+     * @param[in] input                 Input unit
+     * @throw std::invalid_argument     Values aren't convertible between the two units
+     */
+    Converter getConverterFrom(const RefLogUnit& input) const override;
 
     /**
      * Multiplies by another unit.

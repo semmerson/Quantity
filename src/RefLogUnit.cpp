@@ -22,45 +22,183 @@
 
 #include "RefLogUnit.h"
 
+#include "AffineUnit.h"
+#include "CanonicalUnit.h"
+#include "Converter.h"
+#include "ConverterImpl.h"
+
 #include <cfloat>
 #include <cmath>
+#include <functional>
 #include <stdexcept>
-#include <utility>
 #include <string>
+#include <utility>
 
 using namespace std;
 
 namespace quantity {
 
-RefLogUnit::RefLogUnit(const Pimpl& ref,
-                       const double base)
-    : LogUnit(base)
-    , ref(ref)
-{
-    if (ref->isOffset())
-        throw invalid_argument("The reference level is an offset unit.");
+/// Converter of numeric values in a referenced logarithmic unit to an output unit.
+class RefLogUnit::ToConverter : public ConverterImpl {
+private:
+    const Converter refConverter;   ///< The reference level's converter
+    const double    logBase;        ///< Natural logarithm of the logarithmic base
+
+public:
+    /**
+     * Move constructs.
+     * @param[in] refConverter  Reference level's converter to the output unit
+     * @param[in] logBase       Natural logarithm of the logarithmic base
+     */
+    ToConverter(const Converter&& refConverter, const double logBase)
+        : refConverter(refConverter)
+        , logBase(logBase)
+    {}
+    double convert(const double value) const override {
+        return refConverter.convert(exp(value*logBase));
+    }
 };
+
+/// Converter of numeric values in an input unit to a referenced logarithmic unit.
+class RefLogUnit::FromConverter : public ConverterImpl {
+private:
+    const Converter refConverter;   ///< The reference level's converter
+    const double    logBase;        ///< Natural logarithm of the logarithmic base
+public:
+    /**
+     * Move constructs.
+     * @param[in] refConverter  Reference level's converter from the input unit
+     * @param[in] logBase       Natural logarithm of the logarithmic base
+     */
+    FromConverter(const Converter&& refConverter, const double logBase)
+        : refConverter(refConverter)
+        , logBase(logBase)
+    {}
+    double convert(const double value) const override {
+        return log(refConverter.convert(value))/logBase;
+    }
+};
+
+RefLogUnit::RefLogUnit(const Pimpl& ref,
+                       const Base   base)
+    : LogUnit(base)
+    , refLevel(ref)
+{};
 
 string RefLogUnit::to_string() const
 {
     string rep{};
 
-    if (base == 10) {
-        rep += "log10";
-    }
-    else if (base == 2) {
-        rep += "log2";
-    }
-    else {
-        rep += "log";
+    switch (baseEnum) {
+        case Base::TWO: {rep += "lb"; break;}
+        case Base::E:   {rep += "ln"; break;}
+        default:        {rep += "lg"; break;}
     }
 
-    rep += "(ref: \"" + ref->to_string() + "\")";
-
-    if (logBase != 1)
-        rep += "/" + std::to_string(logBase);
+    rep += "(re " + refLevel->to_string() + ")"; // IEC 60027-3 Ed. 3.0 standard
 
     return rep;
+}
+
+Unit::Type RefLogUnit::type() const
+{
+    return Type::REF_LOG;
+}
+
+bool RefLogUnit::isDimensionless() const
+{
+    return true;
+}
+
+bool RefLogUnit::isOffset() const
+{
+    return true;   // Due to the reference level
+}
+
+size_t RefLogUnit::hash() const
+{
+    return std::hash<int>()(static_cast<int>(baseEnum)) ^ refLevel->hash();
+}
+
+int RefLogUnit::compare(const Pimpl& other) const
+{
+    return -other->compareTo(*this);
+}
+
+int RefLogUnit::compareTo(const CanonicalUnit& other) const
+{
+    return 1;
+}
+
+int RefLogUnit::compareTo(const AffineUnit& other) const
+{
+    return 1;  // Affine units come before reference logarithmic units
+}
+
+int RefLogUnit::compareTo(const RefLogUnit& other) const
+{
+    auto cmp = refLevel->compareTo(other);
+    if (cmp == 0)
+        cmp = (logBase < other.logBase)
+            ? -1
+            : (logBase > other.logBase)
+              ? 1
+              : 0;
+    return cmp;
+}
+
+bool RefLogUnit::isConvertible(const Pimpl& other) const
+{
+    return refLevel->isConvertible(other);
+}
+
+bool RefLogUnit::isConvertibleTo(const CanonicalUnit& other) const
+{
+    return refLevel->isConvertibleTo(other);
+}
+
+bool RefLogUnit::isConvertibleTo(const AffineUnit& other) const
+{
+    return refLevel->isConvertibleTo(other);
+}
+
+bool RefLogUnit::isConvertibleTo(const RefLogUnit& other) const
+{
+    return refLevel->isConvertible(other.refLevel);
+}
+
+Converter RefLogUnit::getConverterTo(const Pimpl& output) const
+{
+    return output->getConverterFrom(*this);
+}
+
+Converter RefLogUnit::getConverterFrom(const CanonicalUnit& input) const
+{
+    if (!input.isConvertibleTo(*this))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(input.getConverterTo(refLevel), logBase));
+}
+
+Converter RefLogUnit::getConverterFrom(const AffineUnit& input) const
+{
+    if (!input.isConvertibleTo(*this))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(input.getConverterTo(refLevel), logBase));
+}
+
+Converter RefLogUnit::getConverterFrom(const RefLogUnit& input) const
+{
+    if (!input.isConvertibleTo(*this))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(input.getConverterTo(refLevel), logBase));
+}
+
+Unit::Pimpl RefLogUnit::pow(const Exponent exp) const
+{
+    throw std::logic_error("Exponentiating a referenced logarithmic unit is not supported");
 }
 
 } // Namespace

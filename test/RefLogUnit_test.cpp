@@ -1,7 +1,7 @@
 /**
- * This file tests class Timestamp.
+ * This file tests class RefLogUnit.
  *
- *        File: Timestamp_test.cpp
+ *        File: RefLogUnit_test.cpp
  *  Created on: Jul 19, 2025
  *      Author: Steven R. Emmerson
  *
@@ -19,11 +19,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "Timestamp.h"
-
 #include "BaseInfo.h"
 #include "Dimension.h"
-#include "Unit.h"
+#include "RefLogUnit.h"
 
 #include <gtest/gtest.h>
 #include <stdexcept>
@@ -32,19 +30,19 @@ namespace {
 
 using namespace quantity;
 
-/// The fixture for testing class `Timestamp`
-class TimestampTest : public ::testing::Test
+/// The fixture for testing class `RefLogUnit`
+class RefLogUnitTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    TimestampTest()
+    RefLogUnitTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~TimestampTest()
+    virtual ~RefLogUnitTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -65,77 +63,17 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
+    Dimension length{"Length", "L"};
+    Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
 };
 
 // Tests construction
-TEST_F(TimestampTest, Construction)
+TEST_F(RefLogUnitTest, Construction)
 {
-    // Bad months
-    EXPECT_THROW(Timestamp::getGregorian(1970, 0, 1, 0, 0, 0, 0).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 13, 1, 0, 0, 0, 0).to_string(),
-            std::invalid_argument);
-
-    // Bad days
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, -1, 0, 0, 0, 0).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 32, 0, 0, 0, 0).to_string(),
-            std::invalid_argument);
-
-    // Bad hours
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, -1, 0, 0, 0).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 24, 0, 0, 0).to_string(),
-            std::invalid_argument);
-
-    // Bad minutes
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, -1, 0, 0).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, 60, 0, 0).to_string(),
-            std::invalid_argument);
-
-    // Bad seconds
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, 0, -1, 0).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, 0, 62, 0).to_string(),
-            std::invalid_argument);
-
-    // Bad timezones
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, 0, -1, -721).to_string(),
-            std::invalid_argument);
-    EXPECT_THROW(Timestamp::getGregorian(1970, 1, 1, 0, 0, 62, 721).to_string(),
-            std::invalid_argument);
-
-    // Zulu timezones
-    EXPECT_EQ("1970-01-01T00:00:00.000000Z",
-            Timestamp::getGregorian(1970, 1, 1, 0, 0, 0).to_string());
-    EXPECT_EQ("1970-01-01T00:00:00.000000Z",
-            Timestamp::getGregorian(1970, 1, 1, 0, 0, 0, 0).to_string());
-
-    // Non-Zulu timezones
-    EXPECT_EQ("1970-01-01T00:00:00.000000-6:00",
-            Timestamp::getGregorian(1970, 1, 1, 0, 0, 0, -360).to_string());
-    EXPECT_EQ("1970-01-01T00:00:00.000000+6:00",
-            Timestamp::getGregorian(1970, 1, 1, 0, 0, 0, 360).to_string());
-}
-
-// Tests isConvertible()
-TEST_F(TimestampTest, Convertability)
-{
-    const auto timestamp = Timestamp::getGregorian(1970, 1, 1, 0, 0, 0, 0);
-    // Not implemented yet
-    EXPECT_THROW(timestamp.isConvertible(timestamp), std::logic_error);
-}
-
-// Tests subtract()
-TEST_F(TimestampTest, Subtraction)
-{
-    Dimension time{"Second", "T"};
-    const auto second = Unit::get(BaseInfo(time, "second", "s"));
-
-    const auto timestamp = Timestamp::getGregorian(1970, 1, 1, 0, 0, 0, 0);
-    // Not implemented yet
-    EXPECT_THROW(timestamp.subtract(timestamp, second), std::logic_error);
+    // Bad logarithmic base
+    EXPECT_THROW(RefLogUnit(meter, -1), std::invalid_argument);
+    EXPECT_THROW(RefLogUnit(meter, 0), std::invalid_argument);
+    EXPECT_THROW(RefLogUnit(meter, 1), std::invalid_argument);
 }
 
 }  // namespace

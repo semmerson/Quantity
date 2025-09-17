@@ -41,12 +41,12 @@ Unit::Pimpl Unit::get(const BaseInfo& baseInfo)
  * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is the
  * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
  * returned.
- * @param[in] core                  The underlying unit
- * @param[in] slope                 The slope for converting values from the @ core unit. May be one
- *                                  but only if the intercept isn't zero.
- * @param[in] intercept             The intercept for converting values from the @ core unit. May be
- *                                  zero but only if the slope isn't one.
- * @throw     std::invalid_argument The slope is zero or the slope is one and the intercept is zero
+ * @param[in] core      The underlying unit
+ * @param[in] slope     The slope for converting values from the @ core unit. May be one, in which
+ *                      case @ core will be returned if the intercept is zero.
+ * @param[in] intercept The intercept for converting values from the @ core unit. May be zero, in
+ *                      which case @ core will be returned if @ slope is one.
+ * @return              A new affine unit or @ core if the slope is one and the intercept is zero
  */
 Unit::Pimpl Unit::get(const Pimpl& core,
                       const double slope,
@@ -55,20 +55,6 @@ Unit::Pimpl Unit::get(const Pimpl& core,
     return (slope == 1 && intercept == 0)
         ? core
         : Pimpl(new AffineUnit(core, slope, intercept));
-
-#if 0
-    // The following is incorrect. It would need to get the core of the core, recursively. Better to
-    // simply daisy-chain affine unit transforms rather than attempt to merge them. Any merging
-    // might be accomplished in a Converter class.
-
-    // The core unit is affine. Merge the two affine transforms
-    const auto coreIntercept = core->convertTo(0);
-    const auto coreSlope = core->convertTo(1) - coreIntercept;
-    const auto newSlope = slope*coreSlope;
-    const auto newIntercept = slope*coreIntercept + intercept;
-
-    return Unit::Pimpl(new AffineUnit(core, newSlope, newIntercept));
-#endif
 }
 
 Unit::~Unit() noexcept =default;
