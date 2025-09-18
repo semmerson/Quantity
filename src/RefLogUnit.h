@@ -38,12 +38,13 @@ public:
 
     /**
      * Constructs from a reference level and a logarithmic base.
-     * @param[in] refLevel  Reference level unit (the numeric value one in this unit is the
-     *                      reference level)
-     * @param[in] base      Logarithmic base: LogUnit::Base::TWO, LogUnit::Base::E, or
-     *                      LogUnit::Base::TEN.
+     * @param[in] refLevel      Reference level unit (the numeric value one in this unit is the
+     *                          reference level). Must not be an offset unit.
+     * @param[in] base          Logarithmic base: Unit::LogBase::TWO, Unit::LogBase::E, or
+     *                          Unit::LogBase::TEN.
+     * @throw std::logic_error  @ refLevel is an offset unit
      */
-    RefLogUnit(const Pimpl& refLevel, const Base base = Base::TEN);
+    RefLogUnit(const Pimpl& refLevel, const LogBase base = LogBase::TEN);
 
     /**
      * Returns a string representation of this unit.

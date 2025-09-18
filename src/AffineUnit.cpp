@@ -46,8 +46,8 @@ public:
         , slope(slope)
         , intercept(intercept)
     {}
-    double convert(const double value) const override {
-        return coreConverter.convert((value - intercept)/slope);
+    double operator()(const double value) const override {
+        return coreConverter((value - intercept)/slope);
     }
 };
 
@@ -69,8 +69,8 @@ public:
         , slope(slope)
         , intercept(intercept)
     {}
-    double convert(const double value) const override {
-        return slope*coreConverter.convert(value) + intercept;
+    double operator()(const double value) const override {
+        return slope*coreConverter(value) + intercept;
     }
 };
 
@@ -204,6 +204,14 @@ Converter AffineUnit::getConverterFrom(const CanonicalUnit& input) const
 }
 
 Converter AffineUnit::getConverterFrom(const AffineUnit& input) const
+{
+    if (!isConvertibleTo(input))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(core->getConverterFrom(input), slope, intercept));
+}
+
+Converter AffineUnit::getConverterFrom(const RefLogUnit& input) const
 {
     if (!isConvertibleTo(input))
         throw invalid_argument("Units are not convertible");

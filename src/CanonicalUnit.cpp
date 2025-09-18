@@ -38,7 +38,7 @@ public:
      * @param[in] value     Numeric value in the input unit
      * @return              Equivalent value in the output unit
      */
-    double convert(const double value) const override
+    double operator()(const double value) const override
     {
         return value;
     }
@@ -190,6 +190,7 @@ Converter CanonicalUnit::getConverterFrom(const AffineUnit& output) const
 
 Converter CanonicalUnit::getConverterFrom(const RefLogUnit& output) const
 {
+    //output.getConverterTo
     throw logic_error("CanonicalUnit::getConverterFrom(RefLogUnit) shouldn't be called");
 }
 

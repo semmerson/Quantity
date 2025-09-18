@@ -31,9 +31,9 @@ Converter::Converter(ConverterImpl* impl)
     : pImpl(impl)
 {}
 
-double Converter::convert(const double value) const
+double Converter::operator()(const double value) const
 {
-    return pImpl->convert(value);
+    return pImpl->operator()(value);
 }
 
 } // Namespace

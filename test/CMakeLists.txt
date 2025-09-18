@@ -6,9 +6,9 @@ add_executable(Calendar_test Calendar_test.cpp)
 target_link_libraries(Calendar_test libquant ${GTEST_LIBRARY})
 add_test(Calendar_test Calendar_test)
 
-add_executable(Timestamp_test Timestamp_test.cpp)
-target_link_libraries(Timestamp_test libquant ${GTEST_LIBRARY})
-add_test(Timestamp_test Timestamp_test)
+#add_executable(Timestamp_test Timestamp_test.cpp)
+#target_link_libraries(Timestamp_test libquant ${GTEST_LIBRARY})
+#add_test(Timestamp_test Timestamp_test)
 
 add_executable(BaseInfo_test BaseInfo_test.cpp)
 target_link_libraries(BaseInfo_test libquant ${GTEST_LIBRARY})

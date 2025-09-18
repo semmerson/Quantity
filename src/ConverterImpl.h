@@ -36,7 +36,7 @@ public:
 	 * @param[in] value     The numeric value in the input unit
 	 * @return              The equivalent numeric value in the output unit
 	 */
-	virtual double convert(const double value) const =0;
+	virtual double operator()(const double value) const =0;
 };
 
 } // namespace quantity

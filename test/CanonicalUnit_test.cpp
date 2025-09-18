@@ -89,8 +89,8 @@ TEST_F(CanonicalUnitTest, Division)
 TEST_F(CanonicalUnitTest, Conversion)
 {
     auto converter = meter->getConverterTo(meter);
-    EXPECT_EQ(0, converter.convert(0));
-    EXPECT_EQ(1, converter.convert(1));
+    EXPECT_EQ(0, converter(0));
+    EXPECT_EQ(1, converter(1));
 }
 
 }  // namespace

@@ -28,23 +28,15 @@ namespace quantity {
 /// Abstract logarithmic unit.
 class LogUnit : public Unit
 {
-public:
-    /// Logarithmic base enumeration
-    enum class Base {
-        TWO,    ///< Binary logarithm
-        E,      ///< Natural logarithm
-        TEN     ///< Common logarithm
-    };
-
 protected:
-    const Base   baseEnum;  ///< Logarithmic base enumeration
-    const double logBase;   ///< Natural logarithm of the base
+    const LogBase   baseEnum;  ///< Logarithmic base enumeration
+    const double    logBase;   ///< Natural logarithm of the base
 
     /**
      * Constructs from a logarithmic base.
      * @param[in] base  The logarithmic base
      */
-    LogUnit(const Base base);
+    LogUnit(const LogBase base);
 
 public:
     /// Destroys.

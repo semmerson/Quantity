@@ -19,9 +19,10 @@
  */
 #include "Unit.h"
 
-#include "BaseInfo.h"
 #include "AffineUnit.h"
+#include "BaseInfo.h"
 #include "CanonicalUnit.h"
+#include "RefLogUnit.h"
 
 #include <memory>
 #include <stdexcept>
@@ -37,17 +38,6 @@ Unit::Pimpl Unit::get(const BaseInfo& baseInfo)
     return Unit::Pimpl(new CanonicalUnit(baseInfo, exponent));
 }
 
-/**
- * Returns a possibly affine unit. An affine unit has the form "y = ax + b", where "x" is the
- * underlying unit. If the slope is one and the intercept is zero, then the underlying unit is
- * returned.
- * @param[in] core      The underlying unit
- * @param[in] slope     The slope for converting values from the @ core unit. May be one, in which
- *                      case @ core will be returned if the intercept is zero.
- * @param[in] intercept The intercept for converting values from the @ core unit. May be zero, in
- *                      which case @ core will be returned if @ slope is one.
- * @return              A new affine unit or @ core if the slope is one and the intercept is zero
- */
 Unit::Pimpl Unit::get(const Pimpl& core,
                       const double slope,
                       const double intercept)
@@ -55,6 +45,12 @@ Unit::Pimpl Unit::get(const Pimpl& core,
     return (slope == 1 && intercept == 0)
         ? core
         : Pimpl(new AffineUnit(core, slope, intercept));
+}
+
+Unit::Pimpl Unit::get(const Pimpl&        refLevel,
+                      const Unit::LogBase base)
+{
+    return Pimpl(new RefLogUnit(refLevel, base));
 }
 
 Unit::~Unit() noexcept =default;

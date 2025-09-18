@@ -50,8 +50,15 @@ public:
         BASE,       ///< Canonical unit with one base unit
         CANONICAL,  ///< Canonical unit with two or more base units
         AFFINE,     ///< Affine unit (transformation from canonical unit has form "y=ax+b")
-        LOG,        ///< Logarithmic unit without a reference level
         REF_LOG,    ///< Logarithmic unit with a reference level
+        LOG,        ///< Logarithmic unit without a reference level
+    };
+
+    /// Logarithmic base enumeration
+    enum class LogBase {
+        TWO,    ///< Binary logarithm
+        E,      ///< Natural logarithm
+        TEN     ///< Common logarithm
     };
 
     /// Smart pointer to an implementation of a unit.
@@ -82,6 +89,16 @@ public:
     static Pimpl get(const Pimpl& core,
                      const double slope,
                      const double intercept);
+
+    /**
+     * Constructs a referenced logarithmic unit from a reference level and a logarithmic base.
+     * @param[in] refLevel  Reference level unit (the numeric value one in this unit is the
+     *                      reference level)
+     * @param[in] base      Logarithmic base: Unit::LogBase::TWO, Unit::LogBase::E, or
+     *                      Unit::LogBase::TEN.
+     */
+    static Pimpl get(const Pimpl&        refLevel,
+                     const Unit::LogBase base = Unit::LogBase::TEN);
 
     /**
      * Returns a string representation of the transformation from a numeric value in the @ core unit

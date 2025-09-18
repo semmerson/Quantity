@@ -50,7 +50,7 @@ public:
 	 * @param[in] value     Numeric value in the old unit
 	 * @return              Equivalent numeric value in the new unit
 	 */
-	double convert(const double value) const;
+	double operator()(const double value) const;
 
 	// Add more conversion methods here (i.e., conversion or arrays, iterators, etc.).
 };

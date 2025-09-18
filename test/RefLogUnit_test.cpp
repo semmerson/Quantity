@@ -70,10 +70,66 @@ protected:
 // Tests construction
 TEST_F(RefLogUnitTest, Construction)
 {
-    // Bad logarithmic base
-    EXPECT_THROW(RefLogUnit(meter, -1), std::invalid_argument);
-    EXPECT_THROW(RefLogUnit(meter, 0), std::invalid_argument);
-    EXPECT_THROW(RefLogUnit(meter, 1), std::invalid_argument);
+    const auto affineMeter = Unit::get(meter, 3, 5);
+    EXPECT_THROW(Unit::get(affineMeter, Unit::LogBase::E), std::logic_error);
+
+    const auto lbMeter = Unit::get(meter, Unit::LogBase::TWO);
+    const auto lnMeter = Unit::get(meter, Unit::LogBase::E);
+    const auto lgMeter = Unit::get(meter, Unit::LogBase::TEN);
+}
+
+// Tests string representation
+TEST_F(RefLogUnitTest, StringRepresentation)
+{
+    const auto affineMeter = Unit::get(meter, 1000, 0);
+    EXPECT_EQ("ln(re 1000.000000*m)", Unit::get(affineMeter, Unit::LogBase::E)->to_string());
+}
+
+// Tests type
+TEST_F(RefLogUnitTest, Type)
+{
+    const auto affineMeter = Unit::get(meter, 1000, 0);
+    EXPECT_EQ(Unit::Type::REF_LOG, Unit::get(affineMeter, Unit::LogBase::E)->type());
+}
+
+// Tests offset
+TEST_F(RefLogUnitTest, Offset)
+{
+    const auto affineMeter = Unit::get(meter, 1000, 0);
+    EXPECT_FALSE(Unit::get(affineMeter, Unit::LogBase::E)->isOffset());
+}
+
+// Tests dimensionless
+TEST_F(RefLogUnitTest, Dimensionless)
+{
+    const auto affineMeter = Unit::get(meter, 1000, 0);
+    EXPECT_TRUE(Unit::get(affineMeter, Unit::LogBase::E)->isDimensionless());
+}
+
+// Tests multiplication
+TEST_F(RefLogUnitTest, Multiplication)
+{
+    const auto lbMeter = Unit::get(meter, Unit::LogBase::TWO);
+    const auto lgMeter = Unit::get(meter, Unit::LogBase::TEN);
+    EXPECT_THROW(lbMeter->multiply(lbMeter), std::logic_error);
+    EXPECT_THROW(lbMeter->multiply(lgMeter), std::logic_error);
+}
+
+// Tests exponentiation
+TEST_F(RefLogUnitTest, Exponentiation)
+{
+    const auto lbMeter = Unit::get(meter, Unit::LogBase::TWO);
+    EXPECT_THROW(lbMeter->pow(2), std::logic_error);
+}
+
+// Tests conversion
+TEST_F(RefLogUnitTest, Conversion)
+{
+    const auto lbMeter = Unit::get(meter, Unit::LogBase::TWO);
+    const auto lgMeter = Unit::get(meter, Unit::LogBase::TEN);
+    const auto lgMToLbM = lgMeter->getConverterTo(lbMeter);
+    EXPECT_LE(3.32192, lgMToLbM(1));
+    EXPECT_GE(3.32194, lgMToLbM(1));
 }
 
 }  // namespace

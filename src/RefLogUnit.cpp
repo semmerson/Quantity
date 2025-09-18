@@ -54,8 +54,8 @@ public:
         : refConverter(refConverter)
         , logBase(logBase)
     {}
-    double convert(const double value) const override {
-        return refConverter.convert(exp(value*logBase));
+    double operator()(const double value) const override {
+        return refConverter(exp(value*logBase));
     }
 };
 
@@ -74,25 +74,28 @@ public:
         : refConverter(refConverter)
         , logBase(logBase)
     {}
-    double convert(const double value) const override {
-        return log(refConverter.convert(value))/logBase;
+    double operator()(const double value) const override {
+        return log(refConverter(value))/logBase;
     }
 };
 
-RefLogUnit::RefLogUnit(const Pimpl& ref,
-                       const Base   base)
+RefLogUnit::RefLogUnit(const Pimpl&  ref,
+                       const LogBase base)
     : LogUnit(base)
     , refLevel(ref)
-{};
+{
+    if (refLevel->isOffset())
+        throw std::logic_error("Reference level is an offset unit");
+};
 
 string RefLogUnit::to_string() const
 {
     string rep{};
 
     switch (baseEnum) {
-        case Base::TWO: {rep += "lb"; break;}
-        case Base::E:   {rep += "ln"; break;}
-        default:        {rep += "lg"; break;}
+        case LogBase::TWO: {rep += "lb"; break;}
+        case LogBase::E:   {rep += "ln"; break;}
+        default:           {rep += "lg"; break;}
     }
 
     rep += "(re " + refLevel->to_string() + ")"; // IEC 60027-3 Ed. 3.0 standard
@@ -112,7 +115,7 @@ bool RefLogUnit::isDimensionless() const
 
 bool RefLogUnit::isOffset() const
 {
-    return true;   // Due to the reference level
+    return false;   // Logarithmic units are logarithms of ratios, so can't be offset
 }
 
 size_t RefLogUnit::hash() const
@@ -169,7 +172,7 @@ bool RefLogUnit::isConvertibleTo(const RefLogUnit& other) const
 
 Converter RefLogUnit::getConverterTo(const Pimpl& output) const
 {
-    return output->getConverterFrom(*this);
+    return Converter(new ToConverter(refLevel->getConverterTo(output), logBase));
 }
 
 Converter RefLogUnit::getConverterFrom(const CanonicalUnit& input) const
