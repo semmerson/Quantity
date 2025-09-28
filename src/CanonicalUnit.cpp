@@ -26,6 +26,7 @@
 #include "ConverterImpl.h"
 #include "Exponent.h"
 #include "RefLogUnit.h"
+#include "UnrefLogUnit.h"
 
 namespace quantity {
 
@@ -139,6 +140,11 @@ int CanonicalUnit::compareTo(const RefLogUnit& other) const
     return -1;  // Canonical units come before everything else
 }
 
+int CanonicalUnit::compareTo(const UnrefLogUnit& other) const
+{
+    return -1;  // Canonical units come before everything else
+}
+
 bool CanonicalUnit::isConvertible(const Pimpl& other) const
 {
     return other->isConvertibleTo(*this);
@@ -170,6 +176,11 @@ bool CanonicalUnit::isConvertibleTo(const RefLogUnit& other) const
     return other.isConvertibleTo(*this); // Defer to the other unit
 }
 
+bool CanonicalUnit::isConvertibleTo(const UnrefLogUnit& other) const
+{
+    return other.isConvertibleTo(*this); // Defer to the other unit
+}
+
 Converter CanonicalUnit::getConverterTo(const Pimpl& output) const
 {
     return output->getConverterFrom(*this);
@@ -192,6 +203,12 @@ Converter CanonicalUnit::getConverterFrom(const RefLogUnit& output) const
 {
     //output.getConverterTo
     throw logic_error("CanonicalUnit::getConverterFrom(RefLogUnit) shouldn't be called");
+}
+
+Converter CanonicalUnit::getConverterFrom(const UnrefLogUnit& output) const
+{
+    //output.getConverterTo
+    throw logic_error("CanonicalUnit::getConverterFrom(UnrefLogUnit) shouldn't be called");
 }
 
 CanonicalUnit::Pimpl CanonicalUnit::multiply(const Pimpl& other) const

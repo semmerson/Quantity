@@ -30,9 +30,9 @@ using namespace std;
 
 namespace quantity {
 
-LogUnit::LogUnit(const LogBase baseEnum)
+LogUnit::LogUnit(const BaseEnum baseEnum)
     : baseEnum(baseEnum)
-    , logBase(baseEnum == LogBase::E ? 1 : baseEnum == LogBase::TWO ? log(2) : log(10))
+    , logBase(baseEnum == BaseEnum::E ? 1 : baseEnum == BaseEnum::TWO ? log(2) : log(10))
 {};
 
 LogUnit::~LogUnit() =default;

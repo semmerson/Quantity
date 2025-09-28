@@ -1,5 +1,5 @@
 /**
- * This file declares an abstract logarithmic unit.
+ * This file declares a base class for logarithmic units.
  *
  *        File: LogUnit.h
  *  Created on: Sep 14, 2025
@@ -25,18 +25,18 @@
 
 namespace quantity {
 
-/// Abstract logarithmic unit.
+/// Logarithmic unit base class.
 class LogUnit : public Unit
 {
 protected:
-    const LogBase   baseEnum;  ///< Logarithmic base enumeration
+    const BaseEnum   baseEnum;  ///< Logarithmic base enumeration
     const double    logBase;   ///< Natural logarithm of the base
 
     /**
      * Constructs from a logarithmic base.
      * @param[in] base  The logarithmic base
      */
-    LogUnit(const LogBase base);
+    LogUnit(const BaseEnum base);
 
 public:
     /// Destroys.

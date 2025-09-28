@@ -1,10 +1,8 @@
 /**
- * This file declares an affine unit of a physical quantity. An affine unit has the form
- * "y = ax + b", where "x" is a numeric value in the underlying unit and "y" is the equivalent value
- * in the affine unit.
+ * This file declares a logarithmic unit without a reference level.
  *
- *        File: AffineUnit.h
- *  Created on: Aug 29, 2025
+ *        File: UnrefLogUnit.h
+ *  Created on: Sep 14, 2025
  *      Author: Steven R. Emmerson
  *
  * Copyright 2025 Steven R. Emmerson. All rights reserved.
@@ -24,42 +22,33 @@
 
 #pragma once
 
-#include "Unit.h"
-#include "Converter.h"
+#include "LogUnit.h"
+#include "Dimensionality.h"
 
 namespace quantity {
 
-/**
- * Definition of an affine unit of a physical quantity. An invariant is that (slope == 1 &&
- * intercept == 0) will always be false.
- */
-class AffineUnit final : public Unit
+/// A logarithmic unit with a reference level.
+class UnrefLogUnit final : public LogUnit
 {
-    const Pimpl     core;        ///< The underlying unit
-    const double    slope;       ///< The slope for converting a numeric value from the @ core unit.
-                                 ///< May be one but only if the intercept isn't zero.
-    const double    intercept;   ///< The intercept for converting a numeric value from the @ core
+private:
+    Dimensionality dims;    ///< Dimensionality of the relevant physical quantity
 
 public:
     class ToConverter;      ///< Converter of numeric values in this affine unit to an output unit.
     class FromConverter;    ///< Converter of numeric values in an input unit to this affine unit.
 
     /**
-     * Constructs
-     * @param[in] core                      The underlying unit from which this unit is derived
-     * @param[in] slope                     The slope to convert values from the @ core unit
-     * @param[in] intercept                 The intercept to convert values from the @ core unit
-     * @throw     std::invalid_argument     Slope is zero
-     * @throw     std::invalid_argument     Slope is one and intercept is zero
+     * Constructs from a reference level and a logarithmic base.
+     * @param[in] base          Logarithmic base: Unit::LogBase::TWO, Unit::LogBase::E, or
+     *                          Unit::LogBase::TEN.
+     * @param[in] dim           Dimensionality of the relevant physical quantity
      */
-    AffineUnit(
-            const Pimpl&      core,
-            const double      slope,
-            const double      intercept);
+    UnrefLogUnit(const BaseEnum         base,
+                 const Dimensionality& dim);
 
     /**
-     * Returns a string representation
-     * @retval A string representation
+     * Returns a string representation of this unit.
+     * @retval A string representation of this unit
      */
     std::string to_string() const override;
 
@@ -67,7 +56,7 @@ public:
      * Indicates the type of this unit.
      * @return The type of this unit
      */
-    Type type() const override;
+    Unit::Type type() const override;
 
     /**
      * Indicates if this unit is dimensionless.
@@ -83,18 +72,18 @@ public:
      */
     bool isOffset() const override;
 
-    /**
-     * Returns the hash code of this instance.
-     * @return The hash code of this instance
-     */
+	/**
+	 * Returns the hash code of this instance.
+	 * @return The hash code of this instance
+	 */
     size_t hash() const override;
 
-    /**
-     * Compares this instance with another unit implementation.
-     * @param[in] other The other implementation
-     * @return          A value less than, equal to, or greater than zero as this instance is
-     *                  considered less than, equal to, or greater than the other, respectively.
-     */
+	/**
+	 * Compares this instance with another.
+	 * @param[in] other The other instance
+	 * @return          A value less than, equal to, or greater than zero as this instance is
+	 *                  considered less than, equal to, or greater than the other, respectively.
+	 */
     int compare(const Pimpl& other) const override;
 
 	/**
@@ -103,7 +92,7 @@ public:
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compareTo(const CanonicalUnit& other) const override;
+    int compareTo(const CanonicalUnit& other) const override;
 
 	/**
 	 * Compares this instance with an affine unit.
@@ -111,7 +100,7 @@ public:
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compareTo(const AffineUnit& other) const override;
+    int compareTo(const AffineUnit& other) const override;
 
 	/**
 	 * Compares this instance with a referenced logarithmic unit.
@@ -171,7 +160,7 @@ public:
     bool isConvertibleTo(const UnrefLogUnit& other) const override;
 
     /**
-     * Returns a converter of numeric values to an output unit.
+     * Returns a converter of numeric values in this unit to an output unit.
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
     Converter getConverterTo(const Pimpl& output) const override;
@@ -203,35 +192,6 @@ public:
      * @throw std::invalid_argument     Values aren't convertible between the two units
      */
     Converter getConverterFrom(const UnrefLogUnit& input) const override;
-
-    /**
-     * Multiplies by another unit.
-     * @param[in] other         The other unit
-     * @return                  A unit whose scale-transform is equal to this unit's times the other unit's
-     * @throw std::logic_error  This operation is not meaningful
-     */
-    Pimpl multiply(const Pimpl& other) const override;
-
-    /**
-     * Multiplies by a derived unit.
-     * @param[in] other  The derived unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    Pimpl multiplyBy(const CanonicalUnit& other) const override;
-
-    /**
-     * Multiplies by an affine unit.
-     * @param[in] other  The affine unit
-     * @return           A unit whose scale-transform is equal to this unit's times the other unit's
-     */
-    Pimpl multiplyBy(const AffineUnit& other) const override;
-
-    /**
-     * Returns this instance raised to a power in a new unit.
-     * @param[in] exp   The exponent
-     * @return          The result
-     */
-    Pimpl pow(const Exponent exp) const override;
 };
 
 } // namespace quantity

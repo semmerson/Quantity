@@ -22,6 +22,10 @@ add_executable(RefLogUnit_test RefLogUnit_test.cpp)
 target_link_libraries(RefLogUnit_test libquant ${GTEST_LIBRARY})
 add_test(RefLogUnit_test RefLogUnit_test)
 
+add_executable(UnrefLogUnit_test UnrefLogUnit_test.cpp)
+target_link_libraries(UnrefLogUnit_test libquant ${GTEST_LIBRARY})
+add_test(UnrefLogUnit_test UnrefLogUnit_test)
+
 #add_executable(BaseQuantity_test BaseQuantity_test.cpp)
 #target_link_libraries(BaseQuantity_test libquant ${GTEST_LIBRARY})
 #add_test(BaseQuantity_test BaseQuantity_test)

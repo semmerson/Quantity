@@ -25,6 +25,7 @@
 #include "Converter.h"
 #include "ConverterImpl.h"
 #include "RefLogUnit.h"
+#include "UnrefLogUnit.h"
 
 namespace quantity {
 
@@ -91,22 +92,29 @@ AffineUnit::AffineUnit(
 std::string AffineUnit::to_string() const
 {
     string rep{""};
-    if (slope != 1) {
-        rep += std::to_string(slope) + "*";
-    }
+
+    if (slope != 1)
+        rep += std::to_string(slope);
+
     string coreStr = core->to_string();
     const bool haveBlank = coreStr.find(" ") != string::npos;
-    if (haveBlank)
-        rep += "(";
-    rep += coreStr;
-    if (haveBlank)
-        rep += ")";
+    if ((slope != 1 && haveBlank) || (haveBlank && intercept != 0)) {
+        rep += "(" + coreStr + ")";
+    }
+    else if (slope != 1) {
+        rep += " " + coreStr;
+    }
+    else {
+        rep += coreStr;
+    }
+
     if (intercept < 0) {
         rep += " - " + std::to_string(abs(intercept));
     }
     else if (intercept > 0) {
         rep += " + " + std::to_string(intercept);
     }
+
     return rep;
 }
 
@@ -167,6 +175,11 @@ int AffineUnit::compareTo(const RefLogUnit& other) const
     return -1;  // Affine units come before log units
 }
 
+int AffineUnit::compareTo(const UnrefLogUnit& other) const
+{
+    return -1;  // Affine units come before log units
+}
+
 bool AffineUnit::isConvertible(const Pimpl& other) const
 {
     return other->isConvertibleTo(*this);
@@ -183,6 +196,11 @@ bool AffineUnit::isConvertibleTo(const AffineUnit& other) const
 }
 
 bool AffineUnit::isConvertibleTo(const RefLogUnit& other) const
+{
+    return other.isConvertibleTo(*this); // Defer to the other unit
+}
+
+bool AffineUnit::isConvertibleTo(const UnrefLogUnit& other) const
 {
     return other.isConvertibleTo(*this); // Defer to the other unit
 }
@@ -212,6 +230,14 @@ Converter AffineUnit::getConverterFrom(const AffineUnit& input) const
 }
 
 Converter AffineUnit::getConverterFrom(const RefLogUnit& input) const
+{
+    if (!isConvertibleTo(input))
+        throw invalid_argument("Units are not convertible");
+
+    return Converter(new FromConverter(core->getConverterFrom(input), slope, intercept));
+}
+
+Converter AffineUnit::getConverterFrom(const UnrefLogUnit& input) const
 {
     if (!isConvertibleTo(input))
         throw invalid_argument("Units are not convertible");

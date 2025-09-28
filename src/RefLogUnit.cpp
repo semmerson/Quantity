@@ -1,7 +1,7 @@
 /**
- * This file implements an abstract logarithmic unit.
+ * This file implements a logarithmic unit with a reference level.
  *
- *        File: RefLog.cpp
+ *        File: RefLogUnit.cpp
  *  Created on: Sep 14, 2025
  *      Author: Steven R. Emmerson
  *
@@ -80,7 +80,7 @@ public:
 };
 
 RefLogUnit::RefLogUnit(const Pimpl&  ref,
-                       const LogBase base)
+                       const BaseEnum base)
     : LogUnit(base)
     , refLevel(ref)
 {
@@ -93,8 +93,8 @@ string RefLogUnit::to_string() const
     string rep{};
 
     switch (baseEnum) {
-        case LogBase::TWO: {rep += "lb"; break;}
-        case LogBase::E:   {rep += "ln"; break;}
+        case BaseEnum::TWO: {rep += "lb"; break;}
+        case BaseEnum::E:   {rep += "ln"; break;}
         default:           {rep += "lg"; break;}
     }
 
@@ -150,6 +150,11 @@ int RefLogUnit::compareTo(const RefLogUnit& other) const
     return cmp;
 }
 
+int RefLogUnit::compareTo(const UnrefLogUnit& other) const
+{
+    return -1;  ///< Referenced log units come before unreferenced ones
+}
+
 bool RefLogUnit::isConvertible(const Pimpl& other) const
 {
     return refLevel->isConvertible(other);
@@ -168,6 +173,12 @@ bool RefLogUnit::isConvertibleTo(const AffineUnit& other) const
 bool RefLogUnit::isConvertibleTo(const RefLogUnit& other) const
 {
     return refLevel->isConvertible(other.refLevel);
+}
+
+bool RefLogUnit::isConvertibleTo(const UnrefLogUnit& other) const
+{
+    throw std::logic_error("Conversion between referenced and unreferenced log units is not "
+            "possible");
 }
 
 Converter RefLogUnit::getConverterTo(const Pimpl& output) const
@@ -199,9 +210,9 @@ Converter RefLogUnit::getConverterFrom(const RefLogUnit& input) const
     return Converter(new FromConverter(input.getConverterTo(refLevel), logBase));
 }
 
-Unit::Pimpl RefLogUnit::pow(const Exponent exp) const
+Converter RefLogUnit::getConverterFrom(const UnrefLogUnit& input) const
 {
-    throw std::logic_error("Exponentiating a referenced logarithmic unit is not supported");
+    throw invalid_argument("Units are not convertible");
 }
 
 } // Namespace

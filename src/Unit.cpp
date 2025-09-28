@@ -22,7 +22,9 @@
 #include "AffineUnit.h"
 #include "BaseInfo.h"
 #include "CanonicalUnit.h"
+#include "Dimensionality.h"
 #include "RefLogUnit.h"
+#include "UnrefLogUnit.h"
 
 #include <memory>
 #include <stdexcept>
@@ -47,10 +49,16 @@ Unit::Pimpl Unit::get(const Pimpl& core,
         : Pimpl(new AffineUnit(core, slope, intercept));
 }
 
-Unit::Pimpl Unit::get(const Pimpl&        refLevel,
-                      const Unit::LogBase base)
+Unit::Pimpl Unit::get(const Unit::BaseEnum base,
+                      const Pimpl&        refLevel)
 {
     return Pimpl(new RefLogUnit(refLevel, base));
+}
+
+Unit::Pimpl Unit::get(const Unit::BaseEnum   base,
+                      const Dimensionality& dim)
+{
+    return Pimpl(new UnrefLogUnit(base, dim));
 }
 
 Unit::~Unit() noexcept =default;

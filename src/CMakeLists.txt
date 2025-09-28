@@ -18,4 +18,6 @@ add_library(libquant OBJECT
                             ConverterImpl.h
     LogUnit.cpp             LogUnit.h
     RefLogUnit.cpp          RefLogUnit.h
+    UnrefLogUnit.cpp        UnrefLogUnit.h
+    Dimensionality.cpp      Dimensionality.h
     )

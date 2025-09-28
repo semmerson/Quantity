@@ -1,7 +1,7 @@
 /**
- * This file tests class RefLogUnit.
+ * This file tests class UnrefLogUnit.
  *
- *        File: RefLogUnit_test.cpp
+ *        File: UnrefLogUnit_test.cpp
  *  Created on: Jul 19, 2025
  *      Author: Steven R. Emmerson
  *
@@ -21,7 +21,9 @@
  */
 #include "BaseInfo.h"
 #include "Dimension.h"
-#include "RefLogUnit.h"
+#include "Dimensionality.h"
+#include "Exponent.h"
+#include "UnrefLogUnit.h"
 
 #include <gtest/gtest.h>
 #include <stdexcept>
@@ -30,19 +32,19 @@ namespace {
 
 using namespace quantity;
 
-/// The fixture for testing class `RefLogUnit`
-class RefLogUnitTest : public ::testing::Test
+/// The fixture for testing class `UnrefLogUnit`
+class UnrefLogUnitTest : public ::testing::Test
 {
 protected:
     // You can remove any or all of the following functions if its body
     // is empty.
 
-    RefLogUnitTest()
+    UnrefLogUnitTest()
     {
         // You can do set-up work for each test here.
     }
 
-    virtual ~RefLogUnitTest()
+    virtual ~UnrefLogUnitTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
     }
@@ -63,51 +65,69 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Dimension length{"Length", "L"};
-    Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
+    Dimension      length{"Length", "L"};
+    BaseInfo       meterInfo{length, "meter", "m"};
+    Unit::Pimpl    meter = Unit::get(meterInfo);
+    Dimensionality lengthDims{length};
+
+    Dimension      time{"Time", "T"};
+    BaseInfo       timeInfo{time, "second", "s"};
+    Unit::Pimpl    second = Unit::get(timeInfo);
+    Dimensionality timeDims{time};
+
+    Unit::Pimpl    mPerS = meter->divideBy(second);
 };
 
 // Tests construction
-TEST_F(RefLogUnitTest, Construction)
+TEST_F(UnrefLogUnitTest, Construction)
 {
-    const auto affineMeter = Unit::get(meter, 3, 5);
-    EXPECT_THROW(Unit::get(Unit::BaseEnum::E, affineMeter), std::logic_error);
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, lengthDims);
+    const auto lnLength = Unit::get(Unit::BaseEnum::E,   lengthDims);
+    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, lengthDims);
 
-    const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
-    const auto lnMeter = Unit::get(Unit::BaseEnum::E, meter);
-    const auto lgMeter = Unit::get(Unit::BaseEnum::TEN, meter);
+    const auto lnMPerS = Unit::get(Unit::BaseEnum::E, lengthDims.divideBy(timeDims));
 }
 
 // Tests string representation
-TEST_F(RefLogUnitTest, StringRepresentation)
+TEST_F(UnrefLogUnitTest, StringRepresentation)
 {
-    const auto affineMeter = Unit::get(meter, 1000, 0);
-    EXPECT_EQ("ln(re 1000.000000 m)", Unit::get(Unit::BaseEnum::E, affineMeter)->to_string());
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, lengthDims);
+    EXPECT_EQ("lb(L/L)", lbLength->to_string());
+
+    const auto lnLength = Unit::get(Unit::BaseEnum::E, lengthDims);
+    EXPECT_EQ("ln(L/L)", lnLength->to_string());
+
+    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, lengthDims);
+    EXPECT_EQ("lg(L/L)", lgLength->to_string());
+
+    const auto lnMPerS = Unit::get(Unit::BaseEnum::E, lengthDims.divideBy(timeDims));
+    EXPECT_EQ("ln(L·T^-1/L·T^-1)", lnMPerS->to_string());
 }
 
+#if 0
 // Tests type
-TEST_F(RefLogUnitTest, Type)
+TEST_F(UnrefLogUnitTest, Type)
 {
     const auto affineMeter = Unit::get(meter, 1000, 0);
     EXPECT_EQ(Unit::Type::REF_LOG, Unit::get(Unit::BaseEnum::E, affineMeter)->type());
 }
 
 // Tests offset
-TEST_F(RefLogUnitTest, Offset)
+TEST_F(UnrefLogUnitTest, Offset)
 {
     const auto affineMeter = Unit::get(meter, 1000, 0);
     EXPECT_FALSE(Unit::get(Unit::BaseEnum::E, affineMeter)->isOffset());
 }
 
 // Tests dimensionless
-TEST_F(RefLogUnitTest, Dimensionless)
+TEST_F(UnrefLogUnitTest, Dimensionless)
 {
     const auto affineMeter = Unit::get(meter, 1000, 0);
     EXPECT_TRUE(Unit::get(Unit::BaseEnum::E, affineMeter)->isDimensionless());
 }
 
 // Tests multiplication
-TEST_F(RefLogUnitTest, Multiplication)
+TEST_F(UnrefLogUnitTest, Multiplication)
 {
     const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
     const auto lgMeter = Unit::get(Unit::BaseEnum::TEN, meter);
@@ -116,14 +136,14 @@ TEST_F(RefLogUnitTest, Multiplication)
 }
 
 // Tests exponentiation
-TEST_F(RefLogUnitTest, Exponentiation)
+TEST_F(UnrefLogUnitTest, Exponentiation)
 {
     const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
     EXPECT_THROW(lbMeter->pow(2), std::logic_error);
 }
 
 // Tests conversion
-TEST_F(RefLogUnitTest, Conversion)
+TEST_F(UnrefLogUnitTest, Conversion)
 {
     const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
     const auto lgMeter = Unit::get(Unit::BaseEnum::TEN, meter);
@@ -131,6 +151,7 @@ TEST_F(RefLogUnitTest, Conversion)
     EXPECT_LE(3.32192, lgMToLbM(1));
     EXPECT_GE(3.32194, lgMToLbM(1));
 }
+#endif
 
 }  // namespace
 
