@@ -115,7 +115,7 @@ public:
      * @retval A string representation
      */
 	string to_string() const {
-	    return name;
+	    return symbol;
 	}
 
 	/// Clears the database.
