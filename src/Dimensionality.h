@@ -23,45 +23,52 @@
 
 #pragma once
 
-#include "Dimension.h"
-
 #include <memory>
 
 using namespace std;
 
 namespace quantity {
 
-class DimensionalityImpl;
+class Exponent;
 
 /// The dimensionality of a physical quantity.
 class Dimensionality
 {
-private:
-    /// Type of PIMPL smart pointer
-    using Pimpl = shared_ptr<DimensionalityImpl>;
+protected:
+    /// Implementation class
+    class Impl;
+
+    /// Type of smart pointer to an implementation
+    using Pimpl = shared_ptr<Impl>;
 
     /// Smart pointer to the implementation for automatic deletion
     Pimpl pImpl;
 
-public:
     /**
      * Constructs from a pointer to an implementation.
-     * @param[in] impl  Pointer to an implementation.
+     * @param impl  pointer to an implementation
      */
-    Dimensionality(DimensionalityImpl* impl);
+    Dimensionality(Impl* impl);
 
+public:
     /// Default constructs.
     Dimensionality();
 
     /**
      * Constructs from a dimension and a rational exponent.
-     * @param[in] dim   The associated dimension
-     * @param[in] numer The numberator of the exponent
-     * @param[in] denom The denominator of the exponent
+     * @param[in] dim               The associated dimension
+     * @param[in] exp               The exponent. If it's zero, the the resulting dimensionality
+     *                              will be empty.
      */
-    Dimensionality(const Dimension dim,
-                   const int       numer = 1,
-                   const int       denom = 1);
+    Dimensionality(const string&   name,
+                   const string&   symbol,
+                   const Exponent& exp);
+
+    /**
+     * Returns the number of dimensions.
+     * @return  The number of dimensions
+     */
+	size_t size() const;
 
     /**
      * Returns a string representation.
@@ -69,12 +76,42 @@ public:
      */
     string to_string() const;
 
+	/**
+	 * Returns the hash code of this instance.
+	 * @return                  The hash code of this instance
+	 * @throw std:: logic_error This instance has not been initialized
+	 */
+	size_t hash() const;
+
+	/**
+	 * Compares this instance with another instance.
+	 * @param[in] other         The other instance
+	 * @return                  A value less than, equal to, or greater than zero as this instance
+	 *                          is considered less than, equal to, or greater than the other,
+	 *                          respectively.
+	 */
+	int compare(const Dimensionality& other) const;
+
     /**
      * Multiplies by another instance
      * @param[in] other Another instance
      * @return          The product of this instance and the other instance
      */
     Dimensionality multiply(const Dimensionality& other) const;
+
+    /**
+     * Returns the quotient of this instance divided by another instance.
+     * @param[in] other     The other instance
+     * @return              The quotient of this instance divided by another instance
+     */
+    Dimensionality divideBy(const Dimensionality& other) const;
+
+    /**
+     * Returns the result of raising this instance to a power.
+     * @param[in] exp   The power
+     * @return          The result of raising this instance to the given power
+     */
+    Dimensionality pow(const Exponent& exp) const;
 };
 
 } // namespace quantity
