@@ -33,7 +33,7 @@ namespace quantity {
 
 class DimFactorImpl;
 
-/// Implementation of a dimensional factor (e.g., "length^2")
+/// Implementation of a dimensional factor (e.g., "length^2", "time^-1")
 class DimFactor
 {
 private:
