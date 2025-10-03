@@ -32,7 +32,7 @@ using namespace std;
 namespace quantity {
 
 class BaseInfoImpl;
-class Dimension;
+class Dimensionality;
 
 /**
  * Information on a base unit of a physical quantity. NB: This class *isn't* a unit and so it
@@ -48,17 +48,19 @@ public:
     Pimpl pImpl;
 
     /// Default constructs.
-    BaseInfo() =delete;
+    BaseInfo();
 
     /**
-     * Constructs from a name and a symbol.
-     * @param[in] dim     Associated physical dimension
-     * @param[in] name    Base unit name
-     * @param[in] symbol  Base unit symbol
+     * Constructs from a dimensionality, name, and symbol.
+     * @param[in] dim               Associated dimensionality. Must be a base dimension.
+     * @param[in] name              Base unit name
+     * @param[in] symbol            Base unit symbol
+     * @throw std::invalid_argument The dimensionality is not a base dimension
+     * @throw std::invalid_argument The name or symbol is already in use
      */
-    BaseInfo(const Dimension& dim,
-             const string&    name,
-             const string&    symbol);
+    BaseInfo(const Dimensionality& dim,
+             const string&         name,
+             const string&         symbol);
 
     /**
      * Returns a string representation

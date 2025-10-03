@@ -21,7 +21,7 @@
  */
 
 #include "BaseInfo.h"
-#include "Dimension.h"
+#include "Dimensionality.h"
 
 #include "Unit.h"
 
@@ -35,9 +35,9 @@ namespace quantity {
 class BaseInfoImpl final
 {
 private:
-    const Dimension dim;        ///< Associated physical dimension
-    const string    name;       ///< Base unit name
-    const string    symbol;     ///< Base unit symbol
+    const Dimensionality dim;        ///< Associated physical dimension
+    const string         name;       ///< Base unit name
+    const string         symbol;     ///< Base unit symbol
 
     static unordered_set<string>    nameSet;    ///< Set of extant base unit names
     static unordered_set<string>    symSet;     ///< Set of extant base unit symbols
@@ -48,17 +48,21 @@ public:
 
     /**
      * Constructs.
-     * @param[in] dim       Associated physical dimension
-     * @param[in] name      Unit name
-     * @param[in] symbol    Unit symbol
+     * @param[in] dim               Associated physical dimension
+     * @param[in] name              Unit name
+     * @param[in] symbol            Unit symbol
+     * @throw std::invalid_argument The dimensionality is not a base dimension
+     * @throw std::invalid_argument The name or symbol is already in use
      */
-    BaseInfoImpl(const Dimension& dim,
-                 const string&    name,
-                 const string&    symbol)
+    BaseInfoImpl(const Dimensionality& dim,
+                 const string&         name,
+                 const string&         symbol)
         : dim(dim)
         , name(name)
         , symbol(symbol)
     {
+        if (!dim.isBaseDim())
+            throw std::invalid_argument("Dimensionality is not a base dimension");
         if (name.size() == 0)
             throw std::invalid_argument("No name for base unit");
         if (symbol.size() == 0)
@@ -114,9 +118,9 @@ public:
 unordered_set<string>    BaseInfoImpl::nameSet;    ///< Set of extant base unit names
 unordered_set<string>    BaseInfoImpl::symSet;     ///< Set of extant base unit symbols
 
-BaseInfo::BaseInfo(const Dimension& dim,
-                   const string&    name,
-                   const string&    symbol)
+BaseInfo::BaseInfo(const Dimensionality& dim,
+                   const string&         name,
+                   const string&         symbol)
     : pImpl(new BaseInfoImpl(dim, name, symbol))
 {}
 

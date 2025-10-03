@@ -43,7 +43,7 @@ public:
      *                          Unit::LogBase::TEN.
      * @param[in] dim           Dimensionality of the relevant physical quantity
      */
-    UnrefLogUnit(const BaseEnum         base,
+    UnrefLogUnit(const BaseEnum        base,
                  const Dimensionality& dim);
 
     /**

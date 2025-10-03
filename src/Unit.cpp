@@ -55,7 +55,7 @@ Unit::Pimpl Unit::get(const Unit::BaseEnum base,
     return Pimpl(new RefLogUnit(refLevel, base));
 }
 
-Unit::Pimpl Unit::get(const Unit::BaseEnum   base,
+Unit::Pimpl Unit::get(const Unit::BaseEnum  base,
                       const Dimensionality& dim)
 {
     return Pimpl(new UnrefLogUnit(base, dim));

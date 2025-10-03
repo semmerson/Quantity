@@ -110,7 +110,7 @@ public:
      * @param[in] dim       Dimensionality of the relevant physical quantity
      * @return              Corresponding unreferenced logarithmic unit
      */
-    static Pimpl get(const Unit::BaseEnum   base,
+    static Pimpl get(const Unit::BaseEnum  base,
                      const Dimensionality& dim);
 
     /**

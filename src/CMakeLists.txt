@@ -1,5 +1,5 @@
 add_library(libquant OBJECT
-    Dimension.cpp           Dimension.h
+#   Dimension.cpp           Dimension.h
     BaseInfo.cpp            BaseInfo.h
     Unit.cpp                Unit.h
                             OrderedUnit.h

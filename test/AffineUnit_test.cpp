@@ -4,7 +4,7 @@
 
 #include "BaseInfo.h"
 #include "AffineUnit.h"
-#include "Dimension.h"
+#include "Dimensionality.h"
 #include "Unit.h"
 
 #include <gtest/gtest.h>
@@ -19,10 +19,19 @@ using namespace std;
 class AffineUnitTest : public ::testing::Test
 {
 protected:
+    Dimensionality length;
+    Dimensionality mass;
+    Dimensionality temperature;
+    Dimensionality time;
+
     // You can remove any or all of the following functions if its body
     // is empty.
 
     AffineUnitTest()
+        : length(Dimensionality::get("Length", "L"))
+        , mass(Dimensionality::get("Mass", "M"))
+        , temperature(Dimensionality::get("Temperature", "Θ"))
+        , time(Dimensionality::get("Time", "T"))
     {
         // You can do set-up work for each test here.
     }
@@ -48,10 +57,6 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Dimension length{"Length", "L"};
-    Dimension mass{"Mass", "M"};
-    Dimension temperature{"Temperature", "Θ"};
-    Dimension time{"Time", "T"};
     Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
     Unit::Pimpl kilogram{Unit::get(BaseInfo(mass, "kilogram", "kg"))};
     Unit::Pimpl kelvin{Unit::get(BaseInfo(temperature, "kelvin", "°K"))};

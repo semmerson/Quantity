@@ -50,25 +50,52 @@ protected:
      */
     Dimensionality(Impl* impl);
 
-public:
-    /// Default constructs.
-    Dimensionality();
-
     /**
      * Constructs from a dimension and a rational exponent.
-     * @param[in] dim               The associated dimension
-     * @param[in] exp               The exponent. If it's zero, the the resulting dimensionality
-     *                              will be empty.
+     * @param[in] name      The name of the dimension
+     * @param[in] symbol    The symbol for the dimension
+     * @param[in] exp       The dimension's exponent. If it's zero, then the resulting
+     *                      dimensionality will be empty.
      */
     Dimensionality(const string&   name,
                    const string&   symbol,
                    const Exponent& exp);
+
+public:
+    /// Default constructs. The resulting instance will be empty and have no dimensionality.
+    Dimensionality();
+
+    /**
+     * Copy constructs.
+     * @param[in] other Another instance
+     */
+    Dimensionality(const Dimensionality& other);
+
+    /**
+     * Returns the requested base dimension. Creates it if doesn't exist.
+     * @param[in] name              The name of the base dimension
+     * @param[in] symbol            The symbol for the base dimension
+     * @return                      The requested base dimension
+     * @throw std::invalid_argument The name or symbol is empty
+     * @throw std::invalid_argument The name or symbol is already associated with a different base
+     *                              dimension
+     */
+    static Dimensionality get(const string& name,
+                              const string& symbol);
 
     /**
      * Returns the number of dimensions.
      * @return  The number of dimensions
      */
 	size_t size() const;
+
+	/**
+	 * Indicates if this instance is a base dimension. Such a dimensionality has a size of one with
+	 * an exponent of one.
+	 * @retval true     This instance is a base dimension
+	 * @retval false    This instance is not a base dimension
+	 */
+	bool isBaseDim() const;
 
     /**
      * Returns a string representation.

@@ -5,7 +5,7 @@
 #include <BaseInfo.h>
 #include "Unit.h"
 
-#include "Dimension.h"
+#include "Dimensionality.h"
 
 #include <gtest/gtest.h>
 #include <stdexcept>
@@ -18,17 +18,15 @@ using namespace quantity;
 class BaseUnitTest : public ::testing::Test
 {
 protected:
-    Dimension length;
-    Dimension mass;
-    Dimension time;
+    Dimensionality length;
+    Dimensionality time;
 
     // You can remove any or all of the following functions if its body
     // is empty.
 
     BaseUnitTest()
-        : length(Dimension("Length", "L"))
-        , mass(Dimension("Mass", "M"))
-        , time(Dimension("Time", "T"))
+        : length(Dimensionality::get("Length", "L"))
+        , time(Dimensionality::get("Time", "T"))
     {
         // You can do set-up work for each test here.
     }
@@ -36,7 +34,7 @@ protected:
     virtual ~BaseUnitTest()
     {
         // You can do clean-up work that doesn't throw exceptions here.
-        Dimension::clear();
+        //Dimension::clear();
     }
 
     // If the constructor and destructor are not enough for setting up

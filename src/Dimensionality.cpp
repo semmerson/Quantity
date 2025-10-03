@@ -29,6 +29,8 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -39,10 +41,16 @@ class Dimensionality::Impl final
 {
 private:
     /// Dimension information
-    struct DimInfo
-    {
+    struct DimInfo {
         const string name;      ///< Name of the dimension
         const string symbol;    ///< Symbol for the dimension
+        string to_string() const {
+            return symbol;
+        }
+        size_t hash() const {
+            static std::hash<string> myHash;
+            return myHash(name) ^ myHash(symbol);
+        }
     };
 
     /**
@@ -52,25 +60,17 @@ private:
      * @retval    true      The first dimension is less than the second
      * @retval    false     The first dimension in not less than the second
      */
-    class DimInfoLess {
+    struct DimInfoLess {
         bool operator()(const DimInfo& info1, const DimInfo& info2) {
             return info1.name < info2.name;
         }
     };
 
     /// The type of the map from dimension information to exponent
-    using Factors = map<DimInfo, Exponent, DimInfoLess>;
+    using Factors = map<const DimInfo, Exponent, DimInfoLess>;
 
     /// The dimensional factors
     Factors factors;
-
-    /**
-     * Constructs from a set of dimensional factors.
-     * @param[in] factors   The set of dimensional factors
-     */
-    Impl(const Factors& factors)
-        : factors(factors)
-    {}
 
 public:
     /// Default constructs.
@@ -100,6 +100,17 @@ public:
 	    return factors.size();
 	}
 
+	/**
+	 * Indicates if this instance is a base dimension. Such a dimensionality has a size of one with
+	 * an exponent of one.
+	 * @retval true     This instance is a base dimension
+	 * @retval false    This instance is not a base dimension
+	 */
+	bool isBaseDim() const
+	{
+	    return factors.size() == 1 && factors.begin()->second.isOne();
+	}
+
     /**
      * Returns a string representation.
      * @return A string representation
@@ -116,7 +127,7 @@ public:
             else {
                 haveFactor = true;
             }
-            rep += iter->second.to_string();
+            rep += iter->first.to_string();
             if (!iter->second.isOne())
                 rep += "^" + iter->second.to_string();
         }
@@ -128,14 +139,12 @@ public:
      * Returns the hash code of this instance.
      * @return  The hash code of this instance
      */
-    size_t hash()
+    size_t hash() const
     {
-        static std::hash<string> strHash;
         size_t code = 0;
 
         for (auto& factor : factors)
-            code ^= strHash(factor.first.name) ^ strHash(factor.first.symbol) ^
-                factor.second.hash();
+            code ^= factor.first.hash() ^ factor.second.hash();
 
         return code;
     }
@@ -146,7 +155,7 @@ public:
 	 * @return          A value less than, equal to, or greater than zero as this instance is
 	 *                  considered less than, equal to, or greater than the other, respectively.
 	 */
-	int compare(const Impl& other)
+	int compare(const Impl& other) const
 	{
         auto       iter1 = factors.begin();
         const auto end1 = factors.end();
@@ -178,27 +187,16 @@ public:
      */
     Impl* multiply(const Impl& other) const
     {
-        const Factors* smaller;
-        const Factors* larger;
-        if (factors.size() <= other.factors.size()) {
-            smaller = &factors;
-            larger = &other.factors;
-        }
-        else {
-            larger = &factors;
-            smaller = &other.factors;
-        }
+        const auto meLarger = size() >= other.size();
+        auto newImpl = new Impl(meLarger ? *this : other);
 
-        auto newImpl = new Impl;
-        newImpl->factors = *larger;
-
-        for (const auto& factor : *smaller) {
+        for (const auto& factor : (meLarger ? other.factors : factors)) {
             auto iter = newImpl->factors.find(factor.first);
             if (iter == newImpl->factors.end()) {
                 newImpl->factors.insert(factor);
             }
             else {
-                iter->second.multiply(factor.second);
+                iter->second = iter->second.add(factor.second);
             }
         }
 
@@ -207,17 +205,17 @@ public:
 
     /**
      * Returns a new instance that's the result of raising this instance to a power.
-     * @param[in] exp   The power
+     * @param[in] pow   The power
      * @return          The result of raising this instance to the given power
      */
-    Impl* pow(const Exponent& exp) const
+    Impl* pow(const Exponent& pow) const
     {
-        Factors newFactors(factors);
+        auto newImpl = new Impl(*this);
 
-        for (auto& factor : newFactors)
-            factor.second.multiply(exp);
+        for (auto& factor : newImpl->factors)
+            factor.second = factor.second.multiply(pow);
 
-        return new Impl(newFactors);
+        return newImpl;
     }
 };
 
@@ -235,14 +233,77 @@ Dimensionality::Dimensionality(const string&   name,
     : pImpl(new Impl(name, symbol, exp))
 {}
 
+Dimensionality::Dimensionality(const Dimensionality& other)
+    : pImpl(new Impl(*other.pImpl))
+{}
+
+Dimensionality Dimensionality::get(const string& name,
+                                   const string& symbol)
+{
+    static unordered_map<string, Dimensionality> nameMap;  ///< Name to base dimension map
+    static unordered_map<string, Dimensionality> symMap;   ///< Symbol to base dimension map
+
+    if (name.size() == 0)
+        throw std::invalid_argument("Dimension name is empty");
+    if (symbol.size() == 0)
+        throw std::invalid_argument("Dimension symbol is empty");
+
+    const auto nameIter = nameMap.find(name);
+    const auto symIter = symMap.find(symbol);
+
+    if (nameIter == nameMap.end() && symIter == symMap.end()) {
+        Dimensionality dim(name, symbol, Exponent(1, 1));
+        nameMap.insert({name, dim});
+        symMap.insert({symbol, dim});
+        return dim;
+    }
+
+    if (nameIter == nameMap.end() || symIter == symMap.end() ||
+            nameIter->second.compare(symIter->second))
+        throw std::invalid_argument("Name \"" + name + "\" or symbol \"" + symbol +
+                "\" is already associated with a different base dimension");
+
+    return nameIter->second;
+}
+
+size_t Dimensionality::size() const
+{
+    return pImpl->size();
+}
+
+bool Dimensionality::isBaseDim() const
+{
+    return pImpl->isBaseDim();
+}
+
 string Dimensionality::to_string() const
 {
     return pImpl->to_string();
 }
 
+size_t Dimensionality::hash() const
+{
+    return pImpl->hash();
+}
+
+int Dimensionality::compare(const Dimensionality& other) const
+{
+    return pImpl->compare(*other.pImpl);
+}
+
 Dimensionality Dimensionality::multiply(const Dimensionality& other) const
 {
     return Dimensionality(pImpl->multiply(*other.pImpl));
+}
+
+Dimensionality Dimensionality::divideBy(const Dimensionality& other) const
+{
+    return multiply(other.pow(-1));
+}
+
+Dimensionality Dimensionality::pow(const Exponent& exp) const
+{
+    return Dimensionality(pImpl->pow(exp));
 }
 
 } // namespace quantity

@@ -110,7 +110,7 @@ public:
      * @param[in] other                 The other instance
      * @return                          This instance multiplied by the given exponent
      */
-    Exponent& multiply(const Exponent& other);
+    Exponent multiply(const Exponent& other) const;
 
     /**
      * Adds another instance to this instance. This implements multiplying together two unit factors
@@ -118,7 +118,7 @@ public:
      * @param[in] other Another instance
      * @return          This instance after being added to
      */
-    Exponent& add(const Exponent& other);
+    Exponent add(const Exponent& other) const;
 
     /**
      * Raises a value to the power of this instance.

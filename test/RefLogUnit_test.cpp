@@ -20,7 +20,7 @@
  * limitations under the License.
  */
 #include "BaseInfo.h"
-#include "Dimension.h"
+#include "Dimensionality.h"
 #include "RefLogUnit.h"
 
 #include <gtest/gtest.h>
@@ -34,10 +34,13 @@ using namespace quantity;
 class RefLogUnitTest : public ::testing::Test
 {
 protected:
+    Dimensionality length;
+
     // You can remove any or all of the following functions if its body
     // is empty.
 
     RefLogUnitTest()
+        : length(Dimensionality::get("Length", "L"))
     {
         // You can do set-up work for each test here.
     }
@@ -63,7 +66,6 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Dimension length{"Length", "L"};
     Unit::Pimpl meter{Unit::get(BaseInfo(length, "meter", "m"))};
 };
 

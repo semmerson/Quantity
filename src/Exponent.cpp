@@ -1,5 +1,5 @@
 /**
- * This file defines a rational exponent for dimensions and units.g., "s^2").
+ * This file defines a rational exponent for dimensions and units.g., "s^-2").
  *
  *        File: Exponent.cpp
  *  Created on: Aug 8, 2025
@@ -207,18 +207,14 @@ public:
      * @param[in] other         The other instance
      * @return                  This instance multiplied by the other instance
      */
-    ExponentImpl& multiply(const ExponentImpl& other)
+    ExponentImpl* multiply(const ExponentImpl& other) const
     {
-        numer *= other.numer;
-        denom *= other.denom;
-        if (denom < 0) {
-            numer = -numer;
-            denom = -denom;
-        }
-        int  div = gcd(numer, denom);
-        numer /= div;
-        denom /= div;
-        return *this;
+        auto newNumer = numer * other.numer;
+        auto newDenom = denom * other.denom;
+        const auto  div = gcd(newNumer, newDenom);
+        newNumer /= div;
+        newDenom /= div;
+        return new ExponentImpl(newNumer, newDenom);
     }
 
     /**
@@ -226,14 +222,14 @@ public:
      * @param[in] other         Another instance
      * @return                  This instance
      */
-    ExponentImpl& add(const ExponentImpl& other)
+    ExponentImpl* add(const ExponentImpl& other) const
     {
         auto newNumer = numer*other.denom + other.numer*denom;
         auto newDenom = denom*other.denom;
-        int  div = gcd(newNumer, newDenom);
-        numer = newNumer/div;
-        denom = newDenom/div;
-        return *this;
+        const int  div = gcd(newNumer, newDenom);
+        newNumer /= div;
+        newDenom /= div;
+        return new ExponentImpl(newNumer, newDenom);
     }
 
     /**
@@ -291,16 +287,14 @@ int Exponent::compare(const Exponent& other) const
     return pImpl->compare(*other.pImpl);
 }
 
-Exponent& Exponent::multiply(const Exponent& other)
+Exponent Exponent::multiply(const Exponent& other) const
 {
-    pImpl->multiply(*other.pImpl);
-    return *this;
+    return Exponent(pImpl->multiply(*other.pImpl));
 }
 
-Exponent& Exponent::add(const Exponent& other)
+Exponent Exponent::add(const Exponent& other) const
 {
-    pImpl->add(*other.pImpl);
-    return *this;
+    return Exponent(pImpl->add(*other.pImpl));
 }
 
 double Exponent::exponentiate(const double value) const

@@ -3,7 +3,8 @@
  */
 
 #include "BaseInfo.h"
-#include "Dimension.h"
+#include "Dimensionality.h"
+#include "Exponent.h"
 #include "Unit.h"
 
 #include "gtest/gtest.h"
@@ -16,10 +17,17 @@ using namespace quantity;
 class CanonicalUnitTest : public ::testing::Test
 {
 protected:
+    Dimensionality mass;
+    Dimensionality length;
+    Dimensionality time;
+
     // You can remove any or all of the following functions if its body
     // is empty.
 
     CanonicalUnitTest()
+        : mass(Dimensionality::get("Mass", "M"))
+        , length(Dimensionality::get("Length", "L"))
+        , time(Dimensionality::get("Time", "T"))
     {
         // You can do set-up work for each test here.
     }
@@ -46,9 +54,6 @@ protected:
 
     // Objects declared here can be used by all tests in the test case for Error.
     //auto kilogram = Unit::getCanonical(BaseInfo("kilogram", "kg")); // Doesn't work
-    Dimension mass{"Mass", "M"};
-    Dimension length{"Length", "L"};
-    Dimension time{"Time", "T"};
     const BaseInfo kgInfo{mass, "kilogram", "kg"};
     const BaseInfo mInfo{length, "meter", "m"};
     const BaseInfo sInfo{time, "second", "s"};

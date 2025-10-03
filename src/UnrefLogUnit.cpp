@@ -67,7 +67,7 @@ UnrefLogUnit::UnrefLogUnit(const BaseEnum         base,
 
 string UnrefLogUnit::to_string() const
 {
-    string rep{};
+    string rep;
 
     switch (baseEnum) {
         case BaseEnum::TWO: {rep += "lb"; break;}
@@ -75,7 +75,14 @@ string UnrefLogUnit::to_string() const
         case BaseEnum::TEN: {rep += "lg"; break;}
         default: throw std::logic_error("Unsupported logarithmic base");
     }
-    rep += "(" + dims.to_string() + "/" + dims.to_string() + ")";
+    const auto isCompound = dims.size() > 1;
+    rep += "(";
+    if (isCompound)
+        rep += "(";
+    rep += dims.to_string();
+    if (isCompound)
+        rep += ")";
+    rep += "^0)";
 
     return rep;
 }

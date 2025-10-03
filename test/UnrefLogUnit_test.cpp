@@ -36,10 +36,17 @@ using namespace quantity;
 class UnrefLogUnitTest : public ::testing::Test
 {
 protected:
+    Dimensionality length;
+    Dimensionality time;
+    Dimensionality temp;
+
     // You can remove any or all of the following functions if its body
     // is empty.
 
     UnrefLogUnitTest()
+        : length(Dimensionality::get("Length", "L"))
+        , time(Dimensionality::get("Time", "T"))
+        , temp(Dimensionality::get("Temperature", "Θ"))
     {
         // You can do set-up work for each test here.
     }
@@ -65,15 +72,14 @@ protected:
     }
 
     // Objects declared here can be used by all tests in the test case for Error.
-    Dimension      length{"Length", "L"};
     BaseInfo       meterInfo{length, "meter", "m"};
     Unit::Pimpl    meter = Unit::get(meterInfo);
-    Dimensionality lengthDims{length};
 
-    Dimension      time{"Time", "T"};
     BaseInfo       timeInfo{time, "second", "s"};
     Unit::Pimpl    second = Unit::get(timeInfo);
-    Dimensionality timeDims{time};
+
+    BaseInfo       tempInfo{temp, "kelvin", "°K"};
+    Unit::Pimpl    kelvin = Unit::get(tempInfo);
 
     Unit::Pimpl    mPerS = meter->divideBy(second);
 };
@@ -81,27 +87,34 @@ protected:
 // Tests construction
 TEST_F(UnrefLogUnitTest, Construction)
 {
-    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, lengthDims);
-    const auto lnLength = Unit::get(Unit::BaseEnum::E,   lengthDims);
-    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, lengthDims);
+    const auto lbLength  = Unit::get(Unit::BaseEnum::TWO, length);
+    const auto lnLength  = Unit::get(Unit::BaseEnum::E,   length);
+    const auto lgLength  = Unit::get(Unit::BaseEnum::TEN, length);
 
-    const auto lnMPerS = Unit::get(Unit::BaseEnum::E, lengthDims.divideBy(timeDims));
+    const auto lnMPerS   = Unit::get(Unit::BaseEnum::E, length.divideBy(time));
+
+    // A scaled (but not offset) unit can be the basis for an unreferenced logarithmic unit
+    const auto rankine   = Unit::get(kelvin, 9.0/5.0, 0.0);
+    const auto lnRankine = Unit::get(Unit::BaseEnum::E, rankine);
 }
 
 // Tests string representation
 TEST_F(UnrefLogUnitTest, StringRepresentation)
 {
-    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, lengthDims);
-    EXPECT_EQ("lb(L/L)", lbLength->to_string());
+    const auto noDim = Unit::get(Unit::BaseEnum::E, Dimensionality());
+    EXPECT_EQ("ln(^0)", noDim->to_string());
 
-    const auto lnLength = Unit::get(Unit::BaseEnum::E, lengthDims);
-    EXPECT_EQ("ln(L/L)", lnLength->to_string());
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, length);
+    EXPECT_EQ("lb(L^0)", lbLength->to_string());
 
-    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, lengthDims);
-    EXPECT_EQ("lg(L/L)", lgLength->to_string());
+    const auto lnLength = Unit::get(Unit::BaseEnum::E, length);
+    EXPECT_EQ("ln(L^0)", lnLength->to_string());
 
-    const auto lnMPerS = Unit::get(Unit::BaseEnum::E, lengthDims.divideBy(timeDims));
-    EXPECT_EQ("ln(L·T^-1/L·T^-1)", lnMPerS->to_string());
+    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, length);
+    EXPECT_EQ("lg(L^0)", lgLength->to_string());
+
+    const auto lnMPerS = Unit::get(Unit::BaseEnum::E, length.divideBy(time));
+    EXPECT_EQ("ln((L·T^-1)^0)", lnMPerS->to_string());
 }
 
 #if 0
