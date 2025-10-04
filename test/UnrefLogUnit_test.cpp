@@ -117,54 +117,46 @@ TEST_F(UnrefLogUnitTest, StringRepresentation)
     EXPECT_EQ("ln((L·T^-1)^0)", lnMPerS->to_string());
 }
 
-#if 0
 // Tests type
 TEST_F(UnrefLogUnitTest, Type)
 {
-    const auto affineMeter = Unit::get(meter, 1000, 0);
-    EXPECT_EQ(Unit::Type::REF_LOG, Unit::get(Unit::BaseEnum::E, affineMeter)->type());
-}
-
-// Tests offset
-TEST_F(UnrefLogUnitTest, Offset)
-{
-    const auto affineMeter = Unit::get(meter, 1000, 0);
-    EXPECT_FALSE(Unit::get(Unit::BaseEnum::E, affineMeter)->isOffset());
+    EXPECT_EQ(Unit::Type::UNREF_LOG, Unit::get(Unit::BaseEnum::E, length)->type());
 }
 
 // Tests dimensionless
 TEST_F(UnrefLogUnitTest, Dimensionless)
 {
-    const auto affineMeter = Unit::get(meter, 1000, 0);
-    EXPECT_TRUE(Unit::get(Unit::BaseEnum::E, affineMeter)->isDimensionless());
+    EXPECT_TRUE(Unit::get(Unit::BaseEnum::E, length)->isDimensionless());
 }
 
 // Tests multiplication
 TEST_F(UnrefLogUnitTest, Multiplication)
 {
-    const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
-    const auto lgMeter = Unit::get(Unit::BaseEnum::TEN, meter);
-    EXPECT_THROW(lbMeter->multiply(lbMeter), std::logic_error);
-    EXPECT_THROW(lbMeter->multiply(lgMeter), std::logic_error);
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, length);
+    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, length);
+    EXPECT_THROW(lbLength->multiply(lbLength), std::logic_error);
+    EXPECT_THROW(lbLength->multiply(lgLength), std::logic_error);
+
+    const auto lbTime = Unit::get(Unit::BaseEnum::TWO, time);
+    EXPECT_THROW(lbLength->multiply(lbTime), std::logic_error);
 }
 
 // Tests exponentiation
 TEST_F(UnrefLogUnitTest, Exponentiation)
 {
-    const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
-    EXPECT_THROW(lbMeter->pow(2), std::logic_error);
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, length);
+    EXPECT_THROW(lbLength->pow(2), std::logic_error);
 }
 
 // Tests conversion
 TEST_F(UnrefLogUnitTest, Conversion)
 {
-    const auto lbMeter = Unit::get(Unit::BaseEnum::TWO, meter);
-    const auto lgMeter = Unit::get(Unit::BaseEnum::TEN, meter);
-    const auto lgMToLbM = lgMeter->getConverterTo(lbMeter);
-    EXPECT_LE(3.32192, lgMToLbM(1));
-    EXPECT_GE(3.32194, lgMToLbM(1));
+    const auto lbLength = Unit::get(Unit::BaseEnum::TWO, length);
+    const auto lgLength = Unit::get(Unit::BaseEnum::TEN, length);
+    const auto lgLToLbL = lgLength->getConverterTo(lbLength);
+    EXPECT_LE(3.32192, lgLToLbL(1));
+    EXPECT_GE(3.32194, lgLToLbL(1));
 }
-#endif
 
 }  // namespace
 
