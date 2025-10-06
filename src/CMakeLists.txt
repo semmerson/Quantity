@@ -2,7 +2,6 @@ add_library(libquant OBJECT
 #   Dimension.cpp           Dimension.h
     BaseInfo.cpp            BaseInfo.h
     Unit.cpp                Unit.h
-                            OrderedUnit.h
                             UnorderedUnit.h
     CanonicalUnit.cpp       CanonicalUnit.h
     AffineUnit.cpp          AffineUnit.h
@@ -20,4 +19,5 @@ add_library(libquant OBJECT
     RefLogUnit.cpp          RefLogUnit.h
     UnrefLogUnit.cpp        UnrefLogUnit.h
     Dimensionality.cpp      Dimensionality.h
+                            Quantity.h
     )
