@@ -128,15 +128,15 @@ public:
 
     /**
      * Indicates if this unit is dimensionless.
-     * retval true      This unit is dimensionless
-     * retval false     This unit is not dimensionless
+     * @retval true      This unit is dimensionless
+     * @retval false     This unit is not dimensionless
      */
     virtual bool isDimensionless() const =0;
 
     /**
      * Indicates if the origin of this unit is *not* zero
-     * retval true      The origin of this unit is *not* zero
-     * retval false     The origin of this unit is zero
+     * @retval true      The origin of this unit is *not* zero
+     * @retval false     The origin of this unit is zero
      */
     virtual bool isOffset() const =0;
 
